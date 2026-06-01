@@ -1,0 +1,7 @@
+﻿query,evaluation_method,reranker_model,relevance_threshold,bge_reranker_labels_top_5,relevant_results,total_results,precision_at_5,avg_bge_reranker_score,min_bge_reranker_score,max_bge_reranker_score,avg_weighted_retrieval_score,avg_similarity_score,avg_category_relevance_score,avg_lexical_relevance_score
+What are users saying about Samsung battery life?,bge_reranker_precision_at_5,BAAI/bge-reranker-base,0.01,"[1, 0, 0, 0, 0]",1,5,0.2,0.005,0.0,0.019,0.676,0.686,0.65,0.9
+Why are users unhappy about the S-Pen?,bge_reranker_precision_at_5,BAAI/bge-reranker-base,0.01,"[1, 0, 1, 1, 1]",4,5,0.8,0.278,0.006,0.986,0.717,0.714,0.65,0.9
+What do users think about Galaxy AI and Gemini?,bge_reranker_precision_at_5,BAAI/bge-reranker-base,0.01,"[1, 1, 0, 1, 1]",4,5,0.8,0.196,0.0,0.662,0.693,0.718,0.65,0.9
+Are users comparing Samsung with Apple?,bge_reranker_precision_at_5,BAAI/bge-reranker-base,0.01,"[1, 1, 1, 1, 0]",4,5,0.8,0.207,0.002,0.652,0.707,0.665,0.9,0.8
+What are users saying about Samsung camera quality?,bge_reranker_precision_at_5,BAAI/bge-reranker-base,0.01,"[0, 0, 0, 0, 0]",0,5,0.0,0.005,0.0,0.009,0.689,0.743,0.65,0.75
+What are users saying about Samsung screen or display issues?,bge_reranker_precision_at_5,BAAI/bge-reranker-base,0.01,"[0, 1, 0, 0, 0]",1,5,0.2,0.004,0.0,0.012,0.656,0.677,0.65,0.6
