@@ -10,7 +10,7 @@ from openai_client import generate_chat_response, get_openai_client
 
 load_dotenv()
 
-INPUT_PATH = "data/processed/comments_with_topics.csv"
+INPUT_PATH = "data/processed/comments_with_ner.csv"
 OUTPUT_PATH = "data/processed/llm_summaries.csv"
 
 client = get_openai_client()

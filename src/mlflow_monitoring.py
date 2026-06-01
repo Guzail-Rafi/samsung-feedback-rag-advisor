@@ -9,7 +9,7 @@ from openai_client import get_openai_model
 # FILE PATHS
 # =========================
 
-COMMENTS_PATH = "data/processed/comments_with_topics.csv"
+COMMENTS_PATH = "data/processed/comments_with_ner.csv"
 RAG_EVAL_PATH = "data/processed/rag_evaluation_results.csv"
 BGE_EVAL_PATH = "data/processed/rag_bge_reranker_evaluation_results.csv"
 RAG_ANSWERS_PATH = "data/processed/rag_answers.csv"
@@ -206,6 +206,8 @@ def main():
             "data/processed/top_negative_keywords.csv",
             "data/processed/top_keywords_by_category.csv",
             "data/processed/topic_keywords.csv",
+            "data/processed/comments_with_sentiment_topics.csv",
+            "data/processed/topic_keywords_by_sentiment.csv",
             "data/processed/rag_retrieval_results.csv",
         ]
 

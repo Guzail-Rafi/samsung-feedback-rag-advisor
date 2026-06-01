@@ -1,0 +1,13 @@
+﻿sentiment_label,sentiment_topic_id,top_words,sentiment_topic_name
+positive,0,"samsung, phone, ultra, pen, year, best, new, features, note, battery, bluetooth, use",Positive Brand / Product Praise
+positive,1,"samsung, apple, iphone, pro, galaxy, better, like, android, phones, just, new, max",Positive Camera and Design Feedback
+positive,2,"phone, better, good, like, ai, just, don, really, need, want, people, phones",Positive AI / Feature Appreciation
+positive,3,"ultra, s25, like, s24, s25 ultra, love, just, phone, s24 ultra, video, looks, s23",Positive Upgrade or Buying Interest
+negative,0,"phone, just, new, ai, phones, samsung, year, need, battery, old, use, years",Negative Feature Removal Concerns
+negative,1,"samsung, pen, apple, bluetooth, features, iphone, ai, design, people, bluetooth pen, use, feature",Negative Battery / Charging Issues
+negative,2,"ultra, s25, s24, s25 ultra, samsung, s24 ultra, just, s23, upgrade, note, screen, s22",Negative Price / Value Concerns
+negative,3,"fake, phone, samsung, like, don, buy, real, iphone, just, video, camera, bad",Negative Camera / Display Complaints
+neutral,0,"apple, samsung, iphone, buy, phones, pro, time, bro, video, phone, real, year",Neutral Product Discussion
+neutral,1,"ultra, s25, ai, s25 ultra, s24, just, need, wait, upgrade, s24 ultra, phone, samsung",Neutral Samsung vs Apple Comparison
+neutral,2,"phone, samsung, new, just, years, s23, don, phones, android, make, s23 ultra, know",Neutral Model / Upgrade Discussion
+neutral,3,"samsung, pen, ultra, use, s24, bluetooth, watching, galaxy, s24 ultra, note, fake, s22",Neutral AI / Feature Discussion

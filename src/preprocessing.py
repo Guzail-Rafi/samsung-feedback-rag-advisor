@@ -1,10 +1,16 @@
 import os
 import re
+import sys
 import pandas as pd
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 
 
 INPUT_PATH = "data/raw/youtube_comments.csv"
 OUTPUT_PATH = "data/processed/clean_comments.csv"
+MAX_COMMENTS = int(os.getenv("MAX_COMMENTS", "15000"))
+SAMPLE_RANDOM_STATE = int(os.getenv("SAMPLE_RANDOM_STATE", "42"))
 
 
 # Simple emoji sentiment dictionary
@@ -121,6 +127,17 @@ def clean_text_keep_words(text):
     return text
 
 
+def limit_comments(df):
+    if MAX_COMMENTS <= 0 or len(df) <= MAX_COMMENTS:
+        return df.reset_index(drop=True)
+
+    return (
+        df.sample(n=MAX_COMMENTS, random_state=SAMPLE_RANDOM_STATE)
+        .sort_index()
+        .reset_index(drop=True)
+    )
+
+
 def main():
     df = pd.read_csv(INPUT_PATH)
 
@@ -152,11 +169,16 @@ def main():
     # Convert date column
     df["comment_published_at"] = pd.to_datetime(df["comment_published_at"], errors="coerce")
 
+    rows_before_sampling = len(df)
+    df = limit_comments(df)
+
     # Save cleaned file
     os.makedirs("data/processed", exist_ok=True)
     df.to_csv(OUTPUT_PATH, index=False, encoding="utf-8-sig")
 
     print("Cleaned rows:", len(df))
+    if rows_before_sampling != len(df):
+        print(f"Sampled rows: {len(df)} of {rows_before_sampling}")
     print("Saved to:", OUTPUT_PATH)
 
     print("\nPreview:")

@@ -3,7 +3,7 @@ import pandas as pd
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 
-INPUT_PATH = "data/processed/clean_comments.csv"
+INPUT_PATH = "data/processed/comments_with_spellcheck.csv"
 OUTPUT_PATH = "data/processed/comments_with_sentiment.csv"
 
 

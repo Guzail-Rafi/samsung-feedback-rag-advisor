@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 
-INPUT_PATH = "data/processed/comments_with_topics.csv"
+INPUT_PATH = "data/processed/comments_with_ner.csv"
 OUTPUT_PATH = "data/processed/strategy_evidence.csv"
 
 

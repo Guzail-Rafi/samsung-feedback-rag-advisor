@@ -16,7 +16,7 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 load_dotenv()
 
-INPUT_PATH = "data/processed/comments_with_topics.csv"
+INPUT_PATH = "data/processed/comments_with_ner.csv"
 OUTPUT_PATH = "data/processed/rag_answers.csv"
 EMBEDDINGS_CACHE_PATH = "data/processed/rag_comment_embeddings.npy"
 EMBEDDINGS_META_PATH = "data/processed/rag_comment_embeddings_meta.json"
