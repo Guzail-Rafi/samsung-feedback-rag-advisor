@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+:root {
+  --brand: #1428A0;
+  --brand-light: #5B8DEF;
+  --ink: #111827;
+  --muted: #6B7280;
+  --surface: #F8FAFC;
+}
+
+html, body {
+  background: var(--surface);
+  color: var(--ink);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}

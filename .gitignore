@@ -7,3 +7,7 @@ __pycache__/
 
 mlruns/
 tempCodeRunnerFile.py
+
+node_modules/
+.next/
+tsconfig.tsbuildinfo
