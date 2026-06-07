@@ -5,6 +5,7 @@ import re
 import pandas as pd
 import numpy as np
 from dotenv import load_dotenv
+from langsmith import traceable
 from openai_client import generate_chat_response, get_openai_client
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -14,6 +15,7 @@ from vector_store import (
     load_or_create_collection,
     query_collection,
 )
+from tracing_utils import sanitize_trace_inputs, sanitize_trace_outputs
 
 
 # =========================
@@ -330,6 +332,13 @@ def calculate_intent_penalty(query, row, intent=None):
 # 4. RETRIEVE EVIDENCE
 # =========================
 
+@traceable(
+    name="Feedback Hybrid Retrieval and Reranking",
+    run_type="retriever",
+    tags=["feedback-rag", "hybrid-retrieval", "reranking"],
+    process_inputs=sanitize_trace_inputs,
+    process_outputs=sanitize_trace_outputs,
+)
 def retrieve_comments(
     query,
     df,

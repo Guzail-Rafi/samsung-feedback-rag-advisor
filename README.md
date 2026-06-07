@@ -17,7 +17,7 @@ The project is designed to support a dashboard or report that explains what cust
 - Named entity recognition for brands, products, and competitors
 - RAG retrieval over customer feedback evidence
 - Persistent ChromaDB vector database with separate feedback and strategy collections
-- OpenAI-based summaries and answer generation
+- OpenAI-primary summaries and answer generation with local Llama failover
 - Strategy recommendation generation
 - Live agent orchestration for summaries, sentiment, issues, topics, keywords, feedback RAG, and strategy RAG
 - MLflow monitoring and artifact logging
@@ -126,9 +126,57 @@ Then fill in:
 YOUTUBE_API_KEY=your_youtube_api_key_here
 OPENAI_API_KEY=your_openai_api_key_here
 OPENAI_MODEL=your_openai_model_here
+LLM_FALLBACK_ENABLED=true
+OLLAMA_BASE_URL=http://localhost:11434
+OLLAMA_MODEL=llama3.2:3b
+LANGSMITH_TRACING=true
+LANGSMITH_API_KEY=your_langsmith_api_key_here
+LANGSMITH_PROJECT=samsung-youtube-intelligence
 ```
 
 Do not commit `.env` because it contains private API keys.
+
+## Local Llama Failover
+
+OpenAI is the primary LLM provider. If OpenAI is unavailable because of quota,
+authentication, connection, timeout, or server errors, the system automatically
+retries generation and LangChain routing with the local Ollama-hosted
+`llama3.2:3b` model.
+
+The fallback hierarchy is:
+
+```text
+OpenAI
+-> Local Ollama Llama model
+-> Deterministic routing rules, only if both LLM routers fail
+```
+
+Install Ollama and download the model once while online:
+
+```powershell
+ollama pull llama3.2:3b
+```
+
+After the model is downloaded, Ollama generation and routing work without
+internet access. ChromaDB, embeddings, reranking, and analytical tools are also
+local once their models are cached. LangSmith tracing and DeepEval's OpenAI
+judge still require internet; set `LANGSMITH_TRACING=false` for fully offline
+runs.
+
+Run the failover smoke test:
+
+```powershell
+python src\llm_fallback_test.py
+```
+
+Every live RAG response reports `llmProvider`, `model`, `llmFallbackUsed`, and
+`llmFallbackReason`. Router results separately report `routerProvider`,
+`routerModel`, and `routerFallbackUsed`. OpenAI is always attempted first;
+local Llama cannot be selected as the primary provider. Set
+`LLM_FALLBACK_ENABLED=false` to disable automatic failover. The smaller local
+model is intended for availability and may be slower or less accurate than
+OpenAI, so fallback outputs should be evaluated separately before treating them
+as equivalent.
 
 ## Running the Project
 
@@ -184,6 +232,7 @@ python src\strategy_rag.py
 python src\agent_router.py
 python src\evaluation_study.py
 python src\router_evaluation.py
+python src\deepeval_rag_evaluation.py
 python src\mlflow_monitoring.py
 ```
 
@@ -202,6 +251,36 @@ annotation of retrieved evidence would provide stronger human validation.
 the LangChain structured-output LLM router using the same labelled routing
 queries. It reports routing accuracy, corrected errors, fallback usage, and the
 latency trade-off introduced by semantic LLM routing.
+
+`deepeval_rag_evaluation.py` evaluates the generated answers from Feedback RAG
+and Strategy RAG using an OpenAI model as the DeepEval judge. It measures answer
+relevancy, faithfulness to retrieved evidence, and contextual relevancy. The
+default run evaluates five queries per RAG system:
+
+```powershell
+python src\deepeval_rag_evaluation.py
+```
+
+For a cheaper smoke test, evaluate one query per RAG:
+
+```powershell
+python src\deepeval_rag_evaluation.py --max-per-rag 1
+```
+
+Generated answers and contexts are cached in
+`data/processed/deepeval_rag_cases.json`. Reuse them without paying for answer
+generation again:
+
+```powershell
+python src\deepeval_rag_evaluation.py --reuse-cases
+```
+
+Set `DEEPEVAL_MODEL` in `.env` to select the judge model. DeepEval consumes
+OpenAI API tokens, and its LLM-as-a-judge scores should be discussed alongside
+manual inspection rather than treated as human ground truth. The example
+environment also raises DeepEval's finite timeout limits so longer Strategy RAG
+answers can be evaluated reliably. `gpt-4.1-mini` is the default judge because
+it produced reliable structured verdicts for the longer Strategy RAG answers.
 
 ## Vector Database
 
@@ -245,10 +324,45 @@ the previous deterministic keyword router as an emergency fallback:
 | `strategy_rag_agent` | Retrieves grounded strategy evidence from ChromaDB |
 
 Every live response includes the selected agent, normalized query, routing
-confidence, routing method, router model, reason, and execution trace. The
+confidence, routing method, router provider, router model, fallback status,
+reason, and a dashboard route summary. The
 analytical tools answer directly from processed artifacts, while the two RAG
 agents perform vector retrieval, specialized hybrid reranking, and grounded LLM
 generation.
+
+## LangSmith Tracing
+
+LangSmith provides request-level observability for the live multi-agent RAG
+advisor. LangChain automatically traces the semantic router's prompt, model
+call, and structured output. The project also uses LangSmith's `@traceable`
+decorator around custom Python stages and `wrap_openai` around direct OpenAI
+Responses API calls.
+
+A live advisor trace has this hierarchy:
+
+```text
+YouTube Intelligence Advisor Request
+-> LangChain Semantic Router
+-> Selected analytical or RAG agent
+-> ChromaDB vector search
+-> Hybrid retrieval and reranking
+-> Grounded answer generation
+-> OpenAI or local Llama model call
+```
+
+Large DataFrames, embedding arrays, and retrieval candidate lists are summarized
+before tracing. Prompts, user queries, and retrieved evidence may still be sent
+to LangSmith, so do not enable tracing for sensitive data.
+
+Run a small router trace and print its LangSmith trace ID:
+
+```powershell
+python src\langsmith_trace_test.py
+```
+
+The dashboard's `toolTrace` is a short route summary for users. LangSmith is the
+actual nested execution trace used for debugging and evaluation. MLflow remains
+responsible for aggregate experiment metrics and saved pipeline artifacts.
 
 ## Important Outputs
 
@@ -271,6 +385,9 @@ generation.
 | `data/processed/strategy_evidence.csv` | Evidence used for strategy recommendations |
 | `data/processed/strategy_rag_results.csv` | Product strategy RAG results |
 | `data/processed/agent_router_results.csv` | Agent routing test outputs |
+| `data/processed/deepeval_rag_detailed.csv` | Per-query DeepEval scores and explanations |
+| `data/processed/deepeval_rag_summary.csv` | Average DeepEval scores and pass rates |
+| `data/processed/deepeval_rag_report.txt` | Terminal-style DeepEval report |
 
 ## Method Summary
 

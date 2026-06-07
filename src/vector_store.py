@@ -5,6 +5,9 @@ from pathlib import Path
 import chromadb
 import numpy as np
 from chromadb.errors import NotFoundError
+from langsmith import traceable
+
+from tracing_utils import sanitize_trace_inputs, sanitize_trace_outputs
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -122,6 +125,13 @@ def load_or_create_collection(collection_name, texts, embeddings, metadatas):
     return collection
 
 
+@traceable(
+    name="ChromaDB Vector Search",
+    run_type="retriever",
+    tags=["chromadb", "semantic-retrieval"],
+    process_inputs=sanitize_trace_inputs,
+    process_outputs=sanitize_trace_outputs,
+)
 def query_collection(collection, query_embedding, candidate_count):
     if collection.count() == 0:
         return [], []

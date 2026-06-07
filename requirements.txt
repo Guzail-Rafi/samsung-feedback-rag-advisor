@@ -1,11 +1,15 @@
 chromadb
+deepeval
 google-api-python-client
 langdetect
 langchain
+langchain-ollama
 langchain-openai
+langsmith
 mlflow
 numpy
 openai
+ollama
 pandas
 pyspellchecker
 python-dotenv

@@ -6,6 +6,7 @@ __pycache__/
 *.py[cod]
 
 mlruns/
+.deepeval/
 data/vector_db/
 tempCodeRunnerFile.py
 

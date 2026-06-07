@@ -46,6 +46,9 @@ SUMMARY_TERMS = [
 SENTIMENT_TERMS = [
     "sentiment", "sentiment distribution", "emotion distribution",
     "positive percentage", "negative percentage", "neutral percentage",
+    "percentage of comments are positive",
+    "percentage of comments are negative",
+    "percentage of comments are neutral",
     "how many positive", "how many negative", "how many neutral",
 ]
 
@@ -92,7 +95,10 @@ def route_intent_rules(user_query):
                 "normalized_query": user_query,
                 "confidence": 1.0,
                 "routing_method": "deterministic_fallback",
+                "router_provider": "deterministic_rules",
                 "router_model": None,
+                "router_fallback_used": False,
+                "router_fallback_reason": None,
             }
 
     return {
@@ -102,7 +108,10 @@ def route_intent_rules(user_query):
         "normalized_query": user_query,
         "confidence": 0.5,
         "routing_method": "deterministic_fallback",
+        "router_provider": "deterministic_rules",
         "router_model": None,
+        "router_fallback_used": False,
+        "router_fallback_reason": None,
     }
 
 
@@ -126,6 +135,9 @@ def route_intent(user_query, use_llm=True):
             f"{fallback['reason']}"
         )
         fallback["routing_method"] = "deterministic_fallback_after_llm_error"
+        fallback["router_provider"] = "deterministic_rules"
+        fallback["router_fallback_used"] = True
+        fallback["router_fallback_reason"] = error.__class__.__name__
         return fallback
 
 
@@ -293,8 +305,8 @@ def keyword_agent(query):
 def rag_qa_agent(query):
     """
     For now, this reads already generated RAG answers.
-    If query is not found exactly, it asks OpenAI to produce a short fallback answer
-    from the closest existing RAG answer.
+    If query is not found exactly, it asks the configured LLM provider to
+    produce a short fallback answer from the closest existing RAG answer.
     """
 
     answers = pd.read_csv(RAG_ANSWERS_PATH)

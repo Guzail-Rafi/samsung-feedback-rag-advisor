@@ -2,7 +2,11 @@ import os
 import pandas as pd
 import mlflow
 
-from openai_client import get_openai_model
+from openai_client import (
+    get_llama_model,
+    get_openai_model,
+    llama_fallback_enabled,
+)
 
 
 # =========================
@@ -89,8 +93,11 @@ def main():
         mlflow.log_param("data_source", "YouTube Data API")
         mlflow.log_param("project_topic", "Samsung Galaxy User Feedback Analysis")
         mlflow.log_param("embedding_model", "all-MiniLM-L6-v2")
-        mlflow.log_param("llm_provider", "OpenAI")
-        mlflow.log_param("llm_model", get_openai_model())
+        mlflow.log_param("llm_primary_provider", "openai")
+        mlflow.log_param("openai_model", get_openai_model())
+        mlflow.log_param("llm_fallback_enabled", llama_fallback_enabled())
+        mlflow.log_param("llm_fallback_provider", "ollama")
+        mlflow.log_param("llm_fallback_model", get_llama_model())
         mlflow.log_param("reranker_model", "BAAI/bge-reranker-base")
         mlflow.log_param("rag_top_k", 5)
 

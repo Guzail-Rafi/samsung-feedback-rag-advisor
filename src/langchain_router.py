@@ -1,10 +1,20 @@
 from typing import Literal
 
 from langchain_core.prompts import ChatPromptTemplate
+from langchain_ollama import ChatOllama
 from langchain_openai import ChatOpenAI
+from langsmith import traceable
 from pydantic import BaseModel, Field
 
-from openai_client import get_openai_model
+from openai_client import (
+    fallback_reason,
+    get_llama_model,
+    get_ollama_base_url,
+    get_openai_model,
+    is_openai_fallback_error,
+    llama_fallback_enabled,
+)
+from tracing_utils import sanitize_trace_inputs, sanitize_trace_outputs
 
 
 AgentName = Literal[
@@ -89,13 +99,14 @@ ROUTER_PROMPT = ChatPromptTemplate.from_messages(
     ]
 )
 
-_ROUTER_CHAIN = None
+_OPENAI_ROUTER_CHAIN = None
+_LLAMA_ROUTER_CHAIN = None
 
 
-def get_router_chain():
-    global _ROUTER_CHAIN
+def get_openai_router_chain():
+    global _OPENAI_ROUTER_CHAIN
 
-    if _ROUTER_CHAIN is None:
+    if _OPENAI_ROUTER_CHAIN is None:
         model = ChatOpenAI(
             model=get_openai_model(),
             temperature=0,
@@ -109,15 +120,75 @@ def get_router_chain():
             RoutingDecision,
             method="json_schema",
         )
-        _ROUTER_CHAIN = ROUTER_PROMPT | structured_model
+        _OPENAI_ROUTER_CHAIN = ROUTER_PROMPT | structured_model
 
-    return _ROUTER_CHAIN
+    return _OPENAI_ROUTER_CHAIN
 
 
-def route_with_langchain(user_query):
-    decision = get_router_chain().invoke({"user_query": user_query})
-    result = decision.model_dump()
-    result["routing_method"] = "langchain_llm"
-    result["router_model"] = get_openai_model()
+def get_llama_router_chain():
+    global _LLAMA_ROUTER_CHAIN
+
+    if _LLAMA_ROUTER_CHAIN is None:
+        model = ChatOllama(
+            model=get_llama_model(),
+            base_url=get_ollama_base_url(),
+            temperature=0,
+            num_ctx=8192,
+            num_predict=300,
+            keep_alive="10m",
+        )
+        structured_model = model.with_structured_output(
+            RoutingDecision,
+            method="json_schema",
+        )
+        _LLAMA_ROUTER_CHAIN = ROUTER_PROMPT | structured_model
+
+    return _LLAMA_ROUTER_CHAIN
+
+
+def format_routing_result(decision, method, provider, model, fallback_used=False, reason=None):
+    if isinstance(decision, RoutingDecision):
+        result = decision.model_dump()
+    else:
+        result = RoutingDecision.model_validate(decision).model_dump()
+
+    result["routing_method"] = method
+    result["router_provider"] = provider
+    result["router_model"] = model
+    result["router_fallback_used"] = fallback_used
+    result["router_fallback_reason"] = reason
     result["matched_terms"] = []
     return result
+
+
+@traceable(
+    name="LangChain Semantic Router",
+    run_type="chain",
+    tags=["router", "langchain", "structured-output"],
+    process_inputs=sanitize_trace_inputs,
+    process_outputs=sanitize_trace_outputs,
+)
+def route_with_langchain(user_query):
+    try:
+        decision = get_openai_router_chain().invoke({"user_query": user_query})
+        return format_routing_result(
+            decision,
+            "langchain_openai",
+            "openai",
+            get_openai_model(),
+        )
+    except Exception as error:
+        if not llama_fallback_enabled() or not is_openai_fallback_error(error):
+            raise
+
+        decision = get_llama_router_chain().invoke({"user_query": user_query})
+        result = format_routing_result(
+            decision,
+            "langchain_ollama_fallback",
+            "ollama",
+            get_llama_model(),
+            fallback_used=True,
+            reason=fallback_reason(error),
+        )
+        result["normalized_query"] = user_query
+        return result

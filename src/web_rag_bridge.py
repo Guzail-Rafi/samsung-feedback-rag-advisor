@@ -3,8 +3,17 @@ import json
 import os
 import sys
 from pathlib import Path
+from uuid import uuid4
 
 import pandas as pd
+from langsmith import traceable
+
+from tracing_utils import (
+    sanitize_trace_inputs,
+    sanitize_trace_outputs,
+    tracing_enabled,
+    tracing_status,
+)
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -42,6 +51,13 @@ def get_model_name():
         from openai_client import get_openai_model
 
         return get_openai_model()
+
+
+def get_generation_metadata():
+    with contextlib.redirect_stdout(sys.stderr):
+        from openai_client import get_last_llm_metadata
+
+        return get_last_llm_metadata()
 
 
 def normalize_messages(messages):
@@ -98,6 +114,13 @@ def build_memory_query(query, messages):
     return f"{query}\nRecent conversation context: {recent_user_context}"
 
 
+@traceable(
+    name="Generate Grounded Feedback Answer",
+    run_type="chain",
+    tags=["feedback-rag", "generation"],
+    process_inputs=sanitize_trace_inputs,
+    process_outputs=sanitize_trace_outputs,
+)
 def generate_feedback_answer(query, retrieval_query, evidence_text, confidence, history_text):
     with contextlib.redirect_stdout(sys.stderr):
         from openai_client import generate_chat_response, get_openai_client
@@ -152,6 +175,13 @@ Write:
     )
 
 
+@traceable(
+    name="Generate Grounded Strategy Answer",
+    run_type="chain",
+    tags=["strategy-rag", "generation"],
+    process_inputs=sanitize_trace_inputs,
+    process_outputs=sanitize_trace_outputs,
+)
 def generate_strategy_answer_with_memory(query, retrieval_query, goal, evidence_text, history_text):
     with contextlib.redirect_stdout(sys.stderr):
         from openai_client import generate_chat_response, get_openai_client
@@ -247,6 +277,13 @@ def strategy_evidence_rows(results):
     return rows
 
 
+@traceable(
+    name="Run Analytical Agent",
+    run_type="tool",
+    tags=["analytical-agent"],
+    process_inputs=sanitize_trace_inputs,
+    process_outputs=sanitize_trace_outputs,
+)
 def run_analytical_tool(agent_name, query, retrieval_query, history_text):
     with contextlib.redirect_stdout(sys.stderr):
         from agent_router import (
@@ -297,6 +334,13 @@ def run_analytical_tool(agent_name, query, retrieval_query, history_text):
     }
 
 
+@traceable(
+    name="Feedback RAG Agent",
+    run_type="chain",
+    tags=["feedback-rag", "agent"],
+    process_inputs=sanitize_trace_inputs,
+    process_outputs=sanitize_trace_outputs,
+)
 def run_feedback_rag(query, retrieval_query, history_text):
     with contextlib.redirect_stdout(sys.stderr):
         from rag_answer_generator import (
@@ -330,11 +374,13 @@ def run_feedback_rag(query, retrieval_query, history_text):
         evidence_text = format_evidence(results)
 
     answer = generate_feedback_answer(query, retrieval_query, evidence_text, confidence, history_text)
+    llm_metadata = get_generation_metadata()
 
     return {
         "mode": "feedback_rag",
         "selectedAgent": "feedback_rag_agent",
         "answer": answer,
+        "llm": llm_metadata,
         "confidence": confidence,
         "contextualQuery": retrieval_query,
         "memoryUsed": history_text != "No prior conversation.",
@@ -350,6 +396,13 @@ def run_feedback_rag(query, retrieval_query, history_text):
     }
 
 
+@traceable(
+    name="Strategy RAG Agent",
+    run_type="chain",
+    tags=["strategy-rag", "agent"],
+    process_inputs=sanitize_trace_inputs,
+    process_outputs=sanitize_trace_outputs,
+)
 def run_strategy_rag_live(query, retrieval_query, history_text):
     with contextlib.redirect_stdout(sys.stderr):
         from strategy_rag import (
@@ -380,11 +433,13 @@ def run_strategy_rag_live(query, retrieval_query, history_text):
         evidence_text = format_strategy_evidence(results)
 
     answer = generate_strategy_answer_with_memory(query, retrieval_query, goal, evidence_text, history_text)
+    llm_metadata = get_generation_metadata()
 
     return {
         "mode": "strategy_rag",
         "selectedAgent": "strategy_rag_agent",
         "answer": answer,
+        "llm": llm_metadata,
         "strategyGoal": goal,
         "contextualQuery": retrieval_query,
         "memoryUsed": history_text != "No prior conversation.",
@@ -401,8 +456,14 @@ def run_strategy_rag_live(query, retrieval_query, history_text):
     }
 
 
-def main():
-    payload = json.loads(sys.stdin.read() or "{}")
+@traceable(
+    name="YouTube Intelligence Advisor Request",
+    run_type="chain",
+    tags=["advisor", "multi-agent-rag"],
+    process_inputs=sanitize_trace_inputs,
+    process_outputs=sanitize_trace_outputs,
+)
+def run_advisor(payload):
     query = clean_value(payload.get("message")).strip()
     messages = normalize_messages(payload.get("messages", []))
 
@@ -428,17 +489,46 @@ def main():
         result = run_analytical_tool(selected_agent, query, routed_query, history_text)
 
     if selected_agent in {"feedback_rag_agent", "strategy_rag_agent"}:
-        result["model"] = get_model_name()
+        llm_metadata = result.get("llm", {})
+        result["model"] = llm_metadata.get("model") or get_model_name()
+        result["llmProvider"] = llm_metadata.get("provider")
+        result["llmFallbackUsed"] = llm_metadata.get("fallback_used", False)
+        result["llmFallbackReason"] = llm_metadata.get("fallback_reason")
 
     result["routingReason"] = routing["reason"]
     result["matchedTerms"] = routing["matched_terms"]
     result["routingConfidence"] = routing["confidence"]
     result["routingMethod"] = routing["routing_method"]
     result["routerModel"] = routing["router_model"]
+    result["routerProvider"] = routing.get("router_provider")
+    result["routerFallbackUsed"] = routing.get("router_fallback_used", False)
+    result["routerFallbackReason"] = routing.get("router_fallback_reason")
     result["normalizedQuery"] = routed_query
     result["toolTrace"] = [routing["routing_method"], selected_agent]
     result["availableTools"] = AVAILABLE_AGENTS
     result["query"] = query
+    result["langsmithTracing"] = tracing_status()
+
+    return result
+
+
+def main():
+    payload = json.loads(sys.stdin.read() or "{}")
+    trace_id = uuid4()
+    result = run_advisor(
+        payload,
+        langsmith_extra={
+            "run_id": trace_id,
+            "metadata": {
+                "source": "live_advisor",
+                "message_count": len(payload.get("messages", [])),
+            },
+            "tags": ["live-advisor-request"],
+        },
+    )
+
+    if tracing_enabled():
+        result["langsmithTraceId"] = str(trace_id)
 
     print(json.dumps(result, ensure_ascii=False))
 

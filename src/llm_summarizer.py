@@ -64,7 +64,7 @@ def sample_comments(df, n=40):
 
 def generate_summary(title, comments_text):
     """
-    Sends selected comments to OpenAI and generates an academic summary.
+    Sends selected comments to the configured LLM and generates an academic summary.
     """
 
     if not comments_text.strip():

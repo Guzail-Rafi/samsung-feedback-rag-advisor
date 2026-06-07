@@ -71,7 +71,7 @@ def build_summary(results):
             avg_confidence=("confidence", "mean"),
             fallback_count=(
                 "routing_method",
-                lambda values: sum("after_llm_error" in value for value in values),
+                lambda values: sum("fallback" in value for value in values),
             ),
         )
         .round(4)
@@ -129,7 +129,7 @@ def build_report(results, summary):
         "",
         "Interpretation:",
         "- The LLM router improves semantic understanding of paraphrases and ambiguous wording.",
-        "- The deterministic fallback preserves availability if the LangChain/OpenAI call fails.",
+        "- Local Llama preserves LLM routing when OpenAI fails; deterministic rules remain the final fallback.",
         "- The accuracy improvement must be considered against added API latency and cost.",
         "",
         "Generated artifacts:",

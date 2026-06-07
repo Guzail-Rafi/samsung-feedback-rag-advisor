@@ -4,6 +4,7 @@ import hashlib
 import pandas as pd
 import numpy as np
 from dotenv import load_dotenv
+from langsmith import traceable
 from openai_client import generate_chat_response, get_openai_client
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -13,6 +14,7 @@ from vector_store import (
     load_or_create_collection,
     query_collection,
 )
+from tracing_utils import sanitize_trace_inputs, sanitize_trace_outputs
 
 
 # =========================
@@ -139,6 +141,13 @@ def goal_relevance_score(goal, row):
     return min(score, 1.0)
 
 
+@traceable(
+    name="Strategy Hybrid Retrieval and Reranking",
+    run_type="retriever",
+    tags=["strategy-rag", "hybrid-retrieval", "reranking"],
+    process_inputs=sanitize_trace_inputs,
+    process_outputs=sanitize_trace_outputs,
+)
 def retrieve_strategy_evidence(
     query,
     goal,
