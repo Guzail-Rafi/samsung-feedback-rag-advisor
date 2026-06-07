@@ -1,0 +1,3 @@
+﻿rag_system,before_configuration,after_configuration,precision_at_5_before,precision_at_5_after,precision_at_5_delta,ndcg_at_5_before,ndcg_at_5_after,ndcg_at_5_delta,latency_ms_before,latency_ms_after,latency_ms_delta
+feedback_rag,hybrid_full,hybrid_plus_bge_reranker,1.0,0.9667,-0.0333,1.0,0.9643,-0.0357,49.6217,5821.0967,5771.48
+strategy_rag,strategy_hybrid_full,strategy_hybrid_plus_bge_reranker,0.72,0.68,-0.04,0.8,0.7302,-0.0698,52.672,9372.486,9319.81

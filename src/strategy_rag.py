@@ -7,6 +7,12 @@ from dotenv import load_dotenv
 from openai_client import generate_chat_response, get_openai_client
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+from vector_store import (
+    STRATEGY_COLLECTION,
+    dataframe_metadata,
+    load_or_create_collection,
+    query_collection,
+)
 
 
 # =========================
@@ -70,6 +76,24 @@ def load_or_create_embeddings(texts):
     return embeddings
 
 
+def load_or_create_strategy_vector_store(df, embeddings):
+    metadata_columns = [
+        "issue_category",
+        "sentiment_label",
+        "goal_relevance",
+        "priority",
+        "business_impact",
+        "engagement_total",
+    ]
+
+    return load_or_create_collection(
+        collection_name=STRATEGY_COLLECTION,
+        texts=df["strategy_text"].tolist(),
+        embeddings=embeddings,
+        metadatas=dataframe_metadata(df, metadata_columns),
+    )
+
+
 def detect_strategy_goal(query):
     query = query.lower()
 
@@ -115,12 +139,29 @@ def goal_relevance_score(goal, row):
     return min(score, 1.0)
 
 
-def retrieve_strategy_evidence(query, goal, df, embeddings, top_k=12):
+def retrieve_strategy_evidence(
+    query,
+    goal,
+    df,
+    embeddings=None,
+    top_k=12,
+    vector_collection=None,
+    candidate_count=900,
+):
     query_embedding = embedding_model.encode([query])
-    similarities = cosine_similarity(query_embedding, embeddings)[0]
 
-    df = df.copy()
-    df["strategy_similarity_score"] = similarities
+    if vector_collection is not None:
+        row_indices, similarities = query_collection(
+            vector_collection,
+            query_embedding,
+            candidate_count,
+        )
+        df = df.iloc[row_indices].copy()
+        df["strategy_similarity_score"] = similarities
+    else:
+        similarities = cosine_similarity(query_embedding, embeddings)[0]
+        df = df.copy()
+        df["strategy_similarity_score"] = similarities
 
     df["engagement_score"] = np.log1p(df["engagement_total"].fillna(0).astype(float))
 
@@ -227,7 +268,7 @@ Write:
     )
 
 
-def run_strategy_rag(query, df, embeddings):
+def run_strategy_rag(query, df, embeddings, vector_collection=None):
     goal = detect_strategy_goal(query)
 
     results = retrieve_strategy_evidence(
@@ -235,7 +276,8 @@ def run_strategy_rag(query, df, embeddings):
         goal=goal,
         df=df,
         embeddings=embeddings,
-        top_k=12
+        top_k=12,
+        vector_collection=vector_collection,
     )
 
     evidence_text = format_strategy_evidence(results)
@@ -314,7 +356,7 @@ Write:
         max_completion_tokens=900,
     )
 
-def test_strategy_refinement(query, user_feedback, df, embeddings):
+def test_strategy_refinement(query, user_feedback, df, embeddings, vector_collection=None):
     goal = detect_strategy_goal(query)
 
     results = retrieve_strategy_evidence(
@@ -322,7 +364,8 @@ def test_strategy_refinement(query, user_feedback, df, embeddings):
         goal=goal,
         df=df,
         embeddings=embeddings,
-        top_k=12
+        top_k=12,
+        vector_collection=vector_collection,
     )
 
     evidence_text = format_strategy_evidence(results)
@@ -361,6 +404,7 @@ def main():
     print("Total strategy evidence rows:", len(df))
 
     embeddings = load_or_create_embeddings(df["strategy_text"].tolist())
+    vector_collection = load_or_create_strategy_vector_store(df, embeddings)
 
     strategy_queries = [
         "How should Samsung design the S27 Ultra for maximum customer satisfaction?",
@@ -377,7 +421,7 @@ def main():
         print("Strategy Query:", query)
         print("====================================")
 
-        result = run_strategy_rag(query, df, embeddings)
+        result = run_strategy_rag(query, df, embeddings, vector_collection)
 
         print("Detected Goal:", result["strategy_goal"])
         print("Answer:")
@@ -424,7 +468,8 @@ def main():
             query=test["query"],
             user_feedback=test["user_feedback"],
             df=df,
-            embeddings=embeddings
+            embeddings=embeddings,
+            vector_collection=vector_collection,
         )
 
         print("Refined Answer:")

@@ -14,7 +14,17 @@ type ChatMessage = {
   strategyGoal?: string;
   contextualQuery?: string;
   memoryUsed?: boolean;
+  routingReason?: string;
+  matchedTerms?: string[];
+  toolTrace?: string[];
+  availableTools?: string[];
+  routingConfidence?: number;
+  routingMethod?: string;
+  routerModel?: string;
+  normalizedQuery?: string;
   retrieval?: {
+    vector_store?: string;
+    collection?: string;
     embedding_model?: string;
     top_k?: number;
     score?: number;
@@ -32,10 +42,13 @@ type ChatMessage = {
 };
 
 const starterPrompts = [
-  "How should Samsung design the S27 Ultra?",
+  "Give me an overall summary of Samsung feedback.",
+  "What is the sentiment distribution?",
+  "What are the main complaint categories?",
+  "What are the top discussion topics?",
+  "What are the top keywords?",
   "Why are users unhappy about the S-Pen?",
-  "What should Phase 1 include?",
-  "Are users comparing Samsung with Apple?",
+  "How should Samsung design the S27 Ultra?",
 ];
 
 const CHAT_STORAGE_KEY = "galaxy-insight-rag-chat";
@@ -43,8 +56,17 @@ const initialMessages: ChatMessage[] = [
   {
     role: "assistant",
     content:
-      "Ask me about product strategy, customer complaints, or S27 Ultra roadmap decisions. I will remember recent turns, retrieve top-k evidence, then generate an answer only from that evidence.",
-    sources: ["comments_with_ner.csv", "strategy_evidence.csv", "cached embeddings"],
+      "Ask me for summaries, sentiment, issues, topics, keywords, feedback evidence, or product strategy. A live router will select the appropriate specialist tool for each request.",
+    sources: ["Live analytical tools", "ChromaDB feedback RAG", "ChromaDB strategy RAG"],
+    availableTools: [
+      "summarization_agent",
+      "sentiment_agent",
+      "issue_agent",
+      "topic_agent",
+      "keyword_agent",
+      "feedback_rag_agent",
+      "strategy_rag_agent",
+    ],
   },
 ];
 
@@ -184,6 +206,11 @@ export function AdvisorChat() {
     return lastAssistant?.sources ?? [];
   }, [messages]);
 
+  const latestTools = useMemo(() => {
+    const lastAssistant = [...messages].reverse().find((message) => message.role === "assistant");
+    return lastAssistant?.availableTools ?? [];
+  }, [messages]);
+
   useEffect(() => {
     try {
       const storedMessages = window.localStorage.getItem(CHAT_STORAGE_KEY);
@@ -246,6 +273,14 @@ export function AdvisorChat() {
           strategyGoal: data.strategyGoal,
           contextualQuery: data.contextualQuery,
           memoryUsed: data.memoryUsed,
+          routingReason: data.routingReason,
+          matchedTerms: data.matchedTerms,
+          toolTrace: data.toolTrace,
+          availableTools: data.availableTools,
+          routingConfidence: data.routingConfidence,
+          routingMethod: data.routingMethod,
+          routerModel: data.routerModel,
+          normalizedQuery: data.normalizedQuery,
           retrieval: data.retrieval,
           evidence: data.evidence,
         },
@@ -286,8 +321,8 @@ export function AdvisorChat() {
               <Bot className="h-4 w-4" />
             </span>
             <div>
-              <div className="text-sm font-semibold text-slate-950">Strategy Advisor</div>
-              <div className="text-xs text-slate-500">Conversation memory + live RAG retrieval</div>
+              <div className="text-sm font-semibold text-slate-950">YouTube Intelligence Advisor</div>
+              <div className="text-xs text-slate-500">Live multi-agent orchestration + RAG retrieval</div>
             </div>
           </div>
           <span className="rounded-md bg-emerald-50 px-2 py-1 text-xs font-medium text-emerald-700 ring-1 ring-emerald-200">
@@ -329,10 +364,38 @@ export function AdvisorChat() {
                         ))}
                     </div>
                   )}
+                  {assistant && message.routingReason && (
+                    <div className="mt-3 rounded-lg bg-white p-3 text-xs text-slate-600 ring-1 ring-slate-200">
+                      <div className="font-semibold text-slate-900">Routing decision</div>
+                      <p className="mt-2">{message.routingReason}</p>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        {message.routingMethod && <span>Method: {message.routingMethod}</span>}
+                        {message.routerModel && <span>Router model: {message.routerModel}</span>}
+                        {message.routingConfidence !== undefined && (
+                          <span>Confidence: {Math.round(message.routingConfidence * 100)}%</span>
+                        )}
+                      </div>
+                      {message.toolTrace && message.toolTrace.length > 0 && (
+                        <div className="mt-2 font-mono text-[11px] text-[#1428A0]">
+                          {message.toolTrace.join(" -> ")}
+                        </div>
+                      )}
+                      {message.matchedTerms && message.matchedTerms.length > 0 && (
+                        <div className="mt-2">Matched: {message.matchedTerms.join(", ")}</div>
+                      )}
+                      {message.normalizedQuery && (
+                        <div className="mt-2 rounded-md bg-slate-50 px-2 py-1 text-slate-500 ring-1 ring-slate-200">
+                          Normalized query: {message.normalizedQuery}
+                        </div>
+                      )}
+                    </div>
+                  )}
                   {assistant && message.retrieval && (
                     <div className="mt-3 rounded-lg bg-white p-3 text-xs text-slate-600 ring-1 ring-slate-200">
                       <div className="font-semibold text-slate-900">RAG retrieval</div>
-                      <div className="mt-2 grid gap-2 sm:grid-cols-3">
+                      <div className="mt-2 grid gap-2 sm:grid-cols-2 xl:grid-cols-5">
+                        <span>Store: {message.retrieval.vector_store}</span>
+                        <span>Collection: {message.retrieval.collection}</span>
                         <span>Model: {message.retrieval.embedding_model}</span>
                         <span>Top-k: {message.retrieval.top_k}</span>
                         <span>Avg score: {message.retrieval.score}</span>
@@ -394,7 +457,7 @@ export function AdvisorChat() {
               value={input}
               onChange={(event) => setInput(event.target.value)}
               rows={2}
-              placeholder="Ask a strategy or customer feedback question"
+              placeholder="Ask for analytics, feedback evidence, or product strategy"
               disabled={isSending}
               className="min-h-12 flex-1 resize-none rounded-lg border border-slate-200 bg-white px-3 py-3 text-sm outline-none transition placeholder:text-slate-400 focus:border-[#1428A0] focus:ring-4 focus:ring-[#1428A0]/10"
             />
@@ -445,6 +508,17 @@ export function AdvisorChat() {
               >
                 {prompt}
               </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
+          <div className="text-sm font-semibold text-slate-950">Live specialist tools</div>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {latestTools.map((tool) => (
+              <span key={tool} className="rounded-md bg-[#F4F7FF] px-2 py-1 text-xs text-[#1428A0] ring-1 ring-[#D9E2FF]">
+                {tool}
+              </span>
             ))}
           </div>
         </section>

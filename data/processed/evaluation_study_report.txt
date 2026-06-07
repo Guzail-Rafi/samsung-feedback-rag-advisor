@@ -1,0 +1,93 @@
+==============================================================================
+RAG ABLATION AND MULTI-AGENT ROUTING EVALUATION
+==============================================================================
+
+Methodology note:
+- All retrieval configurations use the same top-200 ChromaDB candidate pool.
+- Relevance labels are independent rule-based qrels, not retrieval or BGE scores.
+- The qrels are reproducible automated judgments; manual annotation is recommended for final validation.
+- BGE reranks the top 20 hybrid candidates.
+- Candidate Recall@5 is recall relative to relevant documents in the candidate pool.
+
+1. Feedback RAG retrieval ablation
+            configuration  precision_at_5  candidate_recall_at_5  mrr_at_5  ndcg_at_5  avg_latency_ms
+              hybrid_full          1.0000                 0.0404    1.0000     1.0000         49.6217
+ hybrid_plus_bge_reranker          0.9667                 0.0379    1.0000     0.9643       5821.0967
+  hybrid_without_category          1.0000                 0.0404    1.0000     1.0000         49.3517
+hybrid_without_engagement          1.0000                 0.0404    1.0000     1.0000         49.6250
+   hybrid_without_lexical          0.9000                 0.0338    1.0000     0.9142         49.4183
+ hybrid_without_sentiment          1.0000                 0.0404    1.0000     1.0000         49.6183
+            semantic_only          0.7667                 0.0274    0.9167     0.7807         49.3733
+
+2. Strategy RAG retrieval ablation
+                    configuration  precision_at_5  candidate_recall_at_5  mrr_at_5  ndcg_at_5  avg_latency_ms
+                    semantic_only            0.20                 0.0212    0.2500     0.1779          52.134
+             strategy_hybrid_full            0.72                 0.2602    0.8000     0.8000          52.672
+strategy_hybrid_plus_bge_reranker            0.68                 0.1936    0.8000     0.7302        9372.486
+      strategy_without_engagement            0.72                 0.2602    0.8000     0.8000          52.168
+            strategy_without_goal            0.32                 0.0337    0.3667     0.3059          52.336
+        strategy_without_priority            0.76                 0.2656    0.7667     0.7665          52.282
+
+3. Feedback RAG versus Strategy RAG
+These systems are evaluated separately because they use different corpora and objectives.
+  rag_system                     configuration  precision_at_5  candidate_recall_at_5  mrr_at_5  ndcg_at_5  avg_latency_ms
+feedback_rag                       hybrid_full          1.0000                 0.0404       1.0     1.0000         49.6217
+feedback_rag          hybrid_plus_bge_reranker          0.9667                 0.0379       1.0     0.9643       5821.0967
+strategy_rag              strategy_hybrid_full          0.7200                 0.2602       0.8     0.8000         52.6720
+strategy_rag strategy_hybrid_plus_bge_reranker          0.6800                 0.1936       0.8     0.7302       9372.4860
+
+4. Before versus after BGE reranking
+  rag_system  precision_at_5_before  precision_at_5_after  precision_at_5_delta  ndcg_at_5_delta  latency_ms_delta
+feedback_rag                   1.00                0.9667               -0.0333          -0.0357           5771.48
+strategy_rag                   0.72                0.6800               -0.0400          -0.0698           9319.81
+
+5. Multi-agent routing evaluation
+Routing accuracy: 100.0% (35/35)
+
+              agent  support  precision  recall  f1_score
+summarization_agent        5        1.0     1.0       1.0
+    sentiment_agent        5        1.0     1.0       1.0
+        issue_agent        5        1.0     1.0       1.0
+        topic_agent        5        1.0     1.0       1.0
+      keyword_agent        5        1.0     1.0       1.0
+ feedback_rag_agent        5        1.0     1.0       1.0
+ strategy_rag_agent        5        1.0     1.0       1.0
+
+Correct routing examples:
+                                          query      expected_agent      selected_agent
+Give me an overall summary of Samsung feedback. summarization_agent summarization_agent
+                   Summarize negative feedback. summarization_agent summarization_agent
+        Give me an overview of camera feedback. summarization_agent summarization_agent
+        Summarize what users say about battery. summarization_agent summarization_agent
+
+Incorrect or ambiguous routing examples:
+Empty DataFrame
+Columns: [query, expected_agent, selected_agent]
+Index: []
+
+6. Report-ready findings
+- Feedback RAG hybrid retrieval improved Precision@5 by 0.2333 and nDCG@5 by 0.2193 over semantic-only retrieval.
+- Removing lexical relevance reduced Feedback RAG Precision@5 by 0.1000, making lexical matching the clearest contributor in the tested feedback queries.
+- Strategy RAG hybrid retrieval improved Precision@5 by 0.5200 and nDCG@5 by 0.6221 over semantic-only retrieval.
+- Removing strategy-goal alignment reduced Precision@5 by 0.4000 and nDCG@5 by 0.4941, showing that goal alignment is the most important tested Strategy RAG component.
+- BGE reranking changed Feedback RAG Precision@5 by -0.0333 while adding 5771.48 ms average latency.
+- BGE reranking changed Strategy RAG Precision@5 by -0.0400 while adding 9319.81 ms average latency.
+- The evaluated multi-agent router achieved 100.0% accuracy.
+
+Interpretation guidance:
+- Higher Precision@5 and nDCG@5 indicate more relevant evidence near the top.
+- Ablations that reduce metrics identify components that contribute useful ranking signal.
+- BGE results show whether extra reranking quality justifies its additional latency.
+- Routing errors identify semantic or vocabulary gaps in the evaluated query router.
+- Automated qrels may favor explicit domain-term matches, so results should be discussed as an ablation study rather than final human relevance judgment.
+
+Generated artifacts:
+- data\processed\evaluation_feedback_ablation.csv
+- data\processed\evaluation_strategy_ablation.csv
+- data\processed\evaluation_rag_system_comparison.csv
+- data\processed\evaluation_ablation_impact.csv
+- data\processed\evaluation_bge_comparison.csv
+- data\processed\evaluation_routing_results.csv
+- data\processed\evaluation_routing_metrics.csv
+- data\processed\evaluation_routing_confusion_matrix.csv
+- data\processed\evaluation_study_report.txt

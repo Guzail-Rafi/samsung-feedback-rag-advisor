@@ -392,6 +392,7 @@ export const pipelineStages = [
   { stage: "Keyword extraction", output: "top_keywords_overall.csv", status: "Ready" },
   { stage: "Topic modeling", output: "topic_keywords.csv", status: "Ready" },
   { stage: "Named entities", output: "ner_entities.csv", status: "Ready" },
+  { stage: "Vector database", output: "data/vector_db/", status: "Ready" },
   { stage: "RAG answers", output: "rag_answers.csv", status: "Ready" },
   { stage: "Strategy RAG", output: "strategy_rag_results.csv", status: "Ready" },
   { stage: "Agent routing", output: "agent_router_results.csv", status: "Ready" },

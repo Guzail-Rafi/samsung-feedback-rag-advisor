@@ -8,6 +8,12 @@ from dotenv import load_dotenv
 from openai_client import generate_chat_response, get_openai_client
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+from vector_store import (
+    FEEDBACK_COLLECTION,
+    dataframe_metadata,
+    load_or_create_collection,
+    query_collection,
+)
 
 
 # =========================
@@ -186,6 +192,25 @@ def load_or_create_embeddings(texts):
     return comment_embeddings
 
 
+def load_or_create_feedback_vector_store(df, embeddings):
+    metadata_columns = [
+        "comment_id",
+        "sentiment_label",
+        "issue_category",
+        "topic_name",
+        "video_title",
+        "like_count",
+        "reply_count",
+    ]
+
+    return load_or_create_collection(
+        collection_name=FEEDBACK_COLLECTION,
+        texts=df["rag_text"].tolist(),
+        embeddings=embeddings,
+        metadatas=dataframe_metadata(df, metadata_columns),
+    )
+
+
 # =========================
 # 2. BUILD RAG TEXT
 # =========================
@@ -305,13 +330,29 @@ def calculate_intent_penalty(query, row, intent=None):
 # 4. RETRIEVE EVIDENCE
 # =========================
 
-def retrieve_comments(query, df, comment_embeddings, top_k=8):
+def retrieve_comments(
+    query,
+    df,
+    comment_embeddings=None,
+    top_k=8,
+    vector_collection=None,
+    candidate_count=700,
+):
     intent = infer_query_intent(query)
     query_embedding = embedding_model.encode([query])
-    similarities = cosine_similarity(query_embedding, comment_embeddings)[0]
 
-    df = df.copy()
-    df["similarity_score"] = similarities
+    if vector_collection is not None:
+        row_indices, similarities = query_collection(
+            vector_collection,
+            query_embedding,
+            candidate_count,
+        )
+        df = df.iloc[row_indices].copy()
+        df["similarity_score"] = similarities
+    else:
+        similarities = cosine_similarity(query_embedding, comment_embeddings)[0]
+        df = df.copy()
+        df["similarity_score"] = similarities
 
     df["engagement_score"] = np.log1p(
         df["like_count"].fillna(0).astype(float) +
@@ -467,6 +508,7 @@ def main():
     df["rag_text"] = df.apply(build_comment_text, axis=1)
 
     comment_embeddings = load_or_create_embeddings(df["rag_text"].tolist())
+    vector_collection = load_or_create_feedback_vector_store(df, comment_embeddings)
 
     test_queries = [
         "What are users saying about Samsung battery life?",
@@ -488,7 +530,8 @@ def main():
             query=query,
             df=df,
             comment_embeddings=comment_embeddings,
-            top_k=8
+            top_k=8,
+            vector_collection=vector_collection,
         )
 
         confidence = calculate_rag_confidence(results)

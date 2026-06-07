@@ -1,0 +1,31 @@
+﻿rag_system,configuration,query,candidate_pool_size,relevant_candidates,precision_at_5,candidate_recall_at_5,mrr_at_5,ndcg_at_5,latency_ms,avg_top_5_score
+strategy_rag,semantic_only,How should Samsung design the S27 Ultra for maximum customer satisfaction?,200,3,0.0,0.0,0.0,0.0,41.81,0.7386
+strategy_rag,strategy_hybrid_full,How should Samsung design the S27 Ultra for maximum customer satisfaction?,200,3,0.6,1.0,1.0,1.0,41.93,0.7473
+strategy_rag,strategy_without_goal,How should Samsung design the S27 Ultra for maximum customer satisfaction?,200,3,0.0,0.0,0.0,0.0,41.72,0.7493
+strategy_rag,strategy_without_priority,How should Samsung design the S27 Ultra for maximum customer satisfaction?,200,3,0.6,1.0,0.3333,0.6183,41.74,0.7189
+strategy_rag,strategy_without_engagement,How should Samsung design the S27 Ultra for maximum customer satisfaction?,200,3,0.6,1.0,1.0,1.0,41.78,0.8261
+strategy_rag,strategy_hybrid_plus_bge_reranker,How should Samsung design the S27 Ultra for maximum customer satisfaction?,200,3,0.4,0.6667,1.0,0.6508,6515.68,0.0086
+strategy_rag,semantic_only,How should Samsung design the S27 Ultra for maximum profit?,200,64,0.6,0.0469,0.5,0.5296,45.32,0.7023
+strategy_rag,strategy_hybrid_full,How should Samsung design the S27 Ultra for maximum profit?,200,64,1.0,0.0781,1.0,1.0,45.62,0.8089
+strategy_rag,strategy_without_goal,How should Samsung design the S27 Ultra for maximum profit?,200,64,0.6,0.0469,1.0,0.7227,45.67,0.7717
+strategy_rag,strategy_without_priority,How should Samsung design the S27 Ultra for maximum profit?,200,64,1.0,0.0781,1.0,1.0,45.76,0.7611
+strategy_rag,strategy_without_engagement,How should Samsung design the S27 Ultra for maximum profit?,200,64,1.0,0.0781,1.0,1.0,45.6,0.8486
+strategy_rag,strategy_hybrid_plus_bge_reranker,How should Samsung design the S27 Ultra for maximum profit?,200,64,1.0,0.0781,1.0,1.0,7054.33,0.018
+strategy_rag,semantic_only,What features should Samsung prioritize in the S27 Ultra?,200,81,0.0,0.0,0.0,0.0,54.28,0.6951
+strategy_rag,strategy_hybrid_full,What features should Samsung prioritize in the S27 Ultra?,200,81,1.0,0.0617,1.0,1.0,55.13,0.8096
+strategy_rag,strategy_without_goal,What features should Samsung prioritize in the S27 Ultra?,200,81,0.4,0.0247,0.3333,0.3156,54.66,0.7689
+strategy_rag,strategy_without_priority,What features should Samsung prioritize in the S27 Ultra?,200,81,1.0,0.0617,1.0,1.0,54.66,0.762
+strategy_rag,strategy_without_engagement,What features should Samsung prioritize in the S27 Ultra?,200,81,1.0,0.0617,1.0,1.0,54.55,0.8396
+strategy_rag,strategy_hybrid_plus_bge_reranker,What features should Samsung prioritize in the S27 Ultra?,200,81,1.0,0.0617,1.0,1.0,12879.81,0.6122
+strategy_rag,semantic_only,What product roadmap should Samsung follow for the next Ultra phone?,200,31,0.2,0.0323,0.5,0.214,62.43,0.7661
+strategy_rag,strategy_hybrid_full,What product roadmap should Samsung follow for the next Ultra phone?,200,31,1.0,0.1613,1.0,1.0,62.85,0.8051
+strategy_rag,strategy_without_goal,What product roadmap should Samsung follow for the next Ultra phone?,200,31,0.6,0.0968,0.5,0.4913,62.39,0.7724
+strategy_rag,strategy_without_priority,What product roadmap should Samsung follow for the next Ultra phone?,200,31,1.0,0.1613,1.0,1.0,62.31,0.7564
+strategy_rag,strategy_without_engagement,What product roadmap should Samsung follow for the next Ultra phone?,200,31,1.0,0.1613,1.0,1.0,61.94,0.8633
+strategy_rag,strategy_hybrid_plus_bge_reranker,What product roadmap should Samsung follow for the next Ultra phone?,200,31,1.0,0.1613,1.0,1.0,12662.34,0.9828
+strategy_rag,semantic_only,How can Samsung reduce customer complaints in the next flagship?,200,37,0.2,0.027,0.25,0.1461,56.83,0.7025
+strategy_rag,strategy_hybrid_full,How can Samsung reduce customer complaints in the next flagship?,200,37,0.0,0.0,0.0,0.0,57.83,0.7327
+strategy_rag,strategy_without_goal,How can Samsung reduce customer complaints in the next flagship?,200,37,0.0,0.0,0.0,0.0,57.24,0.7109
+strategy_rag,strategy_without_priority,How can Samsung reduce customer complaints in the next flagship?,200,37,0.2,0.027,0.5,0.214,56.94,0.7267
+strategy_rag,strategy_without_engagement,How can Samsung reduce customer complaints in the next flagship?,200,37,0.0,0.0,0.0,0.0,56.97,0.7887
+strategy_rag,strategy_hybrid_plus_bge_reranker,How can Samsung reduce customer complaints in the next flagship?,200,37,0.0,0.0,0.0,0.0,7750.27,0.0037

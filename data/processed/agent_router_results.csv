@@ -1,5 +1,5 @@
-﻿user_query,selected_agent,answer
-Give me an overall summary of Samsung feedback.,summarization_agent,"**1. Short overview**
+﻿user_query,selected_agent,routing_reason,matched_terms,normalized_query,routing_confidence,routing_method,router_model,answer
+Give me an overall summary of Samsung feedback.,summarization_agent,"The user explicitly requests an overall summary, which matches the summarization agent.",[],Give me an overall summary of Samsung feedback.,0.99,langchain_llm,gpt-5.4-mini,"**1. Short overview**
 The sampled comments suggest that Samsung users have mixed opinions about the company's products, with some expressing satisfaction and others criticizing certain features or decisions. The comments cover various topics, including comparisons between real and fake Samsung products, the removal of features like Bluetooth from the S-Pen, and the value for money of Samsung devices.
 
 **2. Main user concerns or opinions**
@@ -18,66 +18,66 @@ Key product issues mentioned include:
 
 **5. One report-ready insight**
 One key insight from the comments is that Samsung users value features and innovation, and the removal of features like Bluetooth from the S-Pen can be a significant disappointment for some users. This suggests that Samsung should prioritize feature retention and innovation to maintain customer satisfaction and loyalty."
-What is the sentiment distribution?,sentiment_agent,"Sentiment Analysis Result:
+What is the sentiment distribution?,sentiment_agent,"The user is asking for aggregate sentiment proportions/distribution, which is handled by the sentiment agent.",[],What is the sentiment distribution?,0.99,langchain_llm,gpt-5.4-mini,"Sentiment Analysis Result:
 
-- positive: 14769 comments (47.52%)
-- neutral: 8859 comments (28.5%)
-- negative: 7454 comments (23.98%)
+- positive: 6179 comments (46.98%)
+- neutral: 3770 comments (28.66%)
+- negative: 3204 comments (24.36%)
 
 Interpretation:
 This shows the overall emotional pattern in Samsung-related YouTube comments."
-What are the main complaints?,issue_agent,"Main Complaint Categories:
+What are the main complaints?,issue_agent,"The user is asking for aggregate complaint categories/main issues, which is an issue-frequency analysis task.",[],What are the main complaints?,0.99,langchain_llm,gpt-5.4-mini,"Main Complaint Categories:
 
-- AI / Gemini: 2212 comments (19.77%)
-- S-Pen / Features: 1830 comments (16.36%)
-- Design / Build: 1631 comments (14.58%)
-- Camera: 1325 comments (11.85%)
-- Price / Value: 1323 comments (11.83%)
-- Battery / Charging: 916 comments (8.19%)
-- Display / Screen: 613 comments (5.48%)
-- Software / One UI: 610 comments (5.45%)
-- Performance / Processor: 429 comments (3.84%)
-- Customer Support / Warranty: 297 comments (2.66%)
+- AI / Gemini: 943 comments (19.86%)
+- S-Pen / Features: 764 comments (16.09%)
+- Design / Build: 699 comments (14.72%)
+- Camera: 580 comments (12.21%)
+- Price / Value: 543 comments (11.43%)
+- Battery / Charging: 399 comments (8.4%)
+- Software / One UI: 269 comments (5.66%)
+- Display / Screen: 264 comments (5.56%)
+- Performance / Processor: 168 comments (3.54%)
+- Customer Support / Warranty: 120 comments (2.53%)
 
 Interpretation:
 These are the most common complaint-related categories after removing general, positive, and non-English comments. This gives a cleaner view of actual user concerns."
-What are the top discussion topics?,topic_agent,"Top Discussion Topics:
+What are the top discussion topics?,topic_agent,"The user is asking for broad discussion themes and aggregate topic results, which matches topic modeling rather than sentiment, issues, or evidence retrieval.",[],What are the top discussion topics?,0.99,langchain_llm,gpt-5.4-mini,"Top Discussion Topics:
 
-- Buying Decision / Value Discussion: 5043 comments
-- General Samsung / Apple Discussion: 5035 comments
-- Fake Products / Screen / Camera Concerns: 4183 comments
-- Upgrade Cycle / Yearly Phone Changes: 4162 comments
-- Galaxy Models / S23-S24-S25 Series: 3464 comments
-- S-Pen / Bluetooth Removal: 3145 comments
-- S25 vs S24 / iPhone Pro Max Comparison: 3050 comments
-- AI, Battery, Camera and Feature Discussion: 3000 comments
+- General Samsung / Apple Discussion: 2677 comments
+- Galaxy Models / S23-S24-S25 Series: 1718 comments
+- Fake Products / Screen / Camera Concerns: 1627 comments
+- AI, Battery, Camera and Feature Discussion: 1618 comments
+- Buying Decision / Value Discussion: 1540 comments
+- Upgrade Cycle / Yearly Phone Changes: 1464 comments
+- S25 vs S24 / iPhone Pro Max Comparison: 1382 comments
+- S-Pen / Bluetooth Removal: 1127 comments
 
 Interpretation:
 These topics were discovered using topic modeling and show the main discussion themes."
-What are the top keywords?,keyword_agent,"Top Keywords:
+What are the top keywords?,keyword_agent,"The user is explicitly asking for keywords, which is handled by the keyword_agent.",[],What are the top keywords?,0.99,langchain_llm,gpt-5.4-mini,"Top Keywords:
 
-- ai (595.49)
-- fake (571.53)
-- pen (553.11)
-- better (526.34)
-- buy (509.18)
-- year (481.7)
-- good (411.94)
-- best (387.08)
-- video (359.32)
-- camera (352.81)
-- watching (345.7)
-- years (341.82)
-- need (335.09)
-- upgrade (334.87)
-- features (328.07)
-- time (308.82)
-- real (303.07)
-- bluetooth (292.11)
-- think (290.94)
-- screen (285.75)
+- ai (247.83)
+- fake (247.57)
+- pen (239.87)
+- better (215.87)
+- buy (214.36)
+- year (197.57)
+- good (164.59)
+- best (161.92)
+- watching (155.14)
+- video (151.1)
+- camera (147.29)
+- years (145.35)
+- upgrade (144.76)
+- features (142.01)
+- time (137.7)
+- need (134.18)
+- real (124.05)
+- think (123.67)
+- battery (122.98)
+- bluetooth (122.39)
 "
-Why are users unhappy about the S-Pen?,rag_qa_agent,"**1. Direct Answer:**
+Why are users unhappy about the S-Pen?,feedback_rag_agent,"This asks for reasons behind user dissatisfaction about a specific product feature, which requires grounded evidence from feedback rather than aggregate sentiment or issue counts.",[],Why are users unhappy about the S-Pen?,0.98,langchain_llm,gpt-5.4-mini,"**1. Direct Answer:**
 Based on the retrieved comments, users are unhappy about the S-Pen because they feel that Samsung is removing its features, such as Bluetooth, and not inventing new ones, which makes them question the point of having an S-Pen. Some users are also concerned that the removal of S-Pen support in certain devices, like the Galaxy Z Fold7, is a sign that Samsung might completely remove the S-Pen in the future.
 
 **2. Key Evidence-Based Points:**
@@ -88,7 +88,7 @@ Based on the retrieved comments, users are unhappy about the S-Pen because they 
 
 **3. Confidence Explanation:**
 The evidence is strong, with 7 out of 8 comments expressing negative sentiments towards the S-Pen situation. The weighted scores of the comments are also relatively high, indicating a high level of confidence in the retrieved evidence. The only positive comment (Evidence 8) seems to be unrelated to the main concern about the S-Pen, which further supports the conclusion that users are unhappy with the current state of the S-Pen. Overall, the evidence suggests that users are disappointed with Samsung's handling of the S-Pen, and this sentiment is consistent across most of the retrieved comments."
-What are users saying about Samsung battery life?,rag_qa_agent,"**1. Direct Answer:**
+What are users saying about Samsung battery life?,feedback_rag_agent,"This asks for what users are saying and implies evidence/examples about a specific product aspect, which requires retrieved feedback rather than aggregate analytics.",[],What are users saying about Samsung battery life?,0.97,langchain_llm,gpt-5.4-mini,"**1. Direct Answer:**
 Based on the retrieved comments, users have mixed opinions about Samsung battery life. Some users express dissatisfaction with the battery life, stating it is ""abysmal"" and that they are still aiming for 1-day battery life after 10 years. In contrast, others find the battery life ""amazing"" and worth the investment.
 
 **2. Key Evidence-Based Points:**
@@ -99,7 +99,7 @@ Based on the retrieved comments, users have mixed opinions about Samsung battery
 
 **3. Confidence Explanation:**
 The confidence in this answer is high due to the RAG confidence rating. However, the evidence is mixed, with both positive and negative sentiments expressed about Samsung's battery life. While some users are extremely dissatisfied, others are very satisfied. The evidence suggests that opinions on Samsung battery life vary widely among users, and there is no clear consensus. The weighted scores of the comments are relatively close, indicating a diverse range of opinions. Therefore, the answer reflects this mixed sentiment, highlighting both the criticisms and the praises of Samsung's battery life."
-How should Samsung design the S27 Ultra for maximum customer satisfaction?,strategy_rag_agent,"1. **Direct strategic recommendation**
+How should Samsung design the S27 Ultra for maximum customer satisfaction?,strategy_rag_agent,"This asks for product design recommendations and strategy to improve customer satisfaction, which is handled by the strategy agent.",[],How should Samsung design the S27 Ultra to maximize customer satisfaction?,0.98,langchain_llm,gpt-5.4-mini,"1. **Direct strategic recommendation**
 
 Design the **S27 Ultra as a “no-compromise Ultra”** that restores the features customers associate with the Ultra brand and improves the areas where users feel recent models have regressed: **battery, S-Pen, camera, and display durability**. The evidence shows that customer satisfaction is driven less by incremental software additions and more by **visible hardware value, real-world endurance, and flagship differentiation**.
 
@@ -189,7 +189,7 @@ This supports both retention and willingness to pay, especially among users who 
 6. **Final S27 Ultra phased product roadmap recommendation**
 
 ### Phase"
-How should Samsung design the S27 Ultra for maximum profit?,strategy_rag_agent,"## 1. Direct strategic recommendation
+How should Samsung design the S27 Ultra for maximum profit?,strategy_rag_agent,"This asks for product design recommendations and profit optimization strategy, which belongs to the strategy agent.",[],How should Samsung design the S27 Ultra to maximize profit?,0.98,langchain_llm,gpt-5.4-mini,"## 1. Direct strategic recommendation
 
 Design the S27 Ultra as a **clearly premium, visibly upgraded Ultra** that justifies its price with **meaningful, easy-to-understand value improvements**. The evidence consistently shows that users will pay premium pricing **only when the upgrade is obvious and worth it**; otherwise they compare it against older Ultra models and conclude that the newer device is “not worth it” or “meh.”
 
@@ -282,7 +282,7 @@ The retrieved evidence is highly consistent:
 ### Phase 4: Communicate upgrade justification clearly
 - Market the S27 Ultra around concrete reasons to upgrade.
 - Emphas"
-What product roadmap should Samsung follow for the next Ultra phone?,strategy_rag_agent,"## 1. Direct strategic recommendation
+What product roadmap should Samsung follow for the next Ultra phone?,strategy_rag_agent,"This asks for strategic recommendations and future product roadmap guidance, which belongs to the strategy specialist.",[],What product roadmap should Samsung follow for the next Ultra phone?,0.98,langchain_llm,gpt-5.4-mini,"## 1. Direct strategic recommendation
 
 Samsung should keep the next Ultra phone positioned as a **“no-compromise flagship”** and prioritize the features that users explicitly associate with Ultra value: **camera leadership, advanced S-Pen functionality, and stronger battery/charging performance**.
 

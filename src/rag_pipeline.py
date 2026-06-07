@@ -6,6 +6,12 @@ import pandas as pd
 import numpy as np
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
+from vector_store import (
+    FEEDBACK_COLLECTION,
+    dataframe_metadata,
+    load_or_create_collection,
+    query_collection,
+)
 
 
 INPUT_PATH = "data/processed/comments_with_ner.csv"
@@ -177,6 +183,25 @@ def load_or_create_embeddings(texts):
     return comment_embeddings
 
 
+def load_or_create_feedback_vector_store(df, embeddings):
+    metadata_columns = [
+        "comment_id",
+        "sentiment_label",
+        "issue_category",
+        "topic_name",
+        "video_title",
+        "like_count",
+        "reply_count",
+    ]
+
+    return load_or_create_collection(
+        collection_name=FEEDBACK_COLLECTION,
+        texts=df["rag_text"].tolist(),
+        embeddings=embeddings,
+        metadatas=dataframe_metadata(df, metadata_columns),
+    )
+
+
 # =========================
 # 1. BUILD TEXT FOR RAG
 # =========================
@@ -302,7 +327,14 @@ def calculate_intent_penalty(query, row, intent=None):
 # 3. RETRIEVAL FUNCTION
 # =========================
 
-def retrieve_comments(query, df, comment_embeddings, top_k=10):
+def retrieve_comments(
+    query,
+    df,
+    comment_embeddings=None,
+    top_k=10,
+    vector_collection=None,
+    candidate_count=700,
+):
     """
     Retrieves the most relevant comments for a user query using semantic
     similarity, issue/category fit, lexical intent matches, complaint
@@ -311,12 +343,19 @@ def retrieve_comments(query, df, comment_embeddings, top_k=10):
 
     intent = infer_query_intent(query)
     query_embedding = model.encode([query])
-    similarities = cosine_similarity(query_embedding, comment_embeddings)[0]
 
-    df = df.copy()
-
-    # Semantic similarity score
-    df["similarity_score"] = similarities
+    if vector_collection is not None:
+        row_indices, similarities = query_collection(
+            vector_collection,
+            query_embedding,
+            candidate_count,
+        )
+        df = df.iloc[row_indices].copy()
+        df["similarity_score"] = similarities
+    else:
+        similarities = cosine_similarity(query_embedding, comment_embeddings)[0]
+        df = df.copy()
+        df["similarity_score"] = similarities
 
     # Engagement score from likes + replies
     df["engagement_score"] = np.log1p(
@@ -404,6 +443,7 @@ def main():
     df["rag_text"] = df.apply(build_comment_text, axis=1)
 
     comment_embeddings = load_or_create_embeddings(df["rag_text"].tolist())
+    vector_collection = load_or_create_feedback_vector_store(df, comment_embeddings)
 
     # Test queries
     test_queries = [
@@ -426,7 +466,8 @@ def main():
             query=query,
             df=df,
             comment_embeddings=comment_embeddings,
-            top_k=10
+            top_k=10,
+            vector_collection=vector_collection,
         )
 
         results = results.copy()

@@ -1,0 +1,14 @@
+﻿rag_system,baseline_configuration,configuration,delta_precision_at_5,delta_candidate_recall_at_5,delta_mrr_at_5,delta_ndcg_at_5,delta_latency_ms
+feedback_rag,hybrid_full,hybrid_full,0.0,0.0,0.0,0.0,0.0
+feedback_rag,hybrid_full,hybrid_plus_bge_reranker,-0.0333,-0.0025,0.0,-0.0357,5771.48
+feedback_rag,hybrid_full,hybrid_without_category,0.0,0.0,0.0,0.0,-0.27
+feedback_rag,hybrid_full,hybrid_without_engagement,0.0,0.0,0.0,0.0,0.0
+feedback_rag,hybrid_full,hybrid_without_lexical,-0.1,-0.0066,0.0,-0.0858,-0.2
+feedback_rag,hybrid_full,hybrid_without_sentiment,0.0,0.0,0.0,0.0,-0.0
+feedback_rag,hybrid_full,semantic_only,-0.2333,-0.013,-0.0833,-0.2193,-0.25
+strategy_rag,strategy_hybrid_full,semantic_only,-0.52,-0.239,-0.55,-0.6221,-0.54
+strategy_rag,strategy_hybrid_full,strategy_hybrid_full,0.0,0.0,0.0,0.0,0.0
+strategy_rag,strategy_hybrid_full,strategy_hybrid_plus_bge_reranker,-0.04,-0.0666,0.0,-0.0698,9319.81
+strategy_rag,strategy_hybrid_full,strategy_without_engagement,0.0,0.0,0.0,0.0,-0.5
+strategy_rag,strategy_hybrid_full,strategy_without_goal,-0.4,-0.2265,-0.4333,-0.4941,-0.34
+strategy_rag,strategy_hybrid_full,strategy_without_priority,0.04,0.0054,-0.0333,-0.0335,-0.39

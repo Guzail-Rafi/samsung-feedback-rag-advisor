@@ -9,7 +9,7 @@ type UiMessage = {
   content: string;
 };
 
-type RagBridgeResponse = {
+type AdvisorBridgeResponse = {
   error?: string;
   type?: string;
   answer?: string;
@@ -23,14 +23,22 @@ type RagBridgeResponse = {
   strategyGoal?: string;
   contextualQuery?: string;
   memoryUsed?: boolean;
+  routingReason?: string;
+  matchedTerms?: string[];
+  toolTrace?: string[];
+  availableTools?: string[];
+  routingConfidence?: number;
+  routingMethod?: string;
+  routerModel?: string;
+  normalizedQuery?: string;
 };
 
 function sanitizeError(message: string) {
   return message.replace(/sk-[A-Za-z0-9_-]+/g, "sk-***");
 }
 
-function runPythonRag(payload: { message: string; messages: UiMessage[] }) {
-  return new Promise<RagBridgeResponse>((resolve, reject) => {
+function runPythonAdvisor(payload: { message: string; messages: UiMessage[] }) {
+  return new Promise<AdvisorBridgeResponse>((resolve, reject) => {
     const scriptPath = path.join(process.cwd(), "src", "web_rag_bridge.py");
     const child = spawn("python", [scriptPath], {
       cwd: process.cwd(),
@@ -42,7 +50,7 @@ function runPythonRag(payload: { message: string; messages: UiMessage[] }) {
     let stderr = "";
     const timeout = setTimeout(() => {
       child.kill();
-      reject(new Error("RAG retrieval timed out. Try again after the model finishes loading."));
+      reject(new Error("Advisor request timed out. Try again after the model finishes loading."));
     }, 240000);
 
     child.stdout.on("data", (chunk) => {
@@ -65,21 +73,21 @@ function runPythonRag(payload: { message: string; messages: UiMessage[] }) {
       const jsonLine = trimmed.split(/\r?\n/).filter(Boolean).at(-1);
 
       if (!jsonLine) {
-        reject(new Error(sanitizeError(stderr || `Python RAG bridge exited with code ${code}.`)));
+        reject(new Error(sanitizeError(stderr || `Python advisor bridge exited with code ${code}.`)));
         return;
       }
 
       try {
-        const parsed = JSON.parse(jsonLine) as RagBridgeResponse;
+        const parsed = JSON.parse(jsonLine) as AdvisorBridgeResponse;
 
         if (code !== 0 || parsed.error) {
-          reject(new Error(sanitizeError(parsed.error || stderr || `Python RAG bridge exited with code ${code}.`)));
+          reject(new Error(sanitizeError(parsed.error || stderr || `Python advisor bridge exited with code ${code}.`)));
           return;
         }
 
         resolve(parsed);
       } catch {
-        reject(new Error(sanitizeError(`Could not parse RAG bridge output. ${stderr || trimmed}`)));
+        reject(new Error(sanitizeError(`Could not parse advisor bridge output. ${stderr || trimmed}`)));
       }
     });
 
@@ -101,7 +109,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Message is required." }, { status: 400 });
     }
 
-    const result = await runPythonRag({
+    const result = await runPythonAdvisor({
       message,
       messages: (body.messages ?? []).slice(-8),
     });
@@ -118,9 +126,17 @@ export async function POST(request: NextRequest) {
       strategyGoal: result.strategyGoal,
       contextualQuery: result.contextualQuery,
       memoryUsed: result.memoryUsed,
+      routingReason: result.routingReason,
+      matchedTerms: result.matchedTerms,
+      toolTrace: result.toolTrace,
+      availableTools: result.availableTools,
+      routingConfidence: result.routingConfidence,
+      routingMethod: result.routingMethod,
+      routerModel: result.routerModel,
+      normalizedQuery: result.normalizedQuery,
     });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Unknown RAG advisor error.";
+    const message = error instanceof Error ? error.message : "Unknown advisor error.";
     return NextResponse.json({ error: sanitizeError(message) }, { status: 500 });
   }
 }

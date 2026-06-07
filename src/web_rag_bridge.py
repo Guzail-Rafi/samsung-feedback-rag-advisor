@@ -5,8 +5,6 @@ import sys
 from pathlib import Path
 
 import pandas as pd
-import numpy as np
-from sklearn.metrics.pairwise import cosine_similarity
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -17,24 +15,6 @@ if str(SRC_DIR) not in sys.path:
 
 os.chdir(PROJECT_ROOT)
 
-
-STRATEGY_TERMS = [
-    "s27",
-    "roadmap",
-    "strategy",
-    "design",
-    "profit",
-    "revenue",
-    "sales",
-    "satisfaction",
-    "product plan",
-    "prioritize",
-    "next flagship",
-    "next ultra",
-    "reduce complaints",
-    "what should samsung do",
-    "how should samsung",
-]
 
 FOLLOW_UP_STARTERS = [
     "what about",
@@ -49,13 +29,6 @@ FOLLOW_UP_STARTERS = [
     "why",
     "how about",
 ]
-
-
-def detect_rag_mode(query):
-    query_lower = query.lower()
-    if any(term in query_lower for term in STRATEGY_TERMS):
-        return "strategy"
-    return "feedback"
 
 
 def clean_value(value):
@@ -274,21 +247,66 @@ def strategy_evidence_rows(results):
     return rows
 
 
+def run_analytical_tool(agent_name, query, retrieval_query, history_text):
+    with contextlib.redirect_stdout(sys.stderr):
+        from agent_router import (
+            issue_agent,
+            keyword_agent,
+            sentiment_agent,
+            summarization_agent,
+            topic_agent,
+        )
+
+        tool_handlers = {
+            "summarization_agent": {
+                "handler": summarization_agent,
+                "sources": ["llm_summaries.csv"],
+            },
+            "sentiment_agent": {
+                "handler": sentiment_agent,
+                "sources": ["comments_with_ner.csv"],
+            },
+            "issue_agent": {
+                "handler": issue_agent,
+                "sources": ["comments_with_ner.csv"],
+            },
+            "topic_agent": {
+                "handler": topic_agent,
+                "sources": ["comments_with_ner.csv", "topic_keywords.csv"],
+            },
+            "keyword_agent": {
+                "handler": keyword_agent,
+                "sources": ["top_keywords_overall.csv"],
+            },
+        }
+
+        tool = tool_handlers.get(agent_name)
+
+        if tool is None:
+            raise ValueError(f"Unsupported analytical agent: {agent_name}")
+
+        answer = tool["handler"](retrieval_query)
+
+    return {
+        "mode": "analytical_tool",
+        "selectedAgent": agent_name,
+        "answer": answer,
+        "contextualQuery": retrieval_query,
+        "memoryUsed": history_text != "No prior conversation.",
+        "sources": tool["sources"],
+    }
+
+
 def run_feedback_rag(query, retrieval_query, history_text):
     with contextlib.redirect_stdout(sys.stderr):
         from rag_answer_generator import (
             INPUT_PATH,
-            RETRIEVAL_WEIGHTS,
             build_comment_text,
-            calculate_category_relevance,
             calculate_rag_confidence,
-            calculate_intent_penalty,
-            calculate_lexical_relevance,
-            calculate_sentiment_relevance,
-            embedding_model,
             format_evidence,
-            infer_query_intent,
             load_or_create_embeddings,
+            load_or_create_feedback_vector_store,
+            retrieve_comments,
         )
 
         df = pd.read_csv(INPUT_PATH)
@@ -299,59 +317,15 @@ def run_feedback_rag(query, retrieval_query, history_text):
         df["rag_text"] = df.apply(build_comment_text, axis=1)
 
         embeddings = load_or_create_embeddings(df["rag_text"].tolist())
-        query_embedding = embedding_model.encode([retrieval_query])
-        similarities = cosine_similarity(query_embedding, embeddings)[0]
-        candidate_count = min(700, len(df))
-        candidate_indices = np.argpartition(similarities, -candidate_count)[-candidate_count:]
-        candidates = df.iloc[candidate_indices].copy()
-        candidates["similarity_score"] = similarities[candidate_indices]
-
-        intent = infer_query_intent(retrieval_query)
-        candidates["engagement_score"] = np.log1p(
-            candidates["like_count"].fillna(0).astype(float) +
-            candidates["reply_count"].fillna(0).astype(float)
+        vector_collection = load_or_create_feedback_vector_store(df, embeddings)
+        results = retrieve_comments(
+            query=retrieval_query,
+            df=df,
+            comment_embeddings=embeddings,
+            top_k=8,
+            vector_collection=vector_collection,
+            candidate_count=700,
         )
-        max_engagement = candidates["engagement_score"].max()
-        if max_engagement > 0:
-            candidates["engagement_score"] = candidates["engagement_score"] / max_engagement
-
-        candidates["category_relevance_score"] = candidates.apply(
-            lambda row: calculate_category_relevance(retrieval_query, row, intent),
-            axis=1,
-        )
-        candidates["lexical_relevance_score"] = candidates.apply(
-            lambda row: calculate_lexical_relevance(retrieval_query, row, intent),
-            axis=1,
-        )
-        candidates["sentiment_relevance_score"] = candidates.apply(
-            lambda row: calculate_sentiment_relevance(retrieval_query, row, intent),
-            axis=1,
-        )
-        candidates["intent_penalty_score"] = candidates.apply(
-            lambda row: calculate_intent_penalty(retrieval_query, row, intent),
-            axis=1,
-        )
-        candidates["weighted_retrieval_score"] = (
-            RETRIEVAL_WEIGHTS["semantic"] * candidates["similarity_score"] +
-            RETRIEVAL_WEIGHTS["category"] * candidates["category_relevance_score"] +
-            RETRIEVAL_WEIGHTS["lexical"] * candidates["lexical_relevance_score"] +
-            RETRIEVAL_WEIGHTS["sentiment"] * candidates["sentiment_relevance_score"] +
-            RETRIEVAL_WEIGHTS["engagement"] * candidates["engagement_score"] -
-            candidates["intent_penalty_score"]
-        )
-
-        for column in [
-            "similarity_score",
-            "engagement_score",
-            "category_relevance_score",
-            "lexical_relevance_score",
-            "sentiment_relevance_score",
-            "intent_penalty_score",
-            "weighted_retrieval_score",
-        ]:
-            candidates[column] = candidates[column].round(3)
-
-        results = candidates.sort_values(by="weighted_retrieval_score", ascending=False).head(8)
         confidence = calculate_rag_confidence(results)
         evidence_text = format_evidence(results)
 
@@ -359,14 +333,16 @@ def run_feedback_rag(query, retrieval_query, history_text):
 
     return {
         "mode": "feedback_rag",
-        "selectedAgent": "feedback_rag_retriever",
+        "selectedAgent": "feedback_rag_agent",
         "answer": answer,
         "confidence": confidence,
         "contextualQuery": retrieval_query,
         "memoryUsed": history_text != "No prior conversation.",
-        "sources": ["comments_with_ner.csv", "rag_comment_embeddings.npy"],
+        "sources": ["comments_with_ner.csv", "ChromaDB: feedback_comments"],
         "evidence": feedback_evidence_rows(results),
         "retrieval": {
+            "vector_store": "ChromaDB",
+            "collection": "feedback_comments",
             "embedding_model": "all-MiniLM-L6-v2",
             "top_k": 8,
             "score": round(float(results["weighted_retrieval_score"].mean()), 3),
@@ -380,9 +356,9 @@ def run_strategy_rag_live(query, retrieval_query, history_text):
             INPUT_PATH,
             detect_strategy_goal,
             format_strategy_evidence,
-            goal_relevance_score,
-            embedding_model,
             load_or_create_embeddings,
+            load_or_create_strategy_vector_store,
+            retrieve_strategy_evidence,
         )
 
         df = pd.read_csv(INPUT_PATH)
@@ -390,56 +366,33 @@ def run_strategy_rag_live(query, retrieval_query, history_text):
         df = df.reset_index(drop=True)
 
         embeddings = load_or_create_embeddings(df["strategy_text"].tolist())
+        vector_collection = load_or_create_strategy_vector_store(df, embeddings)
         goal = detect_strategy_goal(retrieval_query)
-        query_embedding = embedding_model.encode([retrieval_query])
-        similarities = cosine_similarity(query_embedding, embeddings)[0]
-        candidate_count = min(900, len(df))
-        candidate_indices = np.argpartition(similarities, -candidate_count)[-candidate_count:]
-        candidates = df.iloc[candidate_indices].copy()
-        candidates["strategy_similarity_score"] = similarities[candidate_indices]
-
-        candidates["engagement_score"] = np.log1p(candidates["engagement_total"].fillna(0).astype(float))
-        max_engagement = candidates["engagement_score"].max()
-        if max_engagement > 0:
-            candidates["engagement_score"] = candidates["engagement_score"] / max_engagement
-
-        candidates["goal_relevance_score"] = candidates.apply(
-            lambda row: goal_relevance_score(goal, row),
-            axis=1,
+        results = retrieve_strategy_evidence(
+            query=retrieval_query,
+            goal=goal,
+            df=df,
+            embeddings=embeddings,
+            top_k=12,
+            vector_collection=vector_collection,
+            candidate_count=900,
         )
-        priority_map = {"High": 1.0, "Medium": 0.6, "Low": 0.3}
-        candidates["priority_score"] = candidates["priority"].map(priority_map).fillna(0.5)
-        candidates["strategy_retrieval_score"] = (
-            0.45 * candidates["strategy_similarity_score"] +
-            0.25 * candidates["goal_relevance_score"] +
-            0.20 * candidates["priority_score"] +
-            0.10 * candidates["engagement_score"]
-        )
-
-        for column in [
-            "strategy_similarity_score",
-            "goal_relevance_score",
-            "priority_score",
-            "engagement_score",
-            "strategy_retrieval_score",
-        ]:
-            candidates[column] = candidates[column].round(3)
-
-        results = candidates.sort_values(by="strategy_retrieval_score", ascending=False).head(12)
         evidence_text = format_strategy_evidence(results)
 
     answer = generate_strategy_answer_with_memory(query, retrieval_query, goal, evidence_text, history_text)
 
     return {
         "mode": "strategy_rag",
-        "selectedAgent": "strategy_rag_retriever",
+        "selectedAgent": "strategy_rag_agent",
         "answer": answer,
         "strategyGoal": goal,
         "contextualQuery": retrieval_query,
         "memoryUsed": history_text != "No prior conversation.",
-        "sources": ["strategy_evidence.csv", "strategy_evidence_embeddings.npy"],
+        "sources": ["strategy_evidence.csv", "ChromaDB: strategy_evidence"],
         "evidence": strategy_evidence_rows(results),
         "retrieval": {
+            "vector_store": "ChromaDB",
+            "collection": "strategy_evidence",
             "embedding_model": "all-MiniLM-L6-v2",
             "top_k": 12,
             "score": round(float(results["strategy_retrieval_score"].mean()), 3),
@@ -458,9 +411,33 @@ def main():
 
     retrieval_query = build_memory_query(query, messages)
     history_text = conversation_text(messages)
-    mode = detect_rag_mode(retrieval_query)
-    result = run_strategy_rag_live(query, retrieval_query, history_text) if mode == "strategy" else run_feedback_rag(query, retrieval_query, history_text)
-    result["model"] = get_model_name()
+
+    with contextlib.redirect_stdout(sys.stderr):
+        from agent_router import AVAILABLE_AGENTS, route_intent
+
+        routing = route_intent(retrieval_query)
+
+    selected_agent = routing["selected_agent"]
+    routed_query = routing.get("normalized_query") or retrieval_query
+
+    if selected_agent == "strategy_rag_agent":
+        result = run_strategy_rag_live(query, routed_query, history_text)
+    elif selected_agent == "feedback_rag_agent":
+        result = run_feedback_rag(query, routed_query, history_text)
+    else:
+        result = run_analytical_tool(selected_agent, query, routed_query, history_text)
+
+    if selected_agent in {"feedback_rag_agent", "strategy_rag_agent"}:
+        result["model"] = get_model_name()
+
+    result["routingReason"] = routing["reason"]
+    result["matchedTerms"] = routing["matched_terms"]
+    result["routingConfidence"] = routing["confidence"]
+    result["routingMethod"] = routing["routing_method"]
+    result["routerModel"] = routing["router_model"]
+    result["normalizedQuery"] = routed_query
+    result["toolTrace"] = [routing["routing_method"], selected_agent]
+    result["availableTools"] = AVAILABLE_AGENTS
     result["query"] = query
 
     print(json.dumps(result, ensure_ascii=False))

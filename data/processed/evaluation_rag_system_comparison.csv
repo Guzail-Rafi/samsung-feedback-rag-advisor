@@ -1,0 +1,14 @@
+﻿rag_system,configuration,query_count,precision_at_5,candidate_recall_at_5,mrr_at_5,ndcg_at_5,avg_latency_ms
+feedback_rag,hybrid_full,6,1.0,0.0404,1.0,1.0,49.6217
+feedback_rag,hybrid_plus_bge_reranker,6,0.9667,0.0379,1.0,0.9643,5821.0967
+feedback_rag,hybrid_without_category,6,1.0,0.0404,1.0,1.0,49.3517
+feedback_rag,hybrid_without_engagement,6,1.0,0.0404,1.0,1.0,49.625
+feedback_rag,hybrid_without_lexical,6,0.9,0.0338,1.0,0.9142,49.4183
+feedback_rag,hybrid_without_sentiment,6,1.0,0.0404,1.0,1.0,49.6183
+feedback_rag,semantic_only,6,0.7667,0.0274,0.9167,0.7807,49.3733
+strategy_rag,semantic_only,5,0.2,0.0212,0.25,0.1779,52.134
+strategy_rag,strategy_hybrid_full,5,0.72,0.2602,0.8,0.8,52.672
+strategy_rag,strategy_hybrid_plus_bge_reranker,5,0.68,0.1936,0.8,0.7302,9372.486
+strategy_rag,strategy_without_engagement,5,0.72,0.2602,0.8,0.8,52.168
+strategy_rag,strategy_without_goal,5,0.32,0.0337,0.3667,0.3059,52.336
+strategy_rag,strategy_without_priority,5,0.76,0.2656,0.7667,0.7665,52.282

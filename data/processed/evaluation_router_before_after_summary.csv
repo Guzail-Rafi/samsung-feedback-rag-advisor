@@ -1,0 +1,3 @@
+﻿router,query_count,correct_routes,routing_accuracy,avg_latency_ms,median_latency_ms,avg_confidence,fallback_count
+langchain_llm,35,35,1.0,3290.0923,1039.75,0.9814,0
+rule_based,35,31,0.8857,0.0083,0.01,0.8714,0

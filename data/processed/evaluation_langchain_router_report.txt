@@ -1,0 +1,37 @@
+==============================================================================
+LANGCHAIN LLM ROUTER: BEFORE AND AFTER EVALUATION
+==============================================================================
+
+       router  query_count  correct_routes  routing_accuracy  avg_latency_ms  median_latency_ms  avg_confidence  fallback_count
+langchain_llm           35              35            1.0000       3290.0923            1039.75          0.9814               0
+   rule_based           35              31            0.8857          0.0083               0.01          0.8714               0
+
+Report-ready findings:
+- Rule-based routing accuracy: 88.6% (31/35).
+- LangChain LLM routing accuracy: 100.0% (35/35).
+- Accuracy change after LangChain LLM routing: +11.4 percentage points.
+- Average LangChain router latency: 3290.09 ms versus 0.01 ms for deterministic rules.
+- LangChain fallback count: 0. A fallback indicates that structured LLM routing failed and deterministic rules were used.
+
+Queries corrected by LangChain:
+                                    query  expected_agent
+     What are the most frequent concerns?     issue_agent
+        What are the most frequent words?   keyword_agent
+What percentage of comments are positive? sentiment_agent
+       What trends appear in discussions?     topic_agent
+
+Remaining LangChain routing errors:
+Empty DataFrame
+Columns: [query, expected_agent, selected_agent, reason]
+Index: []
+
+Interpretation:
+- The LLM router improves semantic understanding of paraphrases and ambiguous wording.
+- The deterministic fallback preserves availability if the LangChain/OpenAI call fails.
+- The accuracy improvement must be considered against added API latency and cost.
+
+Generated artifacts:
+- data\processed\evaluation_router_before_after.csv
+- data\processed\evaluation_router_before_after_summary.csv
+- data\processed\evaluation_langchain_router_confusion_matrix.csv
+- data\processed\evaluation_langchain_router_report.txt

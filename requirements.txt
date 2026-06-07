@@ -1,0 +1,15 @@
+chromadb
+google-api-python-client
+langdetect
+langchain
+langchain-openai
+mlflow
+numpy
+openai
+pandas
+pyspellchecker
+python-dotenv
+scikit-learn
+sentence-transformers
+spacy
+vaderSentiment

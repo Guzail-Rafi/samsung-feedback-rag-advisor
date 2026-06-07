@@ -12,8 +12,8 @@ export default function PipelinePage() {
       />
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <MetricCard label="Stages" value="12" sub="core and extended pipeline" icon={GitBranch} />
-        <MetricCard label="Processed data" value="CSV" sub="data/processed" icon={Database} />
+        <MetricCard label="Stages" value="13" sub="core and extended pipeline" icon={GitBranch} />
+        <MetricCard label="Processed data" value="CSV + vectors" sub="processed data and ChromaDB" icon={Database} />
         <MetricCard label="Artifacts" value="MLflow" sub="mlruns/" icon={FileText} />
         <MetricCard label="Status" value="Ready" sub="all listed outputs present" icon={CheckCircle2} />
       </div>

@@ -17,49 +17,120 @@ OUTPUT_PATH = "data/processed/agent_router_results.csv"
 STRATEGY_RAG_PATH = "data/processed/strategy_rag_results.csv"
 STRATEGY_REFINEMENT_PATH = "data/processed/strategy_refinement_results.csv" 
 
-client = get_openai_client()
-
-
 # =========================
 # ROUTER
 # =========================
 
-def detect_intent(user_query):
+AVAILABLE_AGENTS = [
+    "summarization_agent",
+    "sentiment_agent",
+    "issue_agent",
+    "topic_agent",
+    "keyword_agent",
+    "feedback_rag_agent",
+    "strategy_rag_agent",
+]
+
+STRATEGY_TERMS = [
+    "s27", "roadmap", "strategy", "design", "make samsung",
+    "maximum profit", "profit", "revenue", "sales", "margin",
+    "customer satisfaction", "product plan", "prioritize",
+    "next flagship", "next ultra", "reduce complaints",
+    "what should samsung do", "how should samsung",
+]
+
+SUMMARY_TERMS = [
+    "summarize", "summary", "overview", "overall feedback",
+]
+
+SENTIMENT_TERMS = [
+    "sentiment", "sentiment distribution", "emotion distribution",
+    "positive percentage", "negative percentage", "neutral percentage",
+    "how many positive", "how many negative", "how many neutral",
+]
+
+ISSUE_TERMS = [
+    "main complaint", "top complaint", "common complaint",
+    "issue category", "issue categories", "top issues", "main issues",
+    "common issues", "common problems", "main problems",
+]
+
+TOPIC_TERMS = [
+    "top topic", "main topic", "discussion topic", "topic model",
+    "top theme", "main theme", "discussion theme",
+]
+
+KEYWORD_TERMS = [
+    "top keyword", "main keyword", "keywords", "common words",
+    "key phrase", "key terms",
+]
+
+
+def route_intent_rules(user_query):
     """
-    Rule-based agent router.
-    Routes the user query to the correct analysis module.
+    Returns an explainable routing decision shared by the offline router and
+    the live dashboard advisor.
     """
 
     query = user_query.lower()
 
-    # Strategy/Product Roadmap RAG
-    strategy_words = [
-        "s27", "roadmap", "strategy", "design", "make samsung",
-        "maximum profit", "profit", "revenue", "sales",
-        "customer satisfaction", "satisfaction", "product plan",
-        "prioritize", "next flagship", "next ultra", "reduce complaints",
-        "what should samsung do", "how should samsung"
+    routing_rules = [
+        ("strategy_rag_agent", STRATEGY_TERMS, "Matched a product strategy or roadmap request."),
+        ("summarization_agent", SUMMARY_TERMS, "Matched a precomputed feedback summary request."),
+        ("issue_agent", ISSUE_TERMS, "Matched an aggregate issue or complaint analysis request."),
+        ("topic_agent", TOPIC_TERMS, "Matched an aggregate topic-model analysis request."),
+        ("keyword_agent", KEYWORD_TERMS, "Matched a keyword or key-phrase analysis request."),
+        ("sentiment_agent", SENTIMENT_TERMS, "Matched an aggregate sentiment analysis request."),
     ]
 
-    if any(word in query for word in strategy_words):
-        return "strategy_rag_agent"
+    for agent, terms, reason in routing_rules:
+        if any(term in query for term in terms):
+            return {
+                "selected_agent": agent,
+                "reason": reason,
+                "matched_terms": [term for term in terms if term in query],
+                "normalized_query": user_query,
+                "confidence": 1.0,
+                "routing_method": "deterministic_fallback",
+                "router_model": None,
+            }
 
-    if any(word in query for word in ["summarize", "summary", "overview", "overall"]):
-        return "summarization_agent"
+    return {
+        "selected_agent": "feedback_rag_agent",
+        "reason": "No aggregate-analysis intent matched, so grounded feedback RAG was selected.",
+        "matched_terms": [],
+        "normalized_query": user_query,
+        "confidence": 0.5,
+        "routing_method": "deterministic_fallback",
+        "router_model": None,
+    }
 
-    if any(word in query for word in ["sentiment", "positive", "negative", "neutral", "emotion"]):
-        return "sentiment_agent"
 
-    if any(word in query for word in ["issue", "problem", "complaint", "category", "concern"]):
-        return "issue_agent"
+def route_intent(user_query, use_llm=True):
+    """
+    Uses LangChain structured-output routing by default. The deterministic
+    router remains available as a reliable fallback if the LLM call fails.
+    """
 
-    if any(word in query for word in ["topic", "theme", "discussion", "trend"]):
-        return "topic_agent"
+    if not use_llm:
+        return route_intent_rules(user_query)
 
-    if any(word in query for word in ["keyword", "word", "phrase", "terms"]):
-        return "keyword_agent"
+    try:
+        from langchain_router import route_with_langchain
 
-    return "rag_qa_agent"
+        return route_with_langchain(user_query)
+    except Exception as error:
+        fallback = route_intent_rules(user_query)
+        fallback["reason"] = (
+            f"LangChain LLM routing failed ({error.__class__.__name__}); "
+            f"{fallback['reason']}"
+        )
+        fallback["routing_method"] = "deterministic_fallback_after_llm_error"
+        return fallback
+
+
+def detect_intent(user_query):
+    return route_intent(user_query)["selected_agent"]
 
 
 # =========================
@@ -97,6 +168,24 @@ def sentiment_agent(query):
 
     sentiment_counts = df["sentiment_label"].value_counts()
     total = len(df)
+    query_lower = query.lower()
+    requested_labels = [
+        label
+        for label in ["positive", "negative", "neutral"]
+        if label in query_lower
+    ]
+
+    if len(requested_labels) == 1:
+        label = requested_labels[0]
+        count = int(sentiment_counts.get(label, 0))
+        percentage = round((count / total) * 100, 2) if total > 0 else 0
+
+        return (
+            f"{label.title()} Sentiment Result:\n\n"
+            f"- {label}: {count} comments ({percentage}%)\n\n"
+            "Interpretation:\n"
+            f"This isolates the {label} portion of the analyzed Samsung-related YouTube comments."
+        )
 
     result = "Sentiment Analysis Result:\n\n"
 
@@ -241,6 +330,8 @@ Available RAG answer context:
 Write a concise answer.
 """
 
+    client = get_openai_client()
+
     return generate_chat_response(
         client=client,
         messages=[
@@ -292,7 +383,8 @@ def strategy_rag_agent(query):
 # =========================
 
 def run_agent(query):
-    intent = detect_intent(query)
+    routing = route_intent(query)
+    intent = routing["selected_agent"]
 
     if intent == "summarization_agent":
         answer = summarization_agent(query)
@@ -306,13 +398,21 @@ def run_agent(query):
         answer = keyword_agent(query)
     elif intent == "strategy_rag_agent":
         answer = strategy_rag_agent(query)
-    else:
+    elif intent == "feedback_rag_agent":
         answer = rag_qa_agent(query)
+    else:
+        raise ValueError(f"Unsupported agent: {intent}")
 
     return {
         "user_query": query,
         "selected_agent": intent,
-        "answer": answer
+        "routing_reason": routing["reason"],
+        "matched_terms": routing["matched_terms"],
+        "normalized_query": routing["normalized_query"],
+        "routing_confidence": routing["confidence"],
+        "routing_method": routing["routing_method"],
+        "router_model": routing["router_model"],
+        "answer": answer,
     }
 
 

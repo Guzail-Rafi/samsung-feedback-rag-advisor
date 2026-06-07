@@ -6,6 +6,7 @@ __pycache__/
 *.py[cod]
 
 mlruns/
+data/vector_db/
 tempCodeRunnerFile.py
 
 node_modules/
