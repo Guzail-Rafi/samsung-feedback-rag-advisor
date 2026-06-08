@@ -31,6 +31,19 @@ type AdvisorBridgeResponse = {
   routingMethod?: string;
   routerModel?: string;
   normalizedQuery?: string;
+  rewrittenQuery?: string;
+  needsExternalResearch?: boolean;
+  externalResearchFocus?: string[];
+  externalEvidence?: unknown[];
+  webResearch?: unknown;
+  internalStrategyAnswer?: string;
+  llmProvider?: string;
+  llmFallbackUsed?: boolean;
+  llmFallbackReason?: string;
+  routerProvider?: string;
+  routerFallbackUsed?: boolean;
+  routerFallbackReason?: string;
+  mlflowTraceId?: string;
 };
 
 function sanitizeError(message: string) {
@@ -134,6 +147,19 @@ export async function POST(request: NextRequest) {
       routingMethod: result.routingMethod,
       routerModel: result.routerModel,
       normalizedQuery: result.normalizedQuery,
+      rewrittenQuery: result.rewrittenQuery,
+      needsExternalResearch: result.needsExternalResearch,
+      externalResearchFocus: result.externalResearchFocus,
+      externalEvidence: result.externalEvidence,
+      webResearch: result.webResearch,
+      internalStrategyAnswer: result.internalStrategyAnswer,
+      llmProvider: result.llmProvider,
+      llmFallbackUsed: result.llmFallbackUsed,
+      llmFallbackReason: result.llmFallbackReason,
+      routerProvider: result.routerProvider,
+      routerFallbackUsed: result.routerFallbackUsed,
+      routerFallbackReason: result.routerFallbackReason,
+      mlflowTraceId: result.mlflowTraceId,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown advisor error.";

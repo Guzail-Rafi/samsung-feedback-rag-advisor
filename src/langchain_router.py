@@ -6,6 +6,7 @@ from langchain_openai import ChatOpenAI
 from langsmith import traceable
 from pydantic import BaseModel, Field
 
+from mlflow_tracing import mlflow_span
 from openai_client import (
     fallback_reason,
     get_llama_model,
@@ -15,6 +16,7 @@ from openai_client import (
     llama_fallback_enabled,
 )
 from tracing_utils import sanitize_trace_inputs, sanitize_trace_outputs
+from web_strategy_policy import apply_web_strategy_policy
 
 
 AgentName = Literal[
@@ -25,6 +27,17 @@ AgentName = Literal[
     "keyword_agent",
     "feedback_rag_agent",
     "strategy_rag_agent",
+    "web_augmented_strategy_rag",
+    "samsung_document_rag",
+]
+
+ExternalResearchFocus = Literal[
+    "latest_samsung_news",
+    "uae_pricing_offers",
+    "competitor_iphone_offers",
+    "current_market_trends",
+    "regional_market_context",
+    "positioning_and_pricing",
 ]
 
 
@@ -34,7 +47,13 @@ class RoutingDecision(BaseModel):
     selected_agent: AgentName = Field(
         description="The single specialist agent that should handle the user request."
     )
-    normalized_query: str = Field(
+    needs_external_research: bool = Field(
+        description="True only for web_augmented_strategy_rag."
+    )
+    external_research_focus: list[ExternalResearchFocus] = Field(
+        description="Controlled external research topics; empty for all non-web routes."
+    )
+    rewritten_query: str = Field(
         description="A concise standalone rewrite preserving the user's intended request."
     )
     confidence: float = Field(
@@ -79,7 +98,21 @@ Available specialist agents:
 
 7. strategy_rag_agent
    Use for recommendations, actions Samsung should take, future product design,
-   roadmaps, priorities, profit, revenue, or customer-satisfaction strategy.
+   roadmaps, priorities, profit, revenue, or customer-satisfaction strategy that
+   can be answered from the internal YouTube strategy evidence.
+
+8. web_augmented_strategy_rag
+   Optional advanced route. Use only when BOTH conditions are true:
+   A. The request asks for strategy, business action, roadmap, pricing, or
+      positioning.
+   B. The requested strategy explicitly needs current external context, such as
+      latest news, UAE pricing, current offers, competitor offers, current
+      market trends, regional conditions, or recent events.
+
+9. samsung_document_rag
+   Use when the request explicitly asks about an uploaded document, uploaded
+   file, PDF, report, document evidence, or asks to summarize/explain/compare
+   information from the user's uploaded Samsung documents.
 
 Routing rules:
 - Distinguish aggregate analytics from evidence-seeking questions.
@@ -88,14 +121,36 @@ Routing rules:
 - A request asking which complaints or comments mention a specific feature is
   feedback_rag_agent because it requires retrieved evidence, not aggregate counts.
 - A request asking what Samsung should do about complaints is strategy_rag_agent.
+- Do not use web_augmented_strategy_rag for normal internal feedback, complaint,
+  feature-priority, or roadmap questions unless current external context is
+  explicitly required.
+- Questions asking what users or people think, feel, say, complain about, or
+  discuss always belong to feedback_rag_agent, even when they mention UAE,
+  pricing, offers, competitors, markets, "current", or "latest".
+- Do not let prior conversation context turn a clearly stated feedback question
+  into a strategy or web-augmented request.
+- Use samsung_document_rag only when the user explicitly refers to uploaded
+  documents/files/reports, or when uploaded documents are available and a
+  natural follow-up clearly refers to them, such as "summarize it" or "what
+  does it recommend?". Do not confuse YouTube comments with uploaded document
+  evidence, and do not route unrelated questions to documents merely because
+  documents are available.
+- For web_augmented_strategy_rag, set needs_external_research=true and select
+  only relevant values in external_research_focus.
+- For every other route, set needs_external_research=false and
+  external_research_focus=[].
 - Treat conversation context included in the query as useful follow-up context.
-- Preserve the user's meaning in normalized_query without adding new claims.
+- Preserve the user's meaning in rewritten_query without adding new claims.
 """
 
 ROUTER_PROMPT = ChatPromptTemplate.from_messages(
     [
         ("system", ROUTER_SYSTEM_PROMPT.strip()),
-        ("human", "Route this request:\n\n{user_query}"),
+        (
+            "human",
+            "Uploaded Samsung documents currently available:\n{document_context}\n\n"
+            "Route this request:\n\n{user_query}",
+        ),
     ]
 )
 
@@ -158,9 +213,11 @@ def format_routing_result(decision, method, provider, model, fallback_used=False
     result["router_fallback_used"] = fallback_used
     result["router_fallback_reason"] = reason
     result["matched_terms"] = []
+    result["normalized_query"] = result["rewritten_query"]
     return result
 
 
+@mlflow_span("LangChain Semantic Router", "CHAIN")
 @traceable(
     name="LangChain Semantic Router",
     run_type="chain",
@@ -168,20 +225,30 @@ def format_routing_result(decision, method, provider, model, fallback_used=False
     process_inputs=sanitize_trace_inputs,
     process_outputs=sanitize_trace_outputs,
 )
-def route_with_langchain(user_query):
+def route_with_langchain(user_query, document_names=None):
+    document_context = (
+        ", ".join(document_names[:10])
+        if document_names
+        else "No uploaded Samsung documents are currently available."
+    )
+    inputs = {"user_query": user_query, "document_context": document_context}
+
     try:
-        decision = get_openai_router_chain().invoke({"user_query": user_query})
-        return format_routing_result(
-            decision,
-            "langchain_openai",
-            "openai",
-            get_openai_model(),
+        decision = get_openai_router_chain().invoke(inputs)
+        return apply_web_strategy_policy(
+            format_routing_result(
+                decision,
+                "langchain_openai",
+                "openai",
+                get_openai_model(),
+            ),
+            user_query,
         )
     except Exception as error:
         if not llama_fallback_enabled() or not is_openai_fallback_error(error):
             raise
 
-        decision = get_llama_router_chain().invoke({"user_query": user_query})
+        decision = get_llama_router_chain().invoke(inputs)
         result = format_routing_result(
             decision,
             "langchain_ollama_fallback",
@@ -190,5 +257,6 @@ def route_with_langchain(user_query):
             fallback_used=True,
             reason=fallback_reason(error),
         )
+        result["rewritten_query"] = user_query
         result["normalized_query"] = user_query
-        return result
+        return apply_web_strategy_policy(result, user_query)

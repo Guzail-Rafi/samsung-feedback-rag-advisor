@@ -7,6 +7,7 @@ import numpy as np
 from chromadb.errors import NotFoundError
 from langsmith import traceable
 
+from mlflow_tracing import mlflow_span
 from tracing_utils import sanitize_trace_inputs, sanitize_trace_outputs
 
 
@@ -125,6 +126,7 @@ def load_or_create_collection(collection_name, texts, embeddings, metadatas):
     return collection
 
 
+@mlflow_span("ChromaDB Vector Search", "RETRIEVER")
 @traceable(
     name="ChromaDB Vector Search",
     run_type="retriever",

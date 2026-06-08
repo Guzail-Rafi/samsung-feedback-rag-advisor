@@ -55,6 +55,17 @@ def _summarize_dataframe(value):
 
 
 def summarize_trace_value(value, depth=0):
+    if isinstance(value, str):
+        if len(value) <= TRACE_TEXT_LIMIT:
+            return value
+        return value[:TRACE_TEXT_LIMIT] + f"... <{len(value) - TRACE_TEXT_LIMIT} chars omitted>"
+
+    if isinstance(value, (int, float, bool)) or value is None:
+        return value
+
+    if isinstance(value, Path):
+        return str(value)
+
     if depth >= 4:
         return f"<{value.__class__.__name__}>"
 
@@ -75,14 +86,6 @@ def summarize_trace_value(value, depth=0):
             "dtype": str(value.dtype),
         }
 
-    if isinstance(value, Path):
-        return str(value)
-
-    if isinstance(value, str):
-        if len(value) <= TRACE_TEXT_LIMIT:
-            return value
-        return value[:TRACE_TEXT_LIMIT] + f"... <{len(value) - TRACE_TEXT_LIMIT} chars omitted>"
-
     if isinstance(value, dict):
         return {
             str(key): summarize_trace_value(item, depth + 1)
@@ -98,9 +101,6 @@ def summarize_trace_value(value, depth=0):
         if len(items) > TRACE_LIST_LIMIT:
             summary.append(f"<{len(items) - TRACE_LIST_LIMIT} items omitted>")
         return summary
-
-    if isinstance(value, (str, int, float, bool)) or value is None:
-        return value
 
     if hasattr(value, "name") and hasattr(value, "count"):
         try:

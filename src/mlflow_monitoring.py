@@ -2,6 +2,12 @@ import os
 import pandas as pd
 import mlflow
 
+from mlflow_tracing import (
+    PIPELINE_EXPERIMENT_NAME,
+    configure_mlflow,
+    flush_mlflow_traces,
+    get_tracking_uri,
+)
 from openai_client import (
     get_llama_model,
     get_openai_model,
@@ -20,8 +26,7 @@ RAG_ANSWERS_PATH = "data/processed/rag_answers.csv"
 SUMMARIES_PATH = "data/processed/llm_summaries.csv"
 AGENT_RESULTS_PATH = "data/processed/agent_router_results.csv"
 
-MLFLOW_TRACKING_DIR = "mlruns"
-EXPERIMENT_NAME = "Samsung_YouTube_RAG_Monitoring"
+EXPERIMENT_NAME = PIPELINE_EXPERIMENT_NAME
 
 
 # =========================
@@ -72,10 +77,7 @@ def log_artifact_if_exists(path):
 # =========================
 
 def main():
-    os.makedirs(MLFLOW_TRACKING_DIR, exist_ok=True)
-
-    mlflow.set_tracking_uri(f"file:{MLFLOW_TRACKING_DIR}")
-    mlflow.set_experiment(EXPERIMENT_NAME)
+    configure_mlflow(EXPERIMENT_NAME)
 
     comments_df = safe_read_csv(COMMENTS_PATH)
     rag_eval_df = safe_read_csv(RAG_EVAL_PATH)
@@ -84,7 +86,10 @@ def main():
     summaries_df = safe_read_csv(SUMMARIES_PATH)
     agent_df = safe_read_csv(AGENT_RESULTS_PATH)
 
-    with mlflow.start_run(run_name="Samsung_YouTube_RAG_Pipeline_Run"):
+    with mlflow.start_run(
+        run_name="Samsung_YouTube_RAG_Pipeline_Run",
+        tags={"system": "samsung-rag", "run_type": "batch-monitoring"},
+    ):
 
         # =========================
         # PARAMETERS
@@ -223,7 +228,7 @@ def main():
 
         print("MLflow monitoring completed!")
         print("Experiment:", EXPERIMENT_NAME)
-        print("Tracking folder:", MLFLOW_TRACKING_DIR)
+        print("Tracking URI:", get_tracking_uri())
 
         if not rag_eval_df.empty and "precision_at_5" in rag_eval_df.columns:
             print("Manual/checked Precision@5:", round(rag_eval_df["precision_at_5"].mean(), 3))
@@ -233,4 +238,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    finally:
+        flush_mlflow_traces()

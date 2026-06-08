@@ -17,6 +17,7 @@ The project is designed to support a dashboard or report that explains what cust
 - Named entity recognition for brands, products, and competitors
 - RAG retrieval over customer feedback evidence
 - Persistent ChromaDB vector database with separate feedback and strategy collections
+- Samsung-only document upload and conversational Document RAG with citations
 - OpenAI-primary summaries and answer generation with local Llama failover
 - Strategy recommendation generation
 - Live agent orchestration for summaries, sentiment, issues, topics, keywords, feedback RAG, and strategy RAG
@@ -129,6 +130,10 @@ OPENAI_MODEL=your_openai_model_here
 LLM_FALLBACK_ENABLED=true
 OLLAMA_BASE_URL=http://localhost:11434
 OLLAMA_MODEL=llama3.2:3b
+WEB_AUGMENTED_STRATEGY_ENABLED=true
+WEB_SEARCH_MAX_RESULTS=3
+WEB_SEARCH_MAX_QUERIES=2
+WEB_SEARCH_REGION=ae-en
 LANGSMITH_TRACING=true
 LANGSMITH_API_KEY=your_langsmith_api_key_here
 LANGSMITH_PROJECT=samsung-youtube-intelligence
@@ -290,12 +295,13 @@ The project uses a persistent local ChromaDB vector database stored in:
 data/vector_db/
 ```
 
-It contains two independent collections:
+It contains three independent collections:
 
 | Collection | Purpose |
 | --- | --- |
 | `feedback_comments` | Semantic retrieval over processed YouTube comments |
 | `strategy_evidence` | Semantic retrieval over product strategy evidence |
+| `samsung_documents` | User-uploaded Samsung documents for cited conversational Q&A |
 
 For each query, ChromaDB retrieves the most semantically relevant candidates.
 The feedback and strategy RAG pipelines then apply their own specialized hybrid
@@ -305,6 +311,26 @@ priority, and engagement.
 The `.npy` files in `data/processed/` are reusable embedding-generation caches.
 ChromaDB is the searchable persistent vector store used by the live advisor and
 offline RAG pipelines.
+
+## Samsung Document RAG
+
+Open `/documents` to upload Samsung-oriented PDF, DOCX, TXT, Markdown, CSV,
+JSON, or HTML files and chat with their contents. The document service:
+
+- rejects documents that do not contain recognizable Samsung, Galaxy, product,
+  customer-feedback, or strategy signals
+- extracts and chunks readable text, embeds it with `all-MiniLM-L6-v2`, and
+  stores it in the separate `samsung_documents` ChromaDB collection
+- retrieves relevant chunks and generates conversational answers grounded only
+  in the uploaded evidence
+- cites retrieved chunks as `[Doc N]` and exposes the answer provider,
+  confidence, and evidence in the dashboard
+- supports document inventory and deletion without affecting Feedback RAG or
+  Strategy RAG
+
+Original uploads are stored under `data/uploaded_documents/` and ignored by
+Git. Install `pypdf` and `python-docx` through `requirements.txt` for PDF and
+DOCX extraction.
 
 ## Live Agent Orchestration
 
@@ -322,13 +348,57 @@ the previous deterministic keyword router as an emergency fallback:
 | `keyword_agent` | Returns TF-IDF keywords |
 | `feedback_rag_agent` | Retrieves grounded customer-feedback evidence from ChromaDB |
 | `strategy_rag_agent` | Retrieves grounded strategy evidence from ChromaDB |
+| `web_augmented_strategy_rag` | Optional strategy route combining internal evidence with controlled current web research |
 
 Every live response includes the selected agent, normalized query, routing
 confidence, routing method, router provider, router model, fallback status,
 reason, and a dashboard route summary. The
-analytical tools answer directly from processed artifacts, while the two RAG
-agents perform vector retrieval, specialized hybrid reranking, and grounded LLM
-generation.
+analytical tools answer directly from processed artifacts, while the two core
+RAG agents perform vector retrieval, specialized hybrid reranking, and grounded
+LLM generation.
+
+The main `/advisor` chat unifies all capabilities in one Samsung-oriented
+interface. Users can upload Samsung documents directly beside the message box.
+Uploads are converted to text, chunked, indexed, and remembered automatically;
+there is no manual agent or RAG mode selector.
+
+The LangChain router automatically chooses analytics, Feedback RAG, Strategy
+RAG, web-augmented strategy, or Samsung Document RAG. It selects
+`samsung_document_rag` when a request explicitly refers to an uploaded document
+or when a natural follow-up clearly refers to an available uploaded file.
+Uploaded-document answers appear in the same conversation with `[Doc N]`
+citations and retrievable evidence.
+
+## Optional Web-Augmented Strategy RAG
+
+`web_augmented_strategy_rag` is an advanced extension and does not replace the
+existing Strategy RAG. It activates only when a strategy request explicitly
+needs current external context, including latest Samsung news, UAE pricing or
+offers, competitor or iPhone offers, current market trends, regional market
+context, or positioning and pricing for the next Ultra.
+
+Normal customer-feedback and internal strategy questions continue using their
+existing routes. A deterministic routing guard prevents accidental web
+activation.
+
+The advanced route runs three traced stages:
+
+```text
+Customer Strategist Agent
+-> existing internal Strategy RAG and YouTube evidence
+
+Market Research Agent
+-> capped DDGS web search and trusted-domain filtering
+-> title, URL, snippet, date when available, retrieved_at, relevance_reason
+
+Strategy Synthesizer
+-> internal evidence plus external evidence
+-> validated recommendation, risks/trade-offs, and confidence
+```
+
+External research is capped at five results by default. Set
+`WEB_AUGMENTED_STRATEGY_ENABLED=false` to disable this optional route; matching
+questions will then use the existing internal Strategy RAG.
 
 ## LangSmith Tracing
 
@@ -349,6 +419,10 @@ YouTube Intelligence Advisor Request
 -> Grounded answer generation
 -> OpenAI or local Llama model call
 ```
+
+For the optional advanced route, the trace additionally includes `Customer
+Strategist Agent`, `Market Research Agent - Web Retrieval`, `Strategy
+Synthesizer`, and the final `Web-Augmented Strategy RAG` span.
 
 Large DataFrames, embedding arrays, and retrieval candidate lists are summarized
 before tracing. Prompts, user queries, and retrieved evidence may still be sent
@@ -402,7 +476,22 @@ Topic labels are manually interpreted based on the top words generated by LDA. B
 
 ## MLflow Monitoring
 
-MLflow logs metrics and output files from the pipeline, including:
+MLflow uses a SQLite backend at `data/mlflow.db` and serves two experiments:
+
+- `Samsung_Live_Advisor_Tracing` contains one trace for every live advisor or
+  document request, with nested router, agent, retrieval, web-search,
+  synthesis, and LLM-generation spans.
+- `Samsung_YouTube_RAG_Monitoring` contains batch pipeline runs, evaluation
+  metrics, parameters, and artifacts.
+
+Every live trace records request/response previews, selected route, LLM
+provider, fallback use, status, latency, and nested stage durations. Short-lived
+Python bridge processes explicitly flush traces before exiting.
+
+The `/monitoring` dashboard reads real MLflow data from the SQLite tracking
+store rather than hardcoded mock experiment values.
+
+MLflow logs metrics and output files from the batch pipeline, including:
 
 - total processed comments
 - sentiment distribution
@@ -419,11 +508,14 @@ Run monitoring with:
 python src\mlflow_monitoring.py
 ```
 
-MLflow tracking files are saved in:
+Start the full MLflow UI with:
 
-```text
-mlruns/
+```powershell
+npm run mlflow:ui
 ```
+
+Then open `http://127.0.0.1:5000`. Live tracing is enabled by default and can be
+disabled with `MLFLOW_TRACING_ENABLED=false`.
 
 ## Dashboard Direction
 

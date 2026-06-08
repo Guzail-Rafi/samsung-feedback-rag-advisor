@@ -2,6 +2,11 @@ import os
 import pandas as pd
 from dotenv import load_dotenv
 from openai_client import generate_chat_response, get_openai_client
+from web_strategy_policy import (
+    detect_external_research_focus,
+    is_feedback_request,
+    should_use_web_augmented_strategy,
+)
 
 
 # =========================
@@ -29,7 +34,30 @@ AVAILABLE_AGENTS = [
     "keyword_agent",
     "feedback_rag_agent",
     "strategy_rag_agent",
+    "web_augmented_strategy_rag",
+    "samsung_document_rag",
 ]
+
+DOCUMENT_TERMS = [
+    "uploaded document", "uploaded documents", "uploaded file", "uploaded files",
+    "uploaded report", "uploaded reports", "uploaded pdf", "uploaded pdfs",
+    "the document", "this document", "the pdf", "this pdf", "the report",
+    "this report", "document evidence", "from my file", "from the file",
+    "according to the document", "summarize the document", "summarize my document",
+]
+
+
+def is_document_request(user_query):
+    query = user_query.lower()
+    explicit_term = any(term in query for term in DOCUMENT_TERMS)
+    uploaded_reference = "uploaded" in query and any(
+        noun in query for noun in ["document", "file", "pdf", "report"]
+    )
+    document_action = any(
+        action in query
+        for action in ["summarize", "explain", "compare", "according to", "what does", "what is in"]
+    ) and any(noun in query for noun in ["document", "file", "pdf", "report"])
+    return explicit_term or uploaded_reference or document_action
 
 STRATEGY_TERMS = [
     "s27", "roadmap", "strategy", "design", "make samsung",
@@ -69,13 +97,78 @@ KEYWORD_TERMS = [
 ]
 
 
-def route_intent_rules(user_query):
+def route_intent_rules(user_query, document_names=None):
     """
     Returns an explainable routing decision shared by the offline router and
     the live dashboard advisor.
     """
 
     query = user_query.lower()
+
+    document_follow_up = bool(document_names) and any(
+        phrase in query
+        for phrase in [
+            "summarize it",
+            "explain it",
+            "what does it say",
+            "what does it recommend",
+            "what is in it",
+            "compare them",
+            "summarize them",
+            "explain them",
+        ]
+    )
+
+    if is_document_request(user_query) or document_follow_up:
+        return {
+            "selected_agent": "samsung_document_rag",
+            "reason": "Matched an explicit uploaded Samsung document request.",
+            "matched_terms": [term for term in DOCUMENT_TERMS if term in query],
+            "normalized_query": user_query,
+            "rewritten_query": user_query,
+            "needs_external_research": False,
+            "external_research_focus": [],
+            "confidence": 1.0,
+            "routing_method": "deterministic_fallback",
+            "router_provider": "deterministic_rules",
+            "router_model": None,
+            "router_fallback_used": False,
+            "router_fallback_reason": None,
+        }
+
+    if is_feedback_request(user_query):
+        return {
+            "selected_agent": "feedback_rag_agent",
+            "reason": "Matched a grounded user-opinion or user-feedback request.",
+            "matched_terms": [],
+            "normalized_query": user_query,
+            "rewritten_query": user_query,
+            "needs_external_research": False,
+            "external_research_focus": [],
+            "confidence": 1.0,
+            "routing_method": "deterministic_fallback",
+            "router_provider": "deterministic_rules",
+            "router_model": None,
+            "router_fallback_used": False,
+            "router_fallback_reason": None,
+        }
+
+    if should_use_web_augmented_strategy(user_query):
+        return {
+            "selected_agent": "web_augmented_strategy_rag",
+            "reason": "Matched a strategy request that explicitly requires current external context.",
+            "matched_terms": detect_external_research_focus(user_query),
+            "normalized_query": user_query,
+            "rewritten_query": user_query,
+            "needs_external_research": True,
+            "external_research_focus": detect_external_research_focus(user_query),
+            "confidence": 1.0,
+            "routing_method": "deterministic_fallback",
+            "router_provider": "deterministic_rules",
+            "router_model": None,
+            "router_fallback_used": False,
+            "router_fallback_reason": None,
+        }
 
     routing_rules = [
         ("strategy_rag_agent", STRATEGY_TERMS, "Matched a product strategy or roadmap request."),
@@ -93,6 +186,9 @@ def route_intent_rules(user_query):
                 "reason": reason,
                 "matched_terms": [term for term in terms if term in query],
                 "normalized_query": user_query,
+                "rewritten_query": user_query,
+                "needs_external_research": False,
+                "external_research_focus": [],
                 "confidence": 1.0,
                 "routing_method": "deterministic_fallback",
                 "router_provider": "deterministic_rules",
@@ -106,6 +202,9 @@ def route_intent_rules(user_query):
         "reason": "No aggregate-analysis intent matched, so grounded feedback RAG was selected.",
         "matched_terms": [],
         "normalized_query": user_query,
+        "rewritten_query": user_query,
+        "needs_external_research": False,
+        "external_research_focus": [],
         "confidence": 0.5,
         "routing_method": "deterministic_fallback",
         "router_provider": "deterministic_rules",
@@ -115,21 +214,21 @@ def route_intent_rules(user_query):
     }
 
 
-def route_intent(user_query, use_llm=True):
+def route_intent(user_query, use_llm=True, document_names=None):
     """
     Uses LangChain structured-output routing by default. The deterministic
     router remains available as a reliable fallback if the LLM call fails.
     """
 
     if not use_llm:
-        return route_intent_rules(user_query)
+        return route_intent_rules(user_query, document_names=document_names)
 
     try:
         from langchain_router import route_with_langchain
 
-        return route_with_langchain(user_query)
+        return route_with_langchain(user_query, document_names=document_names)
     except Exception as error:
-        fallback = route_intent_rules(user_query)
+        fallback = route_intent_rules(user_query, document_names=document_names)
         fallback["reason"] = (
             f"LangChain LLM routing failed ({error.__class__.__name__}); "
             f"{fallback['reason']}"
@@ -410,6 +509,16 @@ def run_agent(query):
         answer = keyword_agent(query)
     elif intent == "strategy_rag_agent":
         answer = strategy_rag_agent(query)
+    elif intent == "web_augmented_strategy_rag":
+        answer = (
+            "The web-augmented strategy route is available through the live advisor, "
+            "where current web evidence can be retrieved and cited."
+        )
+    elif intent == "samsung_document_rag":
+        answer = (
+            "The Samsung document route is available through the live advisor, "
+            "where uploaded document evidence can be retrieved and cited."
+        )
     elif intent == "feedback_rag_agent":
         answer = rag_qa_agent(query)
     else:

@@ -1,5 +1,6 @@
 chromadb
 deepeval
+ddgs
 google-api-python-client
 langdetect
 langchain
@@ -11,6 +12,8 @@ numpy
 openai
 ollama
 pandas
+pypdf
+python-docx
 pyspellchecker
 python-dotenv
 scikit-learn

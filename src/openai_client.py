@@ -4,6 +4,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from langsmith import traceable
+
+from mlflow_tracing import mlflow_span
 from langsmith.wrappers import wrap_openai
 
 from tracing_utils import sanitize_trace_inputs, sanitize_trace_outputs, tracing_enabled
@@ -142,6 +144,7 @@ def get_openai_client():
     return client
 
 
+@mlflow_span("Local Llama Generation", "LLM")
 @traceable(
     name="Local Llama Generation",
     run_type="llm",
@@ -176,6 +179,7 @@ def generate_llama_response(messages, temperature=0.2, max_completion_tokens=700
     return content
 
 
+@mlflow_span("Primary LLM Generation with Fallback", "LLM")
 def generate_chat_response(client, messages, temperature=0.2, max_completion_tokens=700):
     openai_error = None
 

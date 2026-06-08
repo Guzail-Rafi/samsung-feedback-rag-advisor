@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "mlflow:ui": "python -m mlflow server --backend-store-uri sqlite:///data/mlflow.db --default-artifact-root ./mlartifacts --host 127.0.0.1 --port 5000"
   },
   "dependencies": {
     "framer-motion": "^12.40.0",

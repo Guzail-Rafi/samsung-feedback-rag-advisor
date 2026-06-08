@@ -22,7 +22,7 @@ import {
 
 const navItems = [
   { href: "/", label: "Overview", icon: Home },
-  { href: "/advisor", label: "Strategy Chat", icon: Bot },
+  { href: "/advisor", label: "Samsung Chat", icon: Bot },
   { href: "/sentiment", label: "Sentiment", icon: MessageSquare },
   { href: "/issues", label: "Issues", icon: Target },
   { href: "/topics", label: "Topics", icon: Brain },
