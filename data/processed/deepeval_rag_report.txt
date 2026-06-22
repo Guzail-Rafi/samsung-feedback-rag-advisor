@@ -13,21 +13,25 @@ Methodology:
 
 Summary by RAG system and metric:
   rag_system                    metric  evaluated_cases  average_score  minimum_score  pass_rate
-feedback_rag     AnswerRelevancyMetric                1         0.9167         0.9167        1.0
-feedback_rag ContextualRelevancyMetric                1         0.5652         0.5652        0.0
-feedback_rag        FaithfulnessMetric                1         1.0000         1.0000        1.0
-strategy_rag     AnswerRelevancyMetric                1         1.0000         1.0000        1.0
-strategy_rag ContextualRelevancyMetric                1         0.8718         0.8718        1.0
-strategy_rag        FaithfulnessMetric                1         1.0000         1.0000        1.0
+feedback_rag     AnswerRelevancyMetric                5         0.8911         0.8000        1.0
+feedback_rag ContextualRelevancyMetric                5         0.5880         0.5000        0.2
+feedback_rag        FaithfulnessMetric                5         0.9510         0.8462        1.0
+strategy_rag     AnswerRelevancyMetric                5         1.0000         1.0000        1.0
+strategy_rag ContextualRelevancyMetric                5         0.8695         0.6061        0.8
+strategy_rag        FaithfulnessMetric                5         1.0000         1.0000        1.0
 
-Overall average score: 0.8923
+Overall average score: 0.8833
 Overall metric pass rate: 83.3%
 Metric completion rate: 100.0%
 Metric errors: 0
 
 Lowest-scoring cases for qualitative inspection:
-  rag_system                                  query                    metric    score                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   reason
-feedback_rag Why are users unhappy about the S-Pen? ContextualRelevancyMetric 0.565217 The score is 0.57 because while the retrieval context includes relevant statements about the removal of the Bluetooth functionality from the S-Pen, such as 'Samsung found out that less than 1% of its users used the Bluetooth feature and therefore removed it' and 'They removed the bluetooth functionality from the S-Pen,' many other statements are irrelevant, like 'The statement about the headphone jack removal is unrelated to the S-Pen' and 'The entire reason of the S Pen's existence was to write and use it when you couldn't use your fingers,' which do not address user dissatisfaction directly.
+  rag_system                                                     query                    metric    score                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           reason
+feedback_rag          What evidence is there about display durability? ContextualRelevancyMetric 0.500000                                                                                                                                                   The score is 0.50 because while many statements like 'curved displays are shit' and 'accidental touches and very prone to cracking' provide direct evidence about display durability, a significant portion of the context discusses unrelated topics such as 'Fake Products' and 'Camera Concerns' and sentiments that do not address durability, reducing overall relevancy.
+feedback_rag                   What complaints mention camera quality? ContextualRelevancyMetric 0.500000                                                                                      The score is 0.50 because while the retrieval context includes relevant statements such as 'fake samsung rear camera's photo quality is like iphone front camera's one' and multiple mentions of 'Issue category: Camera', it also contains many irrelevant statements like 'Sentiment: negative' and 'Topic: Upgrade Cycle / Yearly Phone Changes' that do not specifically address camera quality complaints, reducing overall relevancy.
+feedback_rag         What are users saying about Samsung battery life? ContextualRelevancyMetric 0.535714                                                                                   The score is 0.54 because while many statements like 'samsung's battery life is abysmal' and 'The Samsung Galaxy S25 falls short in terms of battery performance' are relevant, the retrieval context also contains numerous irrelevant points such as 'The topic Fake Products / Screen / Camera Concerns is unrelated to battery life' and 'The video title does not specifically mention battery life,' which dilute the overall relevancy.
+strategy_rag What features should Samsung prioritize in the S27 Ultra? ContextualRelevancyMetric 0.606061                                                                                                   The score is 0.61 because while many statements focus on business impact and user opinions unrelated to feature prioritization, relevant points such as 'Users are concerned about removed or reduced S-Pen functionality, especially Bluetooth support' and 'Improve camera consistency, low-light quality, video processing, and camera app usability' directly address features Samsung should prioritize in the S27 Ultra.
+feedback_rag                    Why are users unhappy about the S-Pen? ContextualRelevancyMetric 0.684211 The score is 0.68 because while many statements like 'less than 1 users use bluetooth functionality in s pen so we removed it.' and 'Samsung found out that less than 1% of its users used the Bluetooth feature and therefore removed it' directly address user dissatisfaction with the S-Pen, several irrelevant points such as 'The statement about the headphone jack removal is unrelated to the S-Pen' and 'The video title does not provide information about user unhappiness with the S-Pen' reduce overall relevancy.
 
 Report-ready interpretation:
 - Retrieval ablation results explain which retrieval components improve ranking quality.

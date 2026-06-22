@@ -1,7 +1,7 @@
 ﻿rag_system,metric,evaluated_cases,average_score,minimum_score,pass_rate
-feedback_rag,AnswerRelevancyMetric,1,0.9167,0.9167,1.0
-feedback_rag,ContextualRelevancyMetric,1,0.5652,0.5652,0.0
-feedback_rag,FaithfulnessMetric,1,1.0,1.0,1.0
-strategy_rag,AnswerRelevancyMetric,1,1.0,1.0,1.0
-strategy_rag,ContextualRelevancyMetric,1,0.8718,0.8718,1.0
-strategy_rag,FaithfulnessMetric,1,1.0,1.0,1.0
+feedback_rag,AnswerRelevancyMetric,5,0.8911,0.8,1.0
+feedback_rag,ContextualRelevancyMetric,5,0.588,0.5,0.2
+feedback_rag,FaithfulnessMetric,5,0.951,0.8462,1.0
+strategy_rag,AnswerRelevancyMetric,5,1.0,1.0,1.0
+strategy_rag,ContextualRelevancyMetric,5,0.8695,0.6061,0.8
+strategy_rag,FaithfulnessMetric,5,1.0,1.0,1.0

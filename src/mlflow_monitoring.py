@@ -221,6 +221,10 @@ def main():
             "data/processed/comments_with_sentiment_topics.csv",
             "data/processed/topic_keywords_by_sentiment.csv",
             "data/processed/rag_retrieval_results.csv",
+            "data/processed/user_personas.csv",
+            "data/processed/user_segmentation_assignments.csv",
+            "data/processed/user_segmentation_evaluation.csv",
+            "data/processed/user_segmentation_dashboard.json",
         ]
 
         for path in artifact_files:

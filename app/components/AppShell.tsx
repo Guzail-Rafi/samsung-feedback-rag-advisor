@@ -18,6 +18,7 @@ import {
   ShieldCheck,
   Tags,
   Target,
+  UsersRound,
 } from "lucide-react";
 
 const navItems = [
@@ -28,6 +29,7 @@ const navItems = [
   { href: "/topics", label: "Topics", icon: Brain },
   { href: "/keywords", label: "Keywords", icon: Hash },
   { href: "/entities", label: "Entities", icon: Tags },
+  { href: "/segmentation", label: "User Personas", icon: UsersRound },
   { href: "/rag", label: "Feedback RAG", icon: FileQuestion },
   { href: "/strategy", label: "Strategy RAG", icon: Lightbulb },
   { href: "/refinement", label: "Roadmap Refinement", icon: RefreshCw },

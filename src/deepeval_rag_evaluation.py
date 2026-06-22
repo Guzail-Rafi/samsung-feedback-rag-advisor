@@ -21,6 +21,7 @@ from web_rag_bridge import (
     run_feedback_rag,
     run_strategy_rag_live,
 )
+from web_strategy_policy import classify_product_lifecycle
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -132,7 +133,12 @@ def generate_case(rag_system, query):
         result = run_feedback_rag(query, query, "No prior conversation.")
         retrieval_context = format_feedback_context(result["evidence"])
     elif rag_system == "strategy_rag":
-        result = run_strategy_rag_live(query, query, "No prior conversation.")
+        result = run_strategy_rag_live(
+            query,
+            query,
+            "No prior conversation.",
+            classify_product_lifecycle(query),
+        )
         retrieval_context = format_strategy_context(result["evidence"])
     else:
         raise ValueError(f"Unsupported RAG system: {rag_system}")

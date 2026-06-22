@@ -13,6 +13,7 @@ CORE_STEPS = [
     ("Topic modeling", "topic_modeling.py"),
     ("Topic modeling by sentiment", "topic_modeling_by_sentiment.py"),
     ("NER extraction", "ner_extraction.py"),
+    ("User segmentation", "user_segmentation.py"),
 ]
 
 RAG_STEPS = [

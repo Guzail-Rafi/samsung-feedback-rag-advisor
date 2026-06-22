@@ -21,6 +21,7 @@ type AdvisorBridgeResponse = {
   mode?: string;
   confidence?: string;
   strategyGoal?: string;
+  productLifecycle?: unknown;
   contextualQuery?: string;
   memoryUsed?: boolean;
   routingReason?: string;
@@ -137,6 +138,7 @@ export async function POST(request: NextRequest) {
       mode: result.mode,
       confidence: result.confidence,
       strategyGoal: result.strategyGoal,
+      productLifecycle: result.productLifecycle,
       contextualQuery: result.contextualQuery,
       memoryUsed: result.memoryUsed,
       routingReason: result.routingReason,

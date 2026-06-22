@@ -1,388 +1,553 @@
 ﻿rag_system,query,metric,score,threshold,passed,judge_model,reason,error,retrieval_context_count,retrieval_score,generation_latency_ms,answer
-feedback_rag,Why are users unhappy about the S-Pen?,AnswerRelevancyMetric,0.9166666666666666,0.7,1,gpt-4.1-mini,"The score is 0.92 because the response mostly addresses why users are unhappy about the S-Pen, but includes a statement about the context of comments that doesn't directly relate to user dissatisfaction, preventing a perfect score.",,5,0.701,21314.2,"1. **Direct answer:**  
-Users seem unhappy about the S-Pen mainly because Samsung removed or reduced the **Bluetooth functionality**. Several comments say this feature was helpful and practical, and people are frustrated that it was taken away. Some users also worry this is part of a broader trend of Samsung **cutting S-Pen features over time**.
-
-2. **Key evidence-based points:**  
-- Many comments specifically complain about the **removal of Bluetooth in the S-Pen**.  
-- Users describe the feature as **useful, practical, and worth keeping**.  
-- Some commenters think Samsung may be **reducing features to save resources or cut costs**.  
-- A few comments suggest concern that Samsung could eventually **remove the S-Pen entirely**.  
-- There is also a mixed view: one comment says the S-Pen is **not useless** and that people are being “dramatic,” but still says the Bluetooth feature **should have been kept**.
-
-3. **Confidence explanation:**  
-Confidence is high because multiple retrieved comments directly mention the same complaint: the loss of Bluetooth functionality and concern about feature removal.
-
-4. **Follow-up relation:**  
-This is the main topic of the retrieved comments, so there is no prior turn to connect it to."
-feedback_rag,Why are users unhappy about the S-Pen?,FaithfulnessMetric,1.0,0.7,1,gpt-4.1-mini,The score is 1.00 because there are no contradictions; the actual output fully aligns with the retrieval context. Great job maintaining accuracy!,,5,0.701,21314.2,"1. **Direct answer:**  
-Users seem unhappy about the S-Pen mainly because Samsung removed or reduced the **Bluetooth functionality**. Several comments say this feature was helpful and practical, and people are frustrated that it was taken away. Some users also worry this is part of a broader trend of Samsung **cutting S-Pen features over time**.
-
-2. **Key evidence-based points:**  
-- Many comments specifically complain about the **removal of Bluetooth in the S-Pen**.  
-- Users describe the feature as **useful, practical, and worth keeping**.  
-- Some commenters think Samsung may be **reducing features to save resources or cut costs**.  
-- A few comments suggest concern that Samsung could eventually **remove the S-Pen entirely**.  
-- There is also a mixed view: one comment says the S-Pen is **not useless** and that people are being “dramatic,” but still says the Bluetooth feature **should have been kept**.
-
-3. **Confidence explanation:**  
-Confidence is high because multiple retrieved comments directly mention the same complaint: the loss of Bluetooth functionality and concern about feature removal.
-
-4. **Follow-up relation:**  
-This is the main topic of the retrieved comments, so there is no prior turn to connect it to."
-feedback_rag,Why are users unhappy about the S-Pen?,ContextualRelevancyMetric,0.5652173913043478,0.7,0,gpt-4.1-mini,"The score is 0.57 because while the retrieval context includes relevant statements about the removal of the Bluetooth functionality from the S-Pen, such as 'Samsung found out that less than 1% of its users used the Bluetooth feature and therefore removed it' and 'They removed the bluetooth functionality from the S-Pen,' many other statements are irrelevant, like 'The statement about the headphone jack removal is unrelated to the S-Pen' and 'The entire reason of the S Pen's existence was to write and use it when you couldn't use your fingers,' which do not address user dissatisfaction directly.",,5,0.701,21314.2,"1. **Direct answer:**  
-Users seem unhappy about the S-Pen mainly because Samsung removed or reduced the **Bluetooth functionality**. Several comments say this feature was helpful and practical, and people are frustrated that it was taken away. Some users also worry this is part of a broader trend of Samsung **cutting S-Pen features over time**.
-
-2. **Key evidence-based points:**  
-- Many comments specifically complain about the **removal of Bluetooth in the S-Pen**.  
-- Users describe the feature as **useful, practical, and worth keeping**.  
-- Some commenters think Samsung may be **reducing features to save resources or cut costs**.  
-- A few comments suggest concern that Samsung could eventually **remove the S-Pen entirely**.  
-- There is also a mixed view: one comment says the S-Pen is **not useless** and that people are being “dramatic,” but still says the Bluetooth feature **should have been kept**.
-
-3. **Confidence explanation:**  
-Confidence is high because multiple retrieved comments directly mention the same complaint: the loss of Bluetooth functionality and concern about feature removal.
-
-4. **Follow-up relation:**  
-This is the main topic of the retrieved comments, so there is no prior turn to connect it to."
-strategy_rag,How should Samsung design the S27 Ultra for maximum customer satisfaction?,AnswerRelevancyMetric,1.0,0.7,1,gpt-4.1-mini,"The score is 1.00 because the response fully addresses the question without any irrelevant information, providing clear and focused guidance on designing the Samsung S27 Ultra for maximum customer satisfaction. Great job keeping the answer concise and on point!",,5,0.767,12330.02,"1. **Direct strategic recommendation**
-
-Design the **S27 Ultra as a “no-compromise Ultra”** by prioritizing the features customers most clearly associate with flagship value: **camera leadership, restored S-Pen functionality, stronger battery/charging, and improved display durability**. The retrieved evidence shows repeated dissatisfaction when Samsung removes or reduces core Ultra features, so the S27 Ultra should feel like a **clear upgrade rather than a trade-off**.
-
-2. **Top feature/product priorities**
-
-**Phase 1 priorities**
-- **Camera**
-  - Improve camera consistency
-  - Improve low-light quality
-  - Improve video processing
-  - Improve camera app usability
-  - Preserve or restore strong zoom leadership, since users explicitly complain about losing 10x zoom and ask for stronger telephoto hardware
-- **S-Pen**
-  - Restore advanced S-Pen features such as **Bluetooth gestures, remote shutter, and productivity tools**
-- **Battery / Charging**
-  - Improve battery capacity
-  - Improve charging speed
-  - Improve thermal efficiency
-  - Improve real-world battery optimization
-
-**Phase 2 priorities**
-- **Display / Screen**
-  - Improve display durability
-  - Reduce green-line risk
-  - Improve screen protection
-  - Refine privacy display features
-
-**Phase 3 priorities**
-- Reinforce Ultra differentiation through the combination of:
-  - premium camera hardware
-  - advanced S-Pen productivity
-  - stronger battery performance
-  - durable display experience
-
-**Phase 4 priorities**
-- Use the above improvements as the basis for premium positioning and loyalty retention among Ultra and Note-series users.
-
-3. **Reasoning from retrieved customer feedback evidence**
-
-The evidence is consistent across multiple high-priority signals:
-
-- **Camera dissatisfaction is a major purchase driver.**
-  - Users complain about the loss of **10x optical zoom** and call for better flagship camera performance.
-  - They specifically ask for better **camera consistency, low-light quality, video processing, and camera app usability**.
-  - Camera improvements are described as having **high purchase influence**, especially for flagship buyers.
-
-- **S-Pen removal or reduction creates strong negative sentiment.**
-  - Users explicitly say they miss **Bluetooth S-Pen features** and remote shutter functionality.
-  - Several comments frame S-Pen downgrades as a reason they may stop buying Samsung phones.
-  - The evidence identifies this as a **high loyalty impact** issue among Ultra and Note-series users.
-
-- **Battery and charging remain important satisfaction factors.**
-  - Users want **longer real-world battery life**, better charging, and fewer power-related compromises.
-  - The evidence says this has **high customer satisfaction impact** and is a strong premium value signal.
-
-- **Display trust and durability matter.**
-  - Users mention **green lines, screen protection, privacy display, and accidental touch concerns**.
-  - The evidence recommends improving **display durability** and **screen protection** to strengthen trust.
-
-Overall, the feedback suggests customers do not want incremental changes that remove beloved features. They want the S27 Ultra to restore and strengthen the traits that make an Ultra device feel special.
-
-4. **Expected impact on customer satisfaction or profit**
-
-**Customer satisfaction impact**
-- Highest impact comes from:
-  - restoring S-Pen functionality
-  - improving camera performance and zoom credibility
-  - improving battery life and charging
-  - improving display durability and trust
-- These changes directly address the strongest negative sentiment in the evidence and reduce the feeling that Samsung is “giving less with each iteration.”
-
-**Profit logic**
-- The evidence also supports premium positioning:
-  - Market camera upgrades as **premium creator features**
-  - Use enhanced S-Pen features as an **Ultra-exclusive differentiator**
-  - Position stronger battery life as a **premium productivity and gaming feature**
-  - Use stronger display durability and privacy display as **premium differentiators**
-
-This supports flagship pricing by making the S27 Ultra feel meaningfully distinct from lower tiers.
-
-5. **Risks or trade-offs**
-
-- **Feature restoration may increase cost and complexity**
-  - Restoring advanced S-Pen features and stronger camera hardware may raise bill of materials and product complexity.
-- **Too many compromises can damage trust**
-  - The evidence repeatedly shows that users react negatively when Samsung removes features they value.
-- **Camera and S-Pen expectations are especially sensitive**
-  - If the S27 Ultra does not clearly outperform prior Ultra models in these areas, customers may interpret it as another downgrade.
-- **Premium positioning must match real experience**
-  - Marketing alone will not solve dissatisfaction if the device still feels like a trade-off.
-
-6. **Updated phased product roadmap**
-
-**Phase 1: Core satisfaction fixes**
-- Restore advanced S-Pen features
-- Improve camera consistency, low-light quality, video processing, and app usability
-- Strengthen battery life, charging, and thermal efficiency
-
-**Phase 2: Trust and durability**
-- Improve display durability
-- Reduce green-line risk
-- Improve screen protection
-- Refine privacy display features
-
-**Phase 3: Ultra differentiation**
-- Ensure the S27 Ultra has a clearly superior camera identity
-- Make S-Pen productivity a visible Ultra-exclusive advantage
-- Reinforce battery and display reliability as premium strengths
-
-**Phase 4: Premium market positioning**
-- Present the S27 Ultra as the device for users who want:
-  - flagship camera performance
-  -"
-strategy_rag,How should Samsung design the S27 Ultra for maximum customer satisfaction?,FaithfulnessMetric,1.0,0.7,1,gpt-4.1-mini,The score is 1.00 because there are no contradictions; the actual output fully aligns with the retrieval context. Great job maintaining accuracy!,,5,0.767,12330.02,"1. **Direct strategic recommendation**
-
-Design the **S27 Ultra as a “no-compromise Ultra”** by prioritizing the features customers most clearly associate with flagship value: **camera leadership, restored S-Pen functionality, stronger battery/charging, and improved display durability**. The retrieved evidence shows repeated dissatisfaction when Samsung removes or reduces core Ultra features, so the S27 Ultra should feel like a **clear upgrade rather than a trade-off**.
-
-2. **Top feature/product priorities**
-
-**Phase 1 priorities**
-- **Camera**
-  - Improve camera consistency
-  - Improve low-light quality
-  - Improve video processing
-  - Improve camera app usability
-  - Preserve or restore strong zoom leadership, since users explicitly complain about losing 10x zoom and ask for stronger telephoto hardware
-- **S-Pen**
-  - Restore advanced S-Pen features such as **Bluetooth gestures, remote shutter, and productivity tools**
-- **Battery / Charging**
-  - Improve battery capacity
-  - Improve charging speed
-  - Improve thermal efficiency
-  - Improve real-world battery optimization
-
-**Phase 2 priorities**
-- **Display / Screen**
-  - Improve display durability
-  - Reduce green-line risk
-  - Improve screen protection
-  - Refine privacy display features
-
-**Phase 3 priorities**
-- Reinforce Ultra differentiation through the combination of:
-  - premium camera hardware
-  - advanced S-Pen productivity
-  - stronger battery performance
-  - durable display experience
-
-**Phase 4 priorities**
-- Use the above improvements as the basis for premium positioning and loyalty retention among Ultra and Note-series users.
-
-3. **Reasoning from retrieved customer feedback evidence**
-
-The evidence is consistent across multiple high-priority signals:
-
-- **Camera dissatisfaction is a major purchase driver.**
-  - Users complain about the loss of **10x optical zoom** and call for better flagship camera performance.
-  - They specifically ask for better **camera consistency, low-light quality, video processing, and camera app usability**.
-  - Camera improvements are described as having **high purchase influence**, especially for flagship buyers.
-
-- **S-Pen removal or reduction creates strong negative sentiment.**
-  - Users explicitly say they miss **Bluetooth S-Pen features** and remote shutter functionality.
-  - Several comments frame S-Pen downgrades as a reason they may stop buying Samsung phones.
-  - The evidence identifies this as a **high loyalty impact** issue among Ultra and Note-series users.
-
-- **Battery and charging remain important satisfaction factors.**
-  - Users want **longer real-world battery life**, better charging, and fewer power-related compromises.
-  - The evidence says this has **high customer satisfaction impact** and is a strong premium value signal.
-
-- **Display trust and durability matter.**
-  - Users mention **green lines, screen protection, privacy display, and accidental touch concerns**.
-  - The evidence recommends improving **display durability** and **screen protection** to strengthen trust.
-
-Overall, the feedback suggests customers do not want incremental changes that remove beloved features. They want the S27 Ultra to restore and strengthen the traits that make an Ultra device feel special.
-
-4. **Expected impact on customer satisfaction or profit**
-
-**Customer satisfaction impact**
-- Highest impact comes from:
-  - restoring S-Pen functionality
-  - improving camera performance and zoom credibility
-  - improving battery life and charging
-  - improving display durability and trust
-- These changes directly address the strongest negative sentiment in the evidence and reduce the feeling that Samsung is “giving less with each iteration.”
-
-**Profit logic**
-- The evidence also supports premium positioning:
-  - Market camera upgrades as **premium creator features**
-  - Use enhanced S-Pen features as an **Ultra-exclusive differentiator**
-  - Position stronger battery life as a **premium productivity and gaming feature**
-  - Use stronger display durability and privacy display as **premium differentiators**
-
-This supports flagship pricing by making the S27 Ultra feel meaningfully distinct from lower tiers.
-
-5. **Risks or trade-offs**
-
-- **Feature restoration may increase cost and complexity**
-  - Restoring advanced S-Pen features and stronger camera hardware may raise bill of materials and product complexity.
-- **Too many compromises can damage trust**
-  - The evidence repeatedly shows that users react negatively when Samsung removes features they value.
-- **Camera and S-Pen expectations are especially sensitive**
-  - If the S27 Ultra does not clearly outperform prior Ultra models in these areas, customers may interpret it as another downgrade.
-- **Premium positioning must match real experience**
-  - Marketing alone will not solve dissatisfaction if the device still feels like a trade-off.
-
-6. **Updated phased product roadmap**
-
-**Phase 1: Core satisfaction fixes**
-- Restore advanced S-Pen features
-- Improve camera consistency, low-light quality, video processing, and app usability
-- Strengthen battery life, charging, and thermal efficiency
-
-**Phase 2: Trust and durability**
-- Improve display durability
-- Reduce green-line risk
-- Improve screen protection
-- Refine privacy display features
-
-**Phase 3: Ultra differentiation**
-- Ensure the S27 Ultra has a clearly superior camera identity
-- Make S-Pen productivity a visible Ultra-exclusive advantage
-- Reinforce battery and display reliability as premium strengths
-
-**Phase 4: Premium market positioning**
-- Present the S27 Ultra as the device for users who want:
-  - flagship camera performance
-  -"
-strategy_rag,How should Samsung design the S27 Ultra for maximum customer satisfaction?,ContextualRelevancyMetric,0.8717948717948718,0.7,1,gpt-4.1-mini,"The score is 0.87 because while some retrieval context statements like 'the downgrade of the s pen and not bringing back the 10x zoom is insulting' and 'Improve camera consistency, low-light quality, video processing, and camera app usability' are directly relevant to designing the S27 Ultra, several reasons for irrelevancy such as 'This statement compares previous models... and does not directly inform how Samsung should design the S27 Ultra' and 'Personal usage details do not inform design recommendations' reduce the overall relevancy.",,5,0.767,12330.02,"1. **Direct strategic recommendation**
-
-Design the **S27 Ultra as a “no-compromise Ultra”** by prioritizing the features customers most clearly associate with flagship value: **camera leadership, restored S-Pen functionality, stronger battery/charging, and improved display durability**. The retrieved evidence shows repeated dissatisfaction when Samsung removes or reduces core Ultra features, so the S27 Ultra should feel like a **clear upgrade rather than a trade-off**.
-
-2. **Top feature/product priorities**
-
-**Phase 1 priorities**
-- **Camera**
-  - Improve camera consistency
-  - Improve low-light quality
-  - Improve video processing
-  - Improve camera app usability
-  - Preserve or restore strong zoom leadership, since users explicitly complain about losing 10x zoom and ask for stronger telephoto hardware
-- **S-Pen**
-  - Restore advanced S-Pen features such as **Bluetooth gestures, remote shutter, and productivity tools**
-- **Battery / Charging**
-  - Improve battery capacity
-  - Improve charging speed
-  - Improve thermal efficiency
-  - Improve real-world battery optimization
-
-**Phase 2 priorities**
-- **Display / Screen**
-  - Improve display durability
-  - Reduce green-line risk
-  - Improve screen protection
-  - Refine privacy display features
-
-**Phase 3 priorities**
-- Reinforce Ultra differentiation through the combination of:
-  - premium camera hardware
-  - advanced S-Pen productivity
-  - stronger battery performance
-  - durable display experience
-
-**Phase 4 priorities**
-- Use the above improvements as the basis for premium positioning and loyalty retention among Ultra and Note-series users.
-
-3. **Reasoning from retrieved customer feedback evidence**
-
-The evidence is consistent across multiple high-priority signals:
-
-- **Camera dissatisfaction is a major purchase driver.**
-  - Users complain about the loss of **10x optical zoom** and call for better flagship camera performance.
-  - They specifically ask for better **camera consistency, low-light quality, video processing, and camera app usability**.
-  - Camera improvements are described as having **high purchase influence**, especially for flagship buyers.
-
-- **S-Pen removal or reduction creates strong negative sentiment.**
-  - Users explicitly say they miss **Bluetooth S-Pen features** and remote shutter functionality.
-  - Several comments frame S-Pen downgrades as a reason they may stop buying Samsung phones.
-  - The evidence identifies this as a **high loyalty impact** issue among Ultra and Note-series users.
-
-- **Battery and charging remain important satisfaction factors.**
-  - Users want **longer real-world battery life**, better charging, and fewer power-related compromises.
-  - The evidence says this has **high customer satisfaction impact** and is a strong premium value signal.
-
-- **Display trust and durability matter.**
-  - Users mention **green lines, screen protection, privacy display, and accidental touch concerns**.
-  - The evidence recommends improving **display durability** and **screen protection** to strengthen trust.
-
-Overall, the feedback suggests customers do not want incremental changes that remove beloved features. They want the S27 Ultra to restore and strengthen the traits that make an Ultra device feel special.
-
-4. **Expected impact on customer satisfaction or profit**
-
-**Customer satisfaction impact**
-- Highest impact comes from:
-  - restoring S-Pen functionality
-  - improving camera performance and zoom credibility
-  - improving battery life and charging
-  - improving display durability and trust
-- These changes directly address the strongest negative sentiment in the evidence and reduce the feeling that Samsung is “giving less with each iteration.”
-
-**Profit logic**
-- The evidence also supports premium positioning:
-  - Market camera upgrades as **premium creator features**
-  - Use enhanced S-Pen features as an **Ultra-exclusive differentiator**
-  - Position stronger battery life as a **premium productivity and gaming feature**
-  - Use stronger display durability and privacy display as **premium differentiators**
-
-This supports flagship pricing by making the S27 Ultra feel meaningfully distinct from lower tiers.
-
-5. **Risks or trade-offs**
-
-- **Feature restoration may increase cost and complexity**
-  - Restoring advanced S-Pen features and stronger camera hardware may raise bill of materials and product complexity.
-- **Too many compromises can damage trust**
-  - The evidence repeatedly shows that users react negatively when Samsung removes features they value.
-- **Camera and S-Pen expectations are especially sensitive**
-  - If the S27 Ultra does not clearly outperform prior Ultra models in these areas, customers may interpret it as another downgrade.
-- **Premium positioning must match real experience**
-  - Marketing alone will not solve dissatisfaction if the device still feels like a trade-off.
-
-6. **Updated phased product roadmap**
-
-**Phase 1: Core satisfaction fixes**
-- Restore advanced S-Pen features
-- Improve camera consistency, low-light quality, video processing, and app usability
-- Strengthen battery life, charging, and thermal efficiency
-
-**Phase 2: Trust and durability**
-- Improve display durability
-- Reduce green-line risk
-- Improve screen protection
-- Refine privacy display features
-
-**Phase 3: Ultra differentiation**
-- Ensure the S27 Ultra has a clearly superior camera identity
-- Make S-Pen productivity a visible Ultra-exclusive advantage
-- Reinforce battery and display reliability as premium strengths
-
-**Phase 4: Premium market positioning**
-- Present the S27 Ultra as the device for users who want:
-  - flagship camera performance
-  -"
+feedback_rag,Why are users unhappy about the S-Pen?,AnswerRelevancyMetric,1.0,0.7,1,gpt-4.1-mini,"The score is 1.00 because the response fully addresses the question without any irrelevant information, providing a clear and focused explanation about users' dissatisfaction with the S-Pen.",,5,0.701,72639.8,"Users appear unhappy about the S-Pen mainly because Samsung removed or reduced the Bluetooth functionality, which several comments describe as helpful and practical. Some users also see this as part of a wider pattern of Samsung cutting features, possibly to save resources or costs, and worry that the S-Pen may be phased out over time.
+
+Key evidence-based points:
+- The Bluetooth feature was specifically missed and described as useful for many people.
+- Some commenters believe the change was made to reduce resource use or cut costs.
+- Others link it to a broader sense that Samsung is gradually removing features from the Note/S-Pen experience.
+- A smaller number of comments argue the S-Pen is still useful and that the criticism is exaggerated, so the sentiment is mixed, but the negative reactions are clear.
+
+Confidence:
+High, because multiple retrieved comments directly mention frustration with the removed Bluetooth feature and concern about feature removal more broadly."
+feedback_rag,Why are users unhappy about the S-Pen?,FaithfulnessMetric,0.9090909090909091,0.7,1,gpt-4.1-mini,"The score is 0.91 because the actual output incorrectly suggests the Bluetooth feature was useful for many people, while the context states less than 1% of users used it, indicating limited usefulness.",,5,0.701,72639.8,"Users appear unhappy about the S-Pen mainly because Samsung removed or reduced the Bluetooth functionality, which several comments describe as helpful and practical. Some users also see this as part of a wider pattern of Samsung cutting features, possibly to save resources or costs, and worry that the S-Pen may be phased out over time.
+
+Key evidence-based points:
+- The Bluetooth feature was specifically missed and described as useful for many people.
+- Some commenters believe the change was made to reduce resource use or cut costs.
+- Others link it to a broader sense that Samsung is gradually removing features from the Note/S-Pen experience.
+- A smaller number of comments argue the S-Pen is still useful and that the criticism is exaggerated, so the sentiment is mixed, but the negative reactions are clear.
+
+Confidence:
+High, because multiple retrieved comments directly mention frustration with the removed Bluetooth feature and concern about feature removal more broadly."
+feedback_rag,Why are users unhappy about the S-Pen?,ContextualRelevancyMetric,0.6842105263157895,0.7,0,gpt-4.1-mini,"The score is 0.68 because while many statements like 'less than 1 users use bluetooth functionality in s pen so we removed it.' and 'Samsung found out that less than 1% of its users used the Bluetooth feature and therefore removed it' directly address user dissatisfaction with the S-Pen, several irrelevant points such as 'The statement about the headphone jack removal is unrelated to the S-Pen' and 'The video title does not provide information about user unhappiness with the S-Pen' reduce overall relevancy.",,5,0.701,72639.8,"Users appear unhappy about the S-Pen mainly because Samsung removed or reduced the Bluetooth functionality, which several comments describe as helpful and practical. Some users also see this as part of a wider pattern of Samsung cutting features, possibly to save resources or costs, and worry that the S-Pen may be phased out over time.
+
+Key evidence-based points:
+- The Bluetooth feature was specifically missed and described as useful for many people.
+- Some commenters believe the change was made to reduce resource use or cut costs.
+- Others link it to a broader sense that Samsung is gradually removing features from the Note/S-Pen experience.
+- A smaller number of comments argue the S-Pen is still useful and that the criticism is exaggerated, so the sentiment is mixed, but the negative reactions are clear.
+
+Confidence:
+High, because multiple retrieved comments directly mention frustration with the removed Bluetooth feature and concern about feature removal more broadly."
+feedback_rag,What are users saying about Samsung battery life?,AnswerRelevancyMetric,0.8,0.7,1,gpt-4.1-mini,"The score is 0.80 because the response addresses Samsung battery life but includes irrelevant details about iPhone 15 battery life, device heating, and fast charging, which detract from full relevance. However, it still provides useful insights on Samsung battery life, justifying the relatively high score.",,5,0.656,4618.54,"Users are saying Samsung battery life is generally disappointing, with several comments describing it as ""abysmal"" or saying the Galaxy S25 does not last a full day under moderate use. A recurring theme is that Samsung is prioritising slim design over battery capacity, and some users compare it unfavourably with the iPhone 15, saying the iPhone lasts longer under similar daily use.
+
+Key evidence-based points:
+- Battery endurance is a common complaint, especially on the S25.
+- Some users link poor battery life to Samsung's slim form factor and reduced capacity.
+- There are mentions of standby drain and heating during regular use.
+- A few comments are more neutral or speculative, suggesting future models may improve capacity or that battery capacity and battery life are not the same thing.
+- Fast charging is mentioned positively in one comment.
+
+Confidence: High, because the retrieved comments consistently focus on battery concerns, with only limited positive or neutral remarks.
+
+"
+feedback_rag,What are users saying about Samsung battery life?,FaithfulnessMetric,1.0,0.7,1,gpt-4.1-mini,The score is 1.00 because there are no contradictions; the actual output fully aligns with the retrieval context. Great job maintaining accuracy!,,5,0.656,4618.54,"Users are saying Samsung battery life is generally disappointing, with several comments describing it as ""abysmal"" or saying the Galaxy S25 does not last a full day under moderate use. A recurring theme is that Samsung is prioritising slim design over battery capacity, and some users compare it unfavourably with the iPhone 15, saying the iPhone lasts longer under similar daily use.
+
+Key evidence-based points:
+- Battery endurance is a common complaint, especially on the S25.
+- Some users link poor battery life to Samsung's slim form factor and reduced capacity.
+- There are mentions of standby drain and heating during regular use.
+- A few comments are more neutral or speculative, suggesting future models may improve capacity or that battery capacity and battery life are not the same thing.
+- Fast charging is mentioned positively in one comment.
+
+Confidence: High, because the retrieved comments consistently focus on battery concerns, with only limited positive or neutral remarks.
+
+"
+feedback_rag,What are users saying about Samsung battery life?,ContextualRelevancyMetric,0.5357142857142857,0.7,0,gpt-4.1-mini,"The score is 0.54 because while many statements like 'samsung's battery life is abysmal' and 'The Samsung Galaxy S25 falls short in terms of battery performance' are relevant, the retrieval context also contains numerous irrelevant points such as 'The topic Fake Products / Screen / Camera Concerns is unrelated to battery life' and 'The video title does not specifically mention battery life,' which dilute the overall relevancy.",,5,0.656,4618.54,"Users are saying Samsung battery life is generally disappointing, with several comments describing it as ""abysmal"" or saying the Galaxy S25 does not last a full day under moderate use. A recurring theme is that Samsung is prioritising slim design over battery capacity, and some users compare it unfavourably with the iPhone 15, saying the iPhone lasts longer under similar daily use.
+
+Key evidence-based points:
+- Battery endurance is a common complaint, especially on the S25.
+- Some users link poor battery life to Samsung's slim form factor and reduced capacity.
+- There are mentions of standby drain and heating during regular use.
+- A few comments are more neutral or speculative, suggesting future models may improve capacity or that battery capacity and battery life are not the same thing.
+- Fast charging is mentioned positively in one comment.
+
+Confidence: High, because the retrieved comments consistently focus on battery concerns, with only limited positive or neutral remarks.
+
+"
+feedback_rag,What complaints mention camera quality?,AnswerRelevancyMetric,0.9230769230769231,0.7,1,gpt-4.1-mini,"The score is 0.92 because the response mostly addresses camera quality complaints, but includes a statement about the conversation context that is irrelevant, preventing a perfect score.",,5,0.613,6116.57,"1. Direct answer
+
+The complaints about camera quality focus mainly on the front camera and overall photo quality. One comment says, ""fix the front camera guys, its really bad for video calls,"" and another says the rear camera photo quality on the fake Samsung is poor, comparing it unfavourably with an iPhone front camera. There is also a complaint that the real Samsung camera quality is worse than the fake one.
+
+2. Key evidence-based points
+
+- Front camera quality is described as ""really bad for video calls.""
+- Rear camera/photo quality is criticised as weak in one comparison with an iPhone front camera.
+- One commenter explicitly prefers the fake Samsung camera quality over the real Samsung camera quality.
+- A separate comment initially thought the camera quality was bad, though this was later explained as a low-resolution playback issue rather than the camera itself.
+- The evidence is not entirely negative: one comment says the camera quality is ""not too terrible for what it is,"" and another says it was ""good enough"" for video conferencing.
+
+3. Confidence explanation
+
+Confidence is high because several retrieved comments directly mention camera quality, including clear complaints about the front camera and photo quality. The evidence is mixed overall, but the complaint pattern is consistent.
+
+4. Relation to the previous topic
+
+There was no prior conversation, so this is the first topic raised."
+feedback_rag,What complaints mention camera quality?,FaithfulnessMetric,0.8461538461538461,0.7,1,gpt-4.1-mini,"The score is 0.85 because the actual output incorrectly suggests the fake Samsung rear camera has poor photo quality compared to an iPhone front camera, whereas the context states the fake Samsung camera has decent photo quality for its price and does not criticize it unfavorably.",,5,0.613,6116.57,"1. Direct answer
+
+The complaints about camera quality focus mainly on the front camera and overall photo quality. One comment says, ""fix the front camera guys, its really bad for video calls,"" and another says the rear camera photo quality on the fake Samsung is poor, comparing it unfavourably with an iPhone front camera. There is also a complaint that the real Samsung camera quality is worse than the fake one.
+
+2. Key evidence-based points
+
+- Front camera quality is described as ""really bad for video calls.""
+- Rear camera/photo quality is criticised as weak in one comparison with an iPhone front camera.
+- One commenter explicitly prefers the fake Samsung camera quality over the real Samsung camera quality.
+- A separate comment initially thought the camera quality was bad, though this was later explained as a low-resolution playback issue rather than the camera itself.
+- The evidence is not entirely negative: one comment says the camera quality is ""not too terrible for what it is,"" and another says it was ""good enough"" for video conferencing.
+
+3. Confidence explanation
+
+Confidence is high because several retrieved comments directly mention camera quality, including clear complaints about the front camera and photo quality. The evidence is mixed overall, but the complaint pattern is consistent.
+
+4. Relation to the previous topic
+
+There was no prior conversation, so this is the first topic raised."
+feedback_rag,What complaints mention camera quality?,ContextualRelevancyMetric,0.5,0.7,0,gpt-4.1-mini,"The score is 0.50 because while the retrieval context includes relevant statements such as 'fake samsung rear camera's photo quality is like iphone front camera's one' and multiple mentions of 'Issue category: Camera', it also contains many irrelevant statements like 'Sentiment: negative' and 'Topic: Upgrade Cycle / Yearly Phone Changes' that do not specifically address camera quality complaints, reducing overall relevancy.",,5,0.613,6116.57,"1. Direct answer
+
+The complaints about camera quality focus mainly on the front camera and overall photo quality. One comment says, ""fix the front camera guys, its really bad for video calls,"" and another says the rear camera photo quality on the fake Samsung is poor, comparing it unfavourably with an iPhone front camera. There is also a complaint that the real Samsung camera quality is worse than the fake one.
+
+2. Key evidence-based points
+
+- Front camera quality is described as ""really bad for video calls.""
+- Rear camera/photo quality is criticised as weak in one comparison with an iPhone front camera.
+- One commenter explicitly prefers the fake Samsung camera quality over the real Samsung camera quality.
+- A separate comment initially thought the camera quality was bad, though this was later explained as a low-resolution playback issue rather than the camera itself.
+- The evidence is not entirely negative: one comment says the camera quality is ""not too terrible for what it is,"" and another says it was ""good enough"" for video conferencing.
+
+3. Confidence explanation
+
+Confidence is high because several retrieved comments directly mention camera quality, including clear complaints about the front camera and photo quality. The evidence is mixed overall, but the complaint pattern is consistent.
+
+4. Relation to the previous topic
+
+There was no prior conversation, so this is the first topic raised."
+feedback_rag,What do users think about Galaxy AI and Gemini?,AnswerRelevancyMetric,0.8235294117647058,0.7,1,gpt-4.1-mini,"The score is 0.82 because the response mostly addresses user opinions about Galaxy AI and Gemini, but includes some meta-information that doesn't directly reflect user thoughts, preventing a higher score.",,5,0.667,4707.31,"Users' views are mixed, but the overall picture is that Gemini and Galaxy AI are seen as useful by some and unimportant or disappointing by others.
+
+Key evidence-based points:
+- Some users dismiss both outright, saying they ""don't care about gemini or ai assistants"" and that ""no one uses them"".
+- Others prefer Google's ecosystem, arguing that Gemini is better integrated with Google apps and that Samsung should use Google apps rather than its own.
+- Several comments are positive about Galaxy AI as part of Samsung's effort to compete with ChatGPT, Gemini and Copilot, and some say it is improving over time.
+- A few users are critical of Galaxy AI, describing it as ""just customized gemini ai"" and saying they were disappointed by the lack of innovation.
+- One comment suggests AI features, including Gemini, have been genuinely helpful for learning and improving daily life.
+
+Confidence: High. The retrieved comments directly address both Galaxy AI and Gemini, and the evidence is fairly clear, though sentiment is mixed rather than unanimous."
+feedback_rag,What do users think about Galaxy AI and Gemini?,FaithfulnessMetric,1.0,0.7,1,gpt-4.1-mini,The score is 1.00 because there are no contradictions; the actual output fully aligns with the retrieval context. Great job maintaining accuracy!,,5,0.667,4707.31,"Users' views are mixed, but the overall picture is that Gemini and Galaxy AI are seen as useful by some and unimportant or disappointing by others.
+
+Key evidence-based points:
+- Some users dismiss both outright, saying they ""don't care about gemini or ai assistants"" and that ""no one uses them"".
+- Others prefer Google's ecosystem, arguing that Gemini is better integrated with Google apps and that Samsung should use Google apps rather than its own.
+- Several comments are positive about Galaxy AI as part of Samsung's effort to compete with ChatGPT, Gemini and Copilot, and some say it is improving over time.
+- A few users are critical of Galaxy AI, describing it as ""just customized gemini ai"" and saying they were disappointed by the lack of innovation.
+- One comment suggests AI features, including Gemini, have been genuinely helpful for learning and improving daily life.
+
+Confidence: High. The retrieved comments directly address both Galaxy AI and Gemini, and the evidence is fairly clear, though sentiment is mixed rather than unanimous."
+feedback_rag,What do users think about Galaxy AI and Gemini?,ContextualRelevancyMetric,0.72,0.7,1,gpt-4.1-mini,"The score is 0.72 because while many statements like 'we don't care about gemini or ai assistants. no one uses them lol.' and 'Samsung is improving Galaxy AI every time since 2024.' directly reflect user opinions about Galaxy AI and Gemini, a significant portion of the context consists of unrelated metadata and video titles such as 'Topic: S-Pen / Bluetooth Removal' and 'Video: Introducing Galaxy S25 Ultra | Galaxy AI | Samsung' that do not provide user opinions, reducing overall relevancy.",,5,0.667,4707.31,"Users' views are mixed, but the overall picture is that Gemini and Galaxy AI are seen as useful by some and unimportant or disappointing by others.
+
+Key evidence-based points:
+- Some users dismiss both outright, saying they ""don't care about gemini or ai assistants"" and that ""no one uses them"".
+- Others prefer Google's ecosystem, arguing that Gemini is better integrated with Google apps and that Samsung should use Google apps rather than its own.
+- Several comments are positive about Galaxy AI as part of Samsung's effort to compete with ChatGPT, Gemini and Copilot, and some say it is improving over time.
+- A few users are critical of Galaxy AI, describing it as ""just customized gemini ai"" and saying they were disappointed by the lack of innovation.
+- One comment suggests AI features, including Gemini, have been genuinely helpful for learning and improving daily life.
+
+Confidence: High. The retrieved comments directly address both Galaxy AI and Gemini, and the evidence is fairly clear, though sentiment is mixed rather than unanimous."
+feedback_rag,What evidence is there about display durability?,AnswerRelevancyMetric,0.9090909090909091,0.7,1,gpt-4.1-mini,"The score is 0.91 because the response mostly addresses evidence about display durability, but includes a statement about the conversation context that is irrelevant, preventing a perfect score.",,5,0.461,4818.49,"1. Direct answer
+
+The evidence on display durability is mixed, but it leans negative. Several comments suggest concerns that curved displays are ""very prone to cracking"", and one says a screen durability test showed the screen performed worse than last year. There is also a practical suggestion that, if durability is the priority, a screen protector is the safer option.
+
+2. Key evidence-based points
+
+- One comment explicitly says curved displays are ""very prone to cracking"" and can cause accidental touches.
+- Another refers to a durability test and says the screen ""actually fired worse than last years"".
+- A separate comment recommends using a screen protector if durability matters.
+- There is also an anecdotal report of a phone screen cracking after a fall, even with tempered glass.
+
+3. Confidence explanation
+
+Confidence is medium because the retrieved comments give clear durability concerns, but they are informal user opinions rather than controlled testing or broad evidence.
+
+4. Follow-up relation
+
+This is not a follow-up; there was no prior conversation."
+feedback_rag,What evidence is there about display durability?,FaithfulnessMetric,1.0,0.7,1,gpt-4.1-mini,The score is 1.00 because there are no contradictions; the actual output fully aligns with the retrieval context. Great job maintaining accuracy!,,5,0.461,4818.49,"1. Direct answer
+
+The evidence on display durability is mixed, but it leans negative. Several comments suggest concerns that curved displays are ""very prone to cracking"", and one says a screen durability test showed the screen performed worse than last year. There is also a practical suggestion that, if durability is the priority, a screen protector is the safer option.
+
+2. Key evidence-based points
+
+- One comment explicitly says curved displays are ""very prone to cracking"" and can cause accidental touches.
+- Another refers to a durability test and says the screen ""actually fired worse than last years"".
+- A separate comment recommends using a screen protector if durability matters.
+- There is also an anecdotal report of a phone screen cracking after a fall, even with tempered glass.
+
+3. Confidence explanation
+
+Confidence is medium because the retrieved comments give clear durability concerns, but they are informal user opinions rather than controlled testing or broad evidence.
+
+4. Follow-up relation
+
+This is not a follow-up; there was no prior conversation."
+feedback_rag,What evidence is there about display durability?,ContextualRelevancyMetric,0.5,0.7,0,gpt-4.1-mini,"The score is 0.50 because while many statements like 'curved displays are shit' and 'accidental touches and very prone to cracking' provide direct evidence about display durability, a significant portion of the context discusses unrelated topics such as 'Fake Products' and 'Camera Concerns' and sentiments that do not address durability, reducing overall relevancy.",,5,0.461,4818.49,"1. Direct answer
+
+The evidence on display durability is mixed, but it leans negative. Several comments suggest concerns that curved displays are ""very prone to cracking"", and one says a screen durability test showed the screen performed worse than last year. There is also a practical suggestion that, if durability is the priority, a screen protector is the safer option.
+
+2. Key evidence-based points
+
+- One comment explicitly says curved displays are ""very prone to cracking"" and can cause accidental touches.
+- Another refers to a durability test and says the screen ""actually fired worse than last years"".
+- A separate comment recommends using a screen protector if durability matters.
+- There is also an anecdotal report of a phone screen cracking after a fall, even with tempered glass.
+
+3. Confidence explanation
+
+Confidence is medium because the retrieved comments give clear durability concerns, but they are informal user opinions rather than controlled testing or broad evidence.
+
+4. Follow-up relation
+
+This is not a follow-up; there was no prior conversation."
+strategy_rag,How should Samsung design the S27 Ultra for maximum customer satisfaction?,AnswerRelevancyMetric,1.0,0.7,1,gpt-4.1-mini,The score is 1.00 because the response fully addresses the question about designing the Samsung S27 Ultra for maximum customer satisfaction without any irrelevant information.,,5,0.767,11585.64,"**Strategic Recommendation**
+
+Samsung should make the S27 Ultra a battery-led, creator-focused premium flagship with a restored Ultra identity: visible gains in camera performance, real-world battery life, practical AI, and full S Pen utility. It should avoid broad price cuts and instead use targeted trade-ins, storage upgrades, financing, and bundles to make the premium feel justified.
+
+**Revenue Growth**
+
+Lead with the features that drive upgrade intent: consistent camera quality, stronger low-light and video performance, and a clear return to advanced zoom capability. Position AI around useful tasks such as transcription, meetings, editing, and capture workflows, then market S Pen as a productivity and remote-control tool, not a token accessory. Use premium bundles for storage, Galaxy services, and accessories to lift average selling price.
+
+**Margin Protection**
+
+Do not chase demand through discounting. Protect margin by concentrating spend on a few visible differentiators, limiting feature sprawl, and using configuration-led upsell through storage tiers, trade-in offers, and financing. Keep campaign claims tightly tied to tangible benefits so Samsung does not overpay for vague AI messaging.
+
+**Customer Retention and Ecosystem**
+
+Restore the Ultra as the device for loyal Note and Ultra users: S Pen Bluetooth gestures, remote shutter, and productivity shortcuts should be part of the core proposition. Pair the phone with Galaxy Watch, Buds, tablet, cloud, and device-care bundles to deepen switching costs and recurring services revenue. Improve display durability and privacy features to reinforce trust and reduce reasons to defect.
+
+**Key Risk**
+
+The main risk is repeating the pattern of removing valued Ultra features while adding abstract AI claims. Confidence is high that satisfaction will improve if Samsung prioritises battery, camera, and S Pen utility over cosmetic changes.
+
+**Final Recommendation**
+
+Build the S27 Ultra as the most complete Samsung flagship, not the thinnest or most generic one. Restore the features that define Ultra, prove the upgrade in daily use, and monetise through premium bundles rather than price erosion."
+strategy_rag,How should Samsung design the S27 Ultra for maximum customer satisfaction?,FaithfulnessMetric,1.0,0.7,1,gpt-4.1-mini,The score is 1.00 because there are no contradictions; the actual output fully aligns with the retrieval context. Great job maintaining accuracy!,,5,0.767,11585.64,"**Strategic Recommendation**
+
+Samsung should make the S27 Ultra a battery-led, creator-focused premium flagship with a restored Ultra identity: visible gains in camera performance, real-world battery life, practical AI, and full S Pen utility. It should avoid broad price cuts and instead use targeted trade-ins, storage upgrades, financing, and bundles to make the premium feel justified.
+
+**Revenue Growth**
+
+Lead with the features that drive upgrade intent: consistent camera quality, stronger low-light and video performance, and a clear return to advanced zoom capability. Position AI around useful tasks such as transcription, meetings, editing, and capture workflows, then market S Pen as a productivity and remote-control tool, not a token accessory. Use premium bundles for storage, Galaxy services, and accessories to lift average selling price.
+
+**Margin Protection**
+
+Do not chase demand through discounting. Protect margin by concentrating spend on a few visible differentiators, limiting feature sprawl, and using configuration-led upsell through storage tiers, trade-in offers, and financing. Keep campaign claims tightly tied to tangible benefits so Samsung does not overpay for vague AI messaging.
+
+**Customer Retention and Ecosystem**
+
+Restore the Ultra as the device for loyal Note and Ultra users: S Pen Bluetooth gestures, remote shutter, and productivity shortcuts should be part of the core proposition. Pair the phone with Galaxy Watch, Buds, tablet, cloud, and device-care bundles to deepen switching costs and recurring services revenue. Improve display durability and privacy features to reinforce trust and reduce reasons to defect.
+
+**Key Risk**
+
+The main risk is repeating the pattern of removing valued Ultra features while adding abstract AI claims. Confidence is high that satisfaction will improve if Samsung prioritises battery, camera, and S Pen utility over cosmetic changes.
+
+**Final Recommendation**
+
+Build the S27 Ultra as the most complete Samsung flagship, not the thinnest or most generic one. Restore the features that define Ultra, prove the upgrade in daily use, and monetise through premium bundles rather than price erosion."
+strategy_rag,How should Samsung design the S27 Ultra for maximum customer satisfaction?,ContextualRelevancyMetric,0.918918918918919,0.7,1,gpt-4.1-mini,"The score is 0.92 because while some irrelevant statements like 'Gemini sucks ass' and personal brand loyalty do not inform design, the retrieval context contains highly relevant insights such as 'Restore advanced S-Pen features such as Bluetooth gestures' and 'Next Galaxy S27 Ultra should have new hardware cameras: 200mp wide... 10x optical zoom,' which directly address design improvements for maximum customer satisfaction.",,5,0.767,11585.64,"**Strategic Recommendation**
+
+Samsung should make the S27 Ultra a battery-led, creator-focused premium flagship with a restored Ultra identity: visible gains in camera performance, real-world battery life, practical AI, and full S Pen utility. It should avoid broad price cuts and instead use targeted trade-ins, storage upgrades, financing, and bundles to make the premium feel justified.
+
+**Revenue Growth**
+
+Lead with the features that drive upgrade intent: consistent camera quality, stronger low-light and video performance, and a clear return to advanced zoom capability. Position AI around useful tasks such as transcription, meetings, editing, and capture workflows, then market S Pen as a productivity and remote-control tool, not a token accessory. Use premium bundles for storage, Galaxy services, and accessories to lift average selling price.
+
+**Margin Protection**
+
+Do not chase demand through discounting. Protect margin by concentrating spend on a few visible differentiators, limiting feature sprawl, and using configuration-led upsell through storage tiers, trade-in offers, and financing. Keep campaign claims tightly tied to tangible benefits so Samsung does not overpay for vague AI messaging.
+
+**Customer Retention and Ecosystem**
+
+Restore the Ultra as the device for loyal Note and Ultra users: S Pen Bluetooth gestures, remote shutter, and productivity shortcuts should be part of the core proposition. Pair the phone with Galaxy Watch, Buds, tablet, cloud, and device-care bundles to deepen switching costs and recurring services revenue. Improve display durability and privacy features to reinforce trust and reduce reasons to defect.
+
+**Key Risk**
+
+The main risk is repeating the pattern of removing valued Ultra features while adding abstract AI claims. Confidence is high that satisfaction will improve if Samsung prioritises battery, camera, and S Pen utility over cosmetic changes.
+
+**Final Recommendation**
+
+Build the S27 Ultra as the most complete Samsung flagship, not the thinnest or most generic one. Restore the features that define Ultra, prove the upgrade in daily use, and monetise through premium bundles rather than price erosion."
+strategy_rag,How should Samsung design the S27 Ultra for maximum profit?,AnswerRelevancyMetric,1.0,0.7,1,gpt-4.1-mini,"The score is 1.00 because the response fully addresses the question about designing the Samsung S27 Ultra for maximum profit without including any irrelevant information. It is concise and focused, making it perfectly relevant.",,5,0.792,8733.27,"**Strategic Recommendation**
+
+Design the S27 Ultra as a battery-led, creator-focused premium flagship with a clear upgrade story in camera, practical AI, and S Pen utility. Samsung should protect premium pricing, but only if the launch delivers visible gains that make upgrading from recent Ultras feel worthwhile.
+
+**Revenue Growth**
+
+Prioritise a sharper value ladder: base Ultra, higher-storage tiers, and tightly bundled trade-in and financing offers. Use camera, battery, and S Pen as the headline reasons to upgrade, then support conversion with creator bundles, storage upsells, and Galaxy ecosystem offers rather than broad discounting.
+
+**Margin Protection**
+
+Avoid feature dilution and avoid competing on price alone. Keep the industrial design premium, but focus spend on a few high-salience improvements that customers can see and feel: longer battery life, better thermal performance, a meaningful camera jump, and more useful AI workflows. Deprioritise speculative features that do not strengthen willingness to pay.
+
+**Customer Retention and Ecosystem**
+
+Make the Ultra the best device for power users who also own Galaxy tablets, watches, buds, and PCs. Tie the phone to services and accessories through bundles, cloud storage, device care, and payment or financing offers, so the upgrade is not just a handset sale but a platform entry point. S Pen should be positioned as a real productivity and creator tool, not a token inclusion.
+
+**Key Risk**
+
+The main risk is premium fatigue: if the S27 Ultra feels incremental, customers will keep older Ultras longer or buy prior-generation devices at lower prices. Confidence is moderate, because the strongest demand signals are consistent, but they also raise the bar for a genuinely visible upgrade.
+
+**Final Recommendation**
+
+Samsung should launch the S27 Ultra as a premium productivity and creator flagship, with battery, camera, AI, and S Pen as the commercial centre of gravity. It should deprioritise price cuts and gimmicks, and instead win profit through stronger perceived value, disciplined costs, and ecosystem-led monetisation."
+strategy_rag,How should Samsung design the S27 Ultra for maximum profit?,FaithfulnessMetric,1.0,0.7,1,gpt-4.1-mini,The score is 1.00 because there are no contradictions; the actual output fully aligns with the retrieval context. Great job maintaining accuracy!,,5,0.792,8733.27,"**Strategic Recommendation**
+
+Design the S27 Ultra as a battery-led, creator-focused premium flagship with a clear upgrade story in camera, practical AI, and S Pen utility. Samsung should protect premium pricing, but only if the launch delivers visible gains that make upgrading from recent Ultras feel worthwhile.
+
+**Revenue Growth**
+
+Prioritise a sharper value ladder: base Ultra, higher-storage tiers, and tightly bundled trade-in and financing offers. Use camera, battery, and S Pen as the headline reasons to upgrade, then support conversion with creator bundles, storage upsells, and Galaxy ecosystem offers rather than broad discounting.
+
+**Margin Protection**
+
+Avoid feature dilution and avoid competing on price alone. Keep the industrial design premium, but focus spend on a few high-salience improvements that customers can see and feel: longer battery life, better thermal performance, a meaningful camera jump, and more useful AI workflows. Deprioritise speculative features that do not strengthen willingness to pay.
+
+**Customer Retention and Ecosystem**
+
+Make the Ultra the best device for power users who also own Galaxy tablets, watches, buds, and PCs. Tie the phone to services and accessories through bundles, cloud storage, device care, and payment or financing offers, so the upgrade is not just a handset sale but a platform entry point. S Pen should be positioned as a real productivity and creator tool, not a token inclusion.
+
+**Key Risk**
+
+The main risk is premium fatigue: if the S27 Ultra feels incremental, customers will keep older Ultras longer or buy prior-generation devices at lower prices. Confidence is moderate, because the strongest demand signals are consistent, but they also raise the bar for a genuinely visible upgrade.
+
+**Final Recommendation**
+
+Samsung should launch the S27 Ultra as a premium productivity and creator flagship, with battery, camera, AI, and S Pen as the commercial centre of gravity. It should deprioritise price cuts and gimmicks, and instead win profit through stronger perceived value, disciplined costs, and ecosystem-led monetisation."
+strategy_rag,How should Samsung design the S27 Ultra for maximum profit?,ContextualRelevancyMetric,1.0,0.7,1,gpt-4.1-mini,"The score is 1.00 because the retrieval context directly addresses how Samsung can design the S27 Ultra for maximum profit by highlighting customer desires for improved battery life, charging speed, and premium features, as seen in statements like 'Improve battery capacity, charging speed, thermal efficiency, and real-world battery optimization' and 'Position stronger battery life as a premium productivity and gaming feature to justify flagship pricing.' This perfectly aligns with the input question.",,5,0.792,8733.27,"**Strategic Recommendation**
+
+Design the S27 Ultra as a battery-led, creator-focused premium flagship with a clear upgrade story in camera, practical AI, and S Pen utility. Samsung should protect premium pricing, but only if the launch delivers visible gains that make upgrading from recent Ultras feel worthwhile.
+
+**Revenue Growth**
+
+Prioritise a sharper value ladder: base Ultra, higher-storage tiers, and tightly bundled trade-in and financing offers. Use camera, battery, and S Pen as the headline reasons to upgrade, then support conversion with creator bundles, storage upsells, and Galaxy ecosystem offers rather than broad discounting.
+
+**Margin Protection**
+
+Avoid feature dilution and avoid competing on price alone. Keep the industrial design premium, but focus spend on a few high-salience improvements that customers can see and feel: longer battery life, better thermal performance, a meaningful camera jump, and more useful AI workflows. Deprioritise speculative features that do not strengthen willingness to pay.
+
+**Customer Retention and Ecosystem**
+
+Make the Ultra the best device for power users who also own Galaxy tablets, watches, buds, and PCs. Tie the phone to services and accessories through bundles, cloud storage, device care, and payment or financing offers, so the upgrade is not just a handset sale but a platform entry point. S Pen should be positioned as a real productivity and creator tool, not a token inclusion.
+
+**Key Risk**
+
+The main risk is premium fatigue: if the S27 Ultra feels incremental, customers will keep older Ultras longer or buy prior-generation devices at lower prices. Confidence is moderate, because the strongest demand signals are consistent, but they also raise the bar for a genuinely visible upgrade.
+
+**Final Recommendation**
+
+Samsung should launch the S27 Ultra as a premium productivity and creator flagship, with battery, camera, AI, and S Pen as the commercial centre of gravity. It should deprioritise price cuts and gimmicks, and instead win profit through stronger perceived value, disciplined costs, and ecosystem-led monetisation."
+strategy_rag,What features should Samsung prioritize in the S27 Ultra?,AnswerRelevancyMetric,1.0,0.7,1,gpt-4.1-mini,"The score is 1.00 because the response fully addresses the question without any irrelevant information, providing clear and focused recommendations for Samsung's S27 Ultra features.",,5,0.797,11706.27,"**Strategic Recommendation**
+
+Samsung should make the S27 Ultra a battery-led, creator-focused premium flagship with restored advanced S Pen utility, stronger camera consistency, and practical AI that saves time rather than adds novelty. Deprioritise broad spec inflation and cosmetic changes; win on visible daily value that justifies Ultra pricing and protects upgrade intent.
+
+**Revenue Growth**
+
+Prioritise features that convert hesitant Ultra owners: longer real-world battery life, faster charging, cooler sustained performance, improved low-light and video capture, and a more capable S Pen with Bluetooth gestures and remote shutter. Market these as Ultra-exclusive productivity and creator tools, then support conversion with targeted trade-ins, storage upgrades, financing, and premium bundles through Samsung direct and retail partners.
+
+**Margin Protection**
+
+Avoid discount-led demand generation. Use feature-led premium positioning to defend ASPs, while keeping campaign spend disciplined and focused on a small number of high-salience claims: battery, camera, S Pen, and useful AI. Bundle services and accessories selectively rather than cutting headline price, and use storage tiers to lift mix without adding unnecessary hardware complexity.
+
+**Customer Retention and Ecosystem**
+
+Treat the Ultra as the anchor for Samsung loyalty. Restore S Pen functionality to reinforce the Note-style upgrade path, and connect the device more tightly to Galaxy Watch, Buds, tablets, and PC workflows through AI, sharing, and continuity features. Use camera and productivity workflows to keep creators and power users inside the Samsung ecosystem, then monetise through subscriptions, cloud, and support services where relevant.
+
+**Key Risk**
+
+The main risk is overpromising on flagship differentiation while delivering incremental change that feels similar to prior models. Confidence is moderate: the strongest demand signals are consistent, but Samsung must execute visibly on battery, camera, and S Pen utility to avoid upgrade fatigue.
+
+**Final Recommendation**
+
+Build the S27 Ultra around three proof points: all-day battery, dependable creator-grade camera performance, and a genuinely useful S Pen. Everything else should support those pillars, not distract from them."
+strategy_rag,What features should Samsung prioritize in the S27 Ultra?,FaithfulnessMetric,1.0,0.7,1,gpt-4.1-mini,The score is 1.00 because there are no contradictions; the actual output fully aligns with the retrieval context. Great job maintaining accuracy!,,5,0.797,11706.27,"**Strategic Recommendation**
+
+Samsung should make the S27 Ultra a battery-led, creator-focused premium flagship with restored advanced S Pen utility, stronger camera consistency, and practical AI that saves time rather than adds novelty. Deprioritise broad spec inflation and cosmetic changes; win on visible daily value that justifies Ultra pricing and protects upgrade intent.
+
+**Revenue Growth**
+
+Prioritise features that convert hesitant Ultra owners: longer real-world battery life, faster charging, cooler sustained performance, improved low-light and video capture, and a more capable S Pen with Bluetooth gestures and remote shutter. Market these as Ultra-exclusive productivity and creator tools, then support conversion with targeted trade-ins, storage upgrades, financing, and premium bundles through Samsung direct and retail partners.
+
+**Margin Protection**
+
+Avoid discount-led demand generation. Use feature-led premium positioning to defend ASPs, while keeping campaign spend disciplined and focused on a small number of high-salience claims: battery, camera, S Pen, and useful AI. Bundle services and accessories selectively rather than cutting headline price, and use storage tiers to lift mix without adding unnecessary hardware complexity.
+
+**Customer Retention and Ecosystem**
+
+Treat the Ultra as the anchor for Samsung loyalty. Restore S Pen functionality to reinforce the Note-style upgrade path, and connect the device more tightly to Galaxy Watch, Buds, tablets, and PC workflows through AI, sharing, and continuity features. Use camera and productivity workflows to keep creators and power users inside the Samsung ecosystem, then monetise through subscriptions, cloud, and support services where relevant.
+
+**Key Risk**
+
+The main risk is overpromising on flagship differentiation while delivering incremental change that feels similar to prior models. Confidence is moderate: the strongest demand signals are consistent, but Samsung must execute visibly on battery, camera, and S Pen utility to avoid upgrade fatigue.
+
+**Final Recommendation**
+
+Build the S27 Ultra around three proof points: all-day battery, dependable creator-grade camera performance, and a genuinely useful S Pen. Everything else should support those pillars, not distract from them."
+strategy_rag,What features should Samsung prioritize in the S27 Ultra?,ContextualRelevancyMetric,0.6060606060606061,0.7,0,gpt-4.1-mini,"The score is 0.61 because while many statements focus on business impact and user opinions unrelated to feature prioritization, relevant points such as 'Users are concerned about removed or reduced S-Pen functionality, especially Bluetooth support' and 'Improve camera consistency, low-light quality, video processing, and camera app usability' directly address features Samsung should prioritize in the S27 Ultra.",,5,0.797,11706.27,"**Strategic Recommendation**
+
+Samsung should make the S27 Ultra a battery-led, creator-focused premium flagship with restored advanced S Pen utility, stronger camera consistency, and practical AI that saves time rather than adds novelty. Deprioritise broad spec inflation and cosmetic changes; win on visible daily value that justifies Ultra pricing and protects upgrade intent.
+
+**Revenue Growth**
+
+Prioritise features that convert hesitant Ultra owners: longer real-world battery life, faster charging, cooler sustained performance, improved low-light and video capture, and a more capable S Pen with Bluetooth gestures and remote shutter. Market these as Ultra-exclusive productivity and creator tools, then support conversion with targeted trade-ins, storage upgrades, financing, and premium bundles through Samsung direct and retail partners.
+
+**Margin Protection**
+
+Avoid discount-led demand generation. Use feature-led premium positioning to defend ASPs, while keeping campaign spend disciplined and focused on a small number of high-salience claims: battery, camera, S Pen, and useful AI. Bundle services and accessories selectively rather than cutting headline price, and use storage tiers to lift mix without adding unnecessary hardware complexity.
+
+**Customer Retention and Ecosystem**
+
+Treat the Ultra as the anchor for Samsung loyalty. Restore S Pen functionality to reinforce the Note-style upgrade path, and connect the device more tightly to Galaxy Watch, Buds, tablets, and PC workflows through AI, sharing, and continuity features. Use camera and productivity workflows to keep creators and power users inside the Samsung ecosystem, then monetise through subscriptions, cloud, and support services where relevant.
+
+**Key Risk**
+
+The main risk is overpromising on flagship differentiation while delivering incremental change that feels similar to prior models. Confidence is moderate: the strongest demand signals are consistent, but Samsung must execute visibly on battery, camera, and S Pen utility to avoid upgrade fatigue.
+
+**Final Recommendation**
+
+Build the S27 Ultra around three proof points: all-day battery, dependable creator-grade camera performance, and a genuinely useful S Pen. Everything else should support those pillars, not distract from them."
+strategy_rag,What product roadmap should Samsung follow for the next Ultra phone?,AnswerRelevancyMetric,1.0,0.7,1,gpt-4.1-mini,"The score is 1.00 because the response fully addresses the input without any irrelevant information, providing a clear and focused answer on Samsung's next Ultra phone roadmap.",,5,0.802,6046.01,"**Strategic Recommendation**
+
+Samsung should make the next Ultra a battery-led, creator-focused premium flagship with visibly better camera consistency, practical AI, and clearer S Pen utility. It should win on day-to-day difference, not on incremental spec theatre.
+
+**Revenue Growth**
+
+Lead with a premium upgrade story: stronger real-world battery life, faster charging, better thermal performance, and a camera system that is clearly better in low light, video, and app usability. Use trade-ins, storage upgrades, and financing to reduce upgrade friction, and bundle the device with Galaxy services, wearables, and tablet or laptop offers to lift basket value. Market AI only where it saves time or improves capture, editing, search, and productivity.
+
+**Margin Protection**
+
+Avoid broad price cuts and avoid chasing headline-grabbing hardware that forces design or cost compromises. Keep the industrial design disciplined, prioritise component choices that improve perceived value per pound, and use targeted promotions rather than permanent discounting. Keep campaign spend focused on a few proof points: battery, camera, AI utility, and S Pen productivity.
+
+**Customer Retention and Ecosystem**
+
+Make the Ultra the anchor for multi-year ownership by improving durability of experience, software value, and upgrade confidence. Strengthen S Pen use cases for note-taking, editing, and workflow control; make storage tiers and cloud backup easier to buy; and tie the phone into Galaxy Watch, Buds, tablets, PCs, and payments. The goal is to keep high-value users inside Samsung even when they skip a yearly upgrade.
+
+**Key Risk**
+
+The main risk is overpromising on AI or cosmetic changes while underdelivering on the features that define an Ultra. Confidence is high that battery, camera, and practical productivity gains should be the core of the roadmap.
+
+**Final Recommendation**
+
+Build the next Ultra as the phone that feels worth upgrading because it is meaningfully better to live with, create on, and keep for several years. Prioritise battery, camera, AI utility, and S Pen value; deprioritise gimmicks, broad price cuts, and spec-led messaging."
+strategy_rag,What product roadmap should Samsung follow for the next Ultra phone?,FaithfulnessMetric,1.0,0.7,1,gpt-4.1-mini,The score is 1.00 because there are no contradictions; the actual output fully aligns with the retrieval context. Great job maintaining accuracy!,,5,0.802,6046.01,"**Strategic Recommendation**
+
+Samsung should make the next Ultra a battery-led, creator-focused premium flagship with visibly better camera consistency, practical AI, and clearer S Pen utility. It should win on day-to-day difference, not on incremental spec theatre.
+
+**Revenue Growth**
+
+Lead with a premium upgrade story: stronger real-world battery life, faster charging, better thermal performance, and a camera system that is clearly better in low light, video, and app usability. Use trade-ins, storage upgrades, and financing to reduce upgrade friction, and bundle the device with Galaxy services, wearables, and tablet or laptop offers to lift basket value. Market AI only where it saves time or improves capture, editing, search, and productivity.
+
+**Margin Protection**
+
+Avoid broad price cuts and avoid chasing headline-grabbing hardware that forces design or cost compromises. Keep the industrial design disciplined, prioritise component choices that improve perceived value per pound, and use targeted promotions rather than permanent discounting. Keep campaign spend focused on a few proof points: battery, camera, AI utility, and S Pen productivity.
+
+**Customer Retention and Ecosystem**
+
+Make the Ultra the anchor for multi-year ownership by improving durability of experience, software value, and upgrade confidence. Strengthen S Pen use cases for note-taking, editing, and workflow control; make storage tiers and cloud backup easier to buy; and tie the phone into Galaxy Watch, Buds, tablets, PCs, and payments. The goal is to keep high-value users inside Samsung even when they skip a yearly upgrade.
+
+**Key Risk**
+
+The main risk is overpromising on AI or cosmetic changes while underdelivering on the features that define an Ultra. Confidence is high that battery, camera, and practical productivity gains should be the core of the roadmap.
+
+**Final Recommendation**
+
+Build the next Ultra as the phone that feels worth upgrading because it is meaningfully better to live with, create on, and keep for several years. Prioritise battery, camera, AI utility, and S Pen value; deprioritise gimmicks, broad price cuts, and spec-led messaging."
+strategy_rag,What product roadmap should Samsung follow for the next Ultra phone?,ContextualRelevancyMetric,0.9655172413793104,0.7,1,gpt-4.1-mini,"The score is 0.97 because despite the vague irrelevancy noted in 'half the things you mentioned are just numbers for the sake of numbers,' the retrieval context provides detailed relevant insights such as 'the ultra is supposed to be the undisputed best phone you can buy' and specific recommendations on improving 'camera consistency, low-light quality, video processing, and camera app usability' as well as 'battery capacity, charging speed, thermal efficiency, and real-world battery optimization,' which directly inform Samsung's product roadmap for the next Ultra phone.",,5,0.802,6046.01,"**Strategic Recommendation**
+
+Samsung should make the next Ultra a battery-led, creator-focused premium flagship with visibly better camera consistency, practical AI, and clearer S Pen utility. It should win on day-to-day difference, not on incremental spec theatre.
+
+**Revenue Growth**
+
+Lead with a premium upgrade story: stronger real-world battery life, faster charging, better thermal performance, and a camera system that is clearly better in low light, video, and app usability. Use trade-ins, storage upgrades, and financing to reduce upgrade friction, and bundle the device with Galaxy services, wearables, and tablet or laptop offers to lift basket value. Market AI only where it saves time or improves capture, editing, search, and productivity.
+
+**Margin Protection**
+
+Avoid broad price cuts and avoid chasing headline-grabbing hardware that forces design or cost compromises. Keep the industrial design disciplined, prioritise component choices that improve perceived value per pound, and use targeted promotions rather than permanent discounting. Keep campaign spend focused on a few proof points: battery, camera, AI utility, and S Pen productivity.
+
+**Customer Retention and Ecosystem**
+
+Make the Ultra the anchor for multi-year ownership by improving durability of experience, software value, and upgrade confidence. Strengthen S Pen use cases for note-taking, editing, and workflow control; make storage tiers and cloud backup easier to buy; and tie the phone into Galaxy Watch, Buds, tablets, PCs, and payments. The goal is to keep high-value users inside Samsung even when they skip a yearly upgrade.
+
+**Key Risk**
+
+The main risk is overpromising on AI or cosmetic changes while underdelivering on the features that define an Ultra. Confidence is high that battery, camera, and practical productivity gains should be the core of the roadmap.
+
+**Final Recommendation**
+
+Build the next Ultra as the phone that feels worth upgrading because it is meaningfully better to live with, create on, and keep for several years. Prioritise battery, camera, AI utility, and S Pen value; deprioritise gimmicks, broad price cuts, and spec-led messaging."
+strategy_rag,How can Samsung reduce customer complaints in the next flagship?,AnswerRelevancyMetric,1.0,0.7,1,gpt-4.1-mini,"The score is 1.00 because the response fully addresses how Samsung can reduce customer complaints for their next flagship without including any irrelevant information. It is not higher because 1.00 is the maximum score, reflecting perfect relevancy.",,5,0.732,7332.6,"**Strategic Recommendation**
+
+Samsung should make the next Galaxy Ultra a premium, battery-led flagship that visibly improves daily reliability: longer real-world battery life, faster and cooler charging, stronger display durability, and practical AI that saves time without feeling like a paid extra. It should stop removing valued hardware without a clear replacement and instead use feature depth, storage options, trade-ins, financing, and bundles to defend premium pricing.
+
+**Revenue Growth**
+
+Lead with a clear value story: premium performance, creator-grade camera, useful AI, and S Pen productivity. Support this with targeted trade-ins, storage upgrades, and financing rather than broad price cuts, so the device still feels aspirational while reducing purchase friction. Use launch messaging to justify the price through visible upgrades, not feature removal.
+
+**Margin Protection**
+
+Protect margin by prioritising a small number of high-impact hardware improvements that reduce complaints and returns, especially battery, charging, and display reliability. Keep campaign spend focused on proof points that matter in-store and online, and avoid overbuilding low-usage features that add cost without improving perceived value. If AI is monetised, keep core utility bundled and reserve paid tiers for advanced services.
+
+**Customer Retention and Ecosystem**
+
+Use the Ultra to keep users inside Galaxy by pairing the phone with Galaxy Watch, Buds, tablets, storage, cloud, and device protection bundles. Make S Pen utility more visible in productivity and note-taking, and ensure the camera and AI workflow feel integrated across devices. Retention will improve if the phone feels like the best hub for a broader Samsung ecosystem, not a set of removed functions.
+
+**Key Risk**
+
+The main risk is repeating the pattern of taking away familiar features while holding the same premium price, which would deepen distrust and weaken upgrade intent. Confidence is high that visible battery, display, and value improvements will matter most, but Samsung must avoid spreading investment across too many minor changes.
+
+**Final Recommendation**
+
+Build the next Galaxy Ultra as a premium, practical flagship with fewer compromises, not fewer features. Prioritise battery, display durability, camera, and useful AI; support the price with trade-ins, storage, financing, and ecosystem bundles; and deprioritise feature removals and broad discounting."
+strategy_rag,How can Samsung reduce customer complaints in the next flagship?,FaithfulnessMetric,1.0,0.7,1,gpt-4.1-mini,The score is 1.00 because there are no contradictions; the actual output fully aligns with the retrieval context. Great job maintaining accuracy!,,5,0.732,7332.6,"**Strategic Recommendation**
+
+Samsung should make the next Galaxy Ultra a premium, battery-led flagship that visibly improves daily reliability: longer real-world battery life, faster and cooler charging, stronger display durability, and practical AI that saves time without feeling like a paid extra. It should stop removing valued hardware without a clear replacement and instead use feature depth, storage options, trade-ins, financing, and bundles to defend premium pricing.
+
+**Revenue Growth**
+
+Lead with a clear value story: premium performance, creator-grade camera, useful AI, and S Pen productivity. Support this with targeted trade-ins, storage upgrades, and financing rather than broad price cuts, so the device still feels aspirational while reducing purchase friction. Use launch messaging to justify the price through visible upgrades, not feature removal.
+
+**Margin Protection**
+
+Protect margin by prioritising a small number of high-impact hardware improvements that reduce complaints and returns, especially battery, charging, and display reliability. Keep campaign spend focused on proof points that matter in-store and online, and avoid overbuilding low-usage features that add cost without improving perceived value. If AI is monetised, keep core utility bundled and reserve paid tiers for advanced services.
+
+**Customer Retention and Ecosystem**
+
+Use the Ultra to keep users inside Galaxy by pairing the phone with Galaxy Watch, Buds, tablets, storage, cloud, and device protection bundles. Make S Pen utility more visible in productivity and note-taking, and ensure the camera and AI workflow feel integrated across devices. Retention will improve if the phone feels like the best hub for a broader Samsung ecosystem, not a set of removed functions.
+
+**Key Risk**
+
+The main risk is repeating the pattern of taking away familiar features while holding the same premium price, which would deepen distrust and weaken upgrade intent. Confidence is high that visible battery, display, and value improvements will matter most, but Samsung must avoid spreading investment across too many minor changes.
+
+**Final Recommendation**
+
+Build the next Galaxy Ultra as a premium, practical flagship with fewer compromises, not fewer features. Prioritise battery, display durability, camera, and useful AI; support the price with trade-ins, storage, financing, and ecosystem bundles; and deprioritise feature removals and broad discounting."
+strategy_rag,How can Samsung reduce customer complaints in the next flagship?,ContextualRelevancyMetric,0.8571428571428571,0.7,1,gpt-4.1-mini,"The score is 0.86 because while some statements like 'Users want longer real-world battery life, better charging, and fewer power-related compromises' and 'Improve display durability, reduce green-line risk, improve screen protection' directly address how Samsung can reduce customer complaints, several irrelevant points such as 'imagine 70 for a phone workers' salary is probably going to be really low' and 'Because we don't care about iphones...' dilute the overall relevancy.",,5,0.732,7332.6,"**Strategic Recommendation**
+
+Samsung should make the next Galaxy Ultra a premium, battery-led flagship that visibly improves daily reliability: longer real-world battery life, faster and cooler charging, stronger display durability, and practical AI that saves time without feeling like a paid extra. It should stop removing valued hardware without a clear replacement and instead use feature depth, storage options, trade-ins, financing, and bundles to defend premium pricing.
+
+**Revenue Growth**
+
+Lead with a clear value story: premium performance, creator-grade camera, useful AI, and S Pen productivity. Support this with targeted trade-ins, storage upgrades, and financing rather than broad price cuts, so the device still feels aspirational while reducing purchase friction. Use launch messaging to justify the price through visible upgrades, not feature removal.
+
+**Margin Protection**
+
+Protect margin by prioritising a small number of high-impact hardware improvements that reduce complaints and returns, especially battery, charging, and display reliability. Keep campaign spend focused on proof points that matter in-store and online, and avoid overbuilding low-usage features that add cost without improving perceived value. If AI is monetised, keep core utility bundled and reserve paid tiers for advanced services.
+
+**Customer Retention and Ecosystem**
+
+Use the Ultra to keep users inside Galaxy by pairing the phone with Galaxy Watch, Buds, tablets, storage, cloud, and device protection bundles. Make S Pen utility more visible in productivity and note-taking, and ensure the camera and AI workflow feel integrated across devices. Retention will improve if the phone feels like the best hub for a broader Samsung ecosystem, not a set of removed functions.
+
+**Key Risk**
+
+The main risk is repeating the pattern of taking away familiar features while holding the same premium price, which would deepen distrust and weaken upgrade intent. Confidence is high that visible battery, display, and value improvements will matter most, but Samsung must avoid spreading investment across too many minor changes.
+
+**Final Recommendation**
+
+Build the next Galaxy Ultra as a premium, practical flagship with fewer compromises, not fewer features. Prioritise battery, display durability, camera, and useful AI; support the price with trade-ins, storage, financing, and ecosystem bundles; and deprioritise feature removals and broad discounting."

@@ -14,6 +14,7 @@ The project is designed to support a dashboard or report that explains what cust
 - Keyword extraction with TF-IDF
 - General topic modeling with LDA
 - Sentiment-specific topic modeling for positive, negative, and neutral comments
+- Behavioral user personas using TF-IDF, TruncatedSVD, and KMeans clustering
 - Named entity recognition for brands, products, and competitors
 - RAG retrieval over customer feedback evidence
 - Persistent ChromaDB vector database with separate feedback and strategy collections
@@ -40,6 +41,8 @@ The project is designed to support a dashboard or report that explains what cust
 |       |-- comments_with_topics.csv
 |       |-- comments_with_sentiment_topics.csv
 |       |-- comments_with_ner.csv
+|       |-- user_personas.csv
+|       |-- user_segmentation_evaluation.csv
 |       |-- topic_keywords.csv
 |       |-- topic_keywords_by_sentiment.csv
 |       |-- rag_retrieval_results.csv
@@ -56,6 +59,7 @@ The project is designed to support a dashboard or report that explains what cust
 |   |-- topic_modeling.py
 |   |-- topic_modeling_by_sentiment.py
 |   |-- ner_extraction.py
+|   |-- user_segmentation.py
 |   |-- rag_pipeline.py
 |   |-- rag_answer_generator.py
 |   |-- vector_store.py
@@ -83,7 +87,29 @@ Preprocessing
 -> Topic modeling
 -> Topic modeling by sentiment
 -> NER extraction
+-> User segmentation
 ```
+
+### User Segmentation Method
+
+`src/user_segmentation.py` infers behavioral audience personas from comment
+language:
+
+```text
+Clean comments
+-> TF-IDF unigrams, bigrams, and trigrams
+-> TruncatedSVD dimensionality reduction
+-> KMeans comparison for k=4 through k=8
+-> Evidence-based persona interpretation
+```
+
+The current generated run segments 12,358 unique English comments and selects
+`k=8` with a silhouette score of `0.0826`. The modest score is reported
+honestly because short social-media comments frequently overlap. Persona names
+are interpreted from distinctive cluster terms, dominant issues, topics, and
+sentiment. They describe discussion behaviors, not verified demographic user
+profiles. The real generated results are available on the `/segmentation`
+dashboard page and are logged to MLflow.
 
 The extended RAG and monitoring stages run after the core NLP pipeline:
 
@@ -454,6 +480,10 @@ responsible for aggregate experiment metrics and saved pipeline artifacts.
 | `data/processed/topic_keywords_by_sentiment.csv` | Topic keywords for positive, negative, and neutral comments |
 | `data/processed/comments_with_ner.csv` | Comments with named entities |
 | `data/processed/ner_entities.csv` | Extracted entity table |
+| `data/processed/user_personas.csv` | Interpreted KMeans persona summaries and recommendations |
+| `data/processed/user_segmentation_assignments.csv` | Comment-level cluster and persona assignments |
+| `data/processed/user_segmentation_evaluation.csv` | KMeans comparison metrics for k=4 through k=8 |
+| `data/processed/user_segmentation_dashboard.json` | Real generated data used by the segmentation dashboard |
 | `data/processed/rag_retrieval_results.csv` | Retrieved evidence for RAG queries |
 | `data/processed/rag_answers.csv` | Generated RAG answers |
 | `data/processed/strategy_evidence.csv` | Evidence used for strategy recommendations |

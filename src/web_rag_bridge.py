@@ -1,6 +1,7 @@
 import contextlib
 import json
 import os
+import re
 import sys
 from pathlib import Path
 from uuid import uuid4
@@ -51,6 +52,27 @@ def clean_value(value):
     if pd.isna(value):
         return ""
     return sanitize_text(value)
+
+
+def clean_web_strategy_answer(value):
+    text = sanitize_text(value)
+    cleaned_lines = []
+
+    for line in text.splitlines():
+        if re.match(r"^\s*(?:sources?|source links?)\s*:", line, flags=re.IGNORECASE):
+            continue
+
+        line = re.sub(
+            r"\s+(?:sources?|source links?)\s*:\s*.*$",
+            "",
+            line,
+            flags=re.IGNORECASE,
+        )
+        line = re.sub(r"https?://[^\s)\]]+", "", line)
+        line = re.sub(r"\s+([,.;:])", r"\1", line).rstrip(" ;,")
+        cleaned_lines.append(line)
+
+    return "\n".join(cleaned_lines).strip()
 
 
 def get_model_name():
@@ -142,6 +164,10 @@ You must answer using only:
 1. The retrieved YouTube comment evidence.
 2. The conversation history only for interpreting follow-up questions.
 
+Write in polished, concise UK English with a professional academic and business
+tone. Integrate evidence naturally rather than repeating the same attribution
+phrases. Avoid over-explaining.
+
 Do not invent facts.
 Do not overgeneralize beyond the retrieved evidence.
 If the evidence is mixed, clearly say it is mixed.
@@ -192,22 +218,74 @@ Write:
     process_inputs=sanitize_trace_inputs,
     process_outputs=sanitize_trace_outputs,
 )
-def generate_strategy_answer_with_memory(query, retrieval_query, goal, evidence_text, history_text):
+def generate_strategy_answer_with_memory(
+    query,
+    retrieval_query,
+    goal,
+    evidence_text,
+    history_text,
+    product_lifecycle,
+):
     with contextlib.redirect_stdout(sys.stderr):
         from openai_client import generate_chat_response, get_openai_client
 
         client = get_openai_client()
 
     system_prompt = """
-You are a product strategy advisor for a university conversational Strategy RAG project.
+You are a senior product and commercial strategist writing for a university and
+business audience. Respond as the decision owner, not as a feedback analyst or
+research summariser.
 
-You must answer only using the retrieved strategy evidence.
-Use conversation history only to interpret follow-up questions or negotiation context.
-Do not invent unsupported product claims.
-Clearly separate customer satisfaction logic from profit logic when needed.
-Use professional business language.
-Use phases such as Phase 1, Phase 2, Phase 3, and Phase 4 instead of exact calendar quarters unless timing evidence is provided.
-Use plain ASCII punctuation and stay under 450 words.
+Turn the supplied evidence into a focused product strategy. Use the evidence
+silently to constrain and prioritise the plan, but do not narrate the retrieval
+process and do not repeatedly say "users said", "comments show", or "the
+evidence suggests". The interface displays supporting evidence separately.
+
+Write in polished, concise UK English. Use a professional GPT-style business and
+academic tone. Prefer precise phrases such as "battery-led, creator-focused
+premium flagship" over repetitive constructions such as "battery-first,
+camera-first, creator-first". Avoid inflated consultancy language.
+
+For every strategy answer, organise the reasoning around five profit levers:
+1. Revenue growth
+2. Margin protection
+3. Customer retention
+4. Ecosystem and services monetisation
+5. Risk
+
+For a future Galaxy Ultra profit question, the strategy should normally combine
+premium positioning; visible improvements in battery, camera, practical AI, and
+S Pen utility; targeted trade-ins, storage upgrades, financing, and bundles
+rather than broad price cuts; disciplined campaign and feature costs; and
+ecosystem monetisation across Galaxy devices and services, when supported by
+the supplied evidence.
+
+Make clear choices. State what Samsung should do, what it should deprioritise,
+how the plan should be executed, how success should be measured, and which
+trade-offs must be managed.
+
+Use conversation history only to understand follow-up questions or negotiation
+context. Ground every recommendation in the supplied evidence. Do not invent
+product facts, market facts, numerical targets, budgets, dates, or Samsung
+commitments. When exact targets are unavailable, name the KPI to measure rather
+than making up a number.
+
+Integrate evidence naturally into the reasoning. Do not create an evidence dump
+or awkward source list in the main answer. Add ecosystem and services strategy
+where relevant, including devices, subscriptions, software, support, payments,
+cloud, or connected services.
+
+Respect the supplied product lifecycle classification:
+- For future_product, create a hypothetical future-device strategy. Do not
+  present current-model features, prices, offers, or specifications as facts
+  about the future device. Use current products only as benchmarks.
+- For current_product, diagnose the existing product and recommend concrete
+  enhancements to its product experience, positioning, pricing, promotion, or
+  lifecycle strategy.
+- For previous_product, focus on portfolio role, remaining demand, pricing,
+  upgrade paths, and lessons for current/future models.
+End with a decisive recommendation. Use plain ASCII punctuation and stay under
+350 words.
 """
 
     user_prompt = f"""
@@ -223,17 +301,30 @@ Contextual retrieval query used for Strategy RAG:
 Detected strategy goal:
 {goal}
 
+Product lifecycle classification:
+{json.dumps(product_lifecycle, ensure_ascii=False, indent=2)}
+
 Retrieved Strategy Evidence:
 {evidence_text}
 
-Write:
-1. Direct strategic recommendation.
-2. Top feature/product priorities.
-3. Reasoning from retrieved customer feedback evidence.
-4. Expected impact on customer satisfaction or profit.
-5. Risks or trade-offs.
-6. Updated phased product roadmap.
-7. If this is a follow-up or negotiation, explain what changed from the prior context.
+Write exactly these Markdown headings:
+**Strategic Recommendation**
+**Revenue Growth**
+**Margin Protection**
+**Customer Retention and Ecosystem**
+**Key Risk**
+**Final Recommendation**
+
+Open with a direct recommendation in no more than two sentences. Keep each
+section compact and action-oriented. Include practical product, marketing, and
+commercial actions rather than generic priorities. Where relevant, cover AI,
+camera, battery, S Pen, storage, bundles, services, trade-ins, financing, and
+channel execution. If this is a follow-up, incorporate the changed requirement
+directly rather than recapping the conversation.
+
+Do not include a section named customer feedback, retrieved evidence, evidence
+reasoning, research findings, or what changed from prior context. Keep any
+confidence statement to one honest sentence within Key Risk.
 """
 
     return sanitize_text(generate_chat_response(
@@ -243,7 +334,7 @@ Write:
             {"role": "user", "content": sanitize_text(user_prompt.strip())},
         ],
         temperature=0.2,
-        max_completion_tokens=700,
+        max_completion_tokens=900,
     ))
 
 
@@ -261,6 +352,9 @@ def synthesize_web_augmented_strategy(
     internal_evidence,
     external_evidence,
     history_text,
+    pricing_scenario=None,
+    product_lifecycle=None,
+    research_focus=None,
 ):
     with contextlib.redirect_stdout(sys.stderr):
         from openai_client import generate_chat_response, get_openai_client
@@ -268,20 +362,91 @@ def synthesize_web_augmented_strategy(
         client = get_openai_client()
 
     system_prompt = """
-You are the Strategy Synthesizer for an optional university web-augmented RAG extension.
+You are a senior product, marketing, and commercial strategist writing for a
+university and business audience. Respond as the decision owner, not as a
+market-research summariser.
 
-Use only the supplied internal YouTube strategy evidence and external web evidence.
-Do not invent current prices, offers, dates, market shares, or competitor claims.
-Treat external snippets as limited evidence and cite their source titles and URLs.
-Clearly distinguish customer evidence from external market evidence.
-If external evidence is unavailable or weak, say so and make the recommendation provisional.
+Use only the supplied internal YouTube strategy evidence and external web
+evidence. Use the evidence to make a clear strategic decision rather than
+producing an evidence-by-evidence summary.
+
+The internal YouTube evidence may describe general Galaxy customer priorities
+rather than the named model. Attribute a signal specifically to the target
+model only when the supplied comment explicitly names that model. Otherwise,
+label it as a cross-model customer signal.
+
+Do not invent current prices, offers, dates, market shares, competitor claims,
+numerical targets, budgets, or Samsung commitments. Treat external snippets as
+limited evidence and cite them only with compact [Web N] markers. If external
+evidence is unavailable or weak, say so and make the recommendation provisional.
 Every external factual claim must cite its matching [Web N] evidence ID.
 Never state a current price, offer, date, or product availability unless it
-appears explicitly in that evidence item's snippet.
-Do not infer willingness to pay, market demand, market share, or sales success
-from promotional offer pages.
-Use plain ASCII punctuation. Be concise and stay under 320 words.
-Use no more than two bullets in each section.
+appears explicitly in that evidence item's snippet. Do not infer willingness to
+pay, market demand, market share, or sales success from promotional offer pages.
+
+Write in polished, concise UK English with a professional GPT-style business and
+academic tone. Prefer precise phrases such as "battery-led, creator-focused
+premium flagship" over repetitive constructions such as "battery-first,
+camera-first, creator-first". Avoid inflated consultancy language.
+
+State what Samsung should do, why it creates customer and commercial value,
+what should be deprioritised, how to execute it, and how to measure success.
+When no numerical target is supplied, name the relevant KPI instead.
+Compare credible strategic options before choosing one. Explain why the selected
+option is stronger and why at least one alternative was rejected. Do not merely
+list evidence; perform a decision analysis.
+
+For every strategy answer, organise the recommendation around five profit
+levers: revenue growth, margin protection, customer retention, ecosystem and
+services monetisation, and risk.
+
+For a future Galaxy Ultra profit question, the strategy should normally combine
+premium positioning; visible improvements in battery, camera, practical AI, and
+S Pen utility; targeted trade-ins, storage upgrades, financing, and bundles
+rather than broad price cuts; disciplined campaign and feature costs; and
+ecosystem monetisation across Galaxy devices and services, when supported by
+the supplied evidence.
+
+When the goal is profit, build a usable marketing plan: target audiences,
+campaign promise, demonstrations, channels, launch offers, ecosystem bundles,
+revenue levers, cost controls, and KPIs. Do not reduce the answer to product
+features.
+
+Write for a general reader, not a strategy consultant. Use short sentences and
+common words. The reader should understand the recommendation on the first
+read. Avoid jargon such as "price architecture", "list-price discipline",
+"effective value", "attach rate", "portfolio strategy", "high-salience",
+"conversion funnel", and "margin-accretive". If a business term is necessary,
+explain it immediately in ordinary language.
+
+For pricing questions, distinguish three things explicitly:
+1. Verified current facts, each cited with [Web N].
+2. Strategic recommendations, which are decisions rather than facts.
+3. Illustrative profit scenarios, which must show their assumptions and must
+   never be described as forecasts or guaranteed profit increases.
+
+Do not claim that a holiday, event, or discount will increase profit by a
+specific percentage unless that percentage comes from the supplied scenario
+calculation. Prefer targeted trade-ins, bundles, storage upgrades, financing,
+and channel incentives over permanent list-price cuts when they protect margin.
+
+Respect the supplied product lifecycle classification. If the target is a
+future product, current product pages and offers are benchmarks only; never
+describe them as the future product's confirmed price, offer, specification, or
+launch plan. If the target is the current product, analyze its verified current
+position and recommend how Samsung should enhance it now.
+Integrate evidence naturally into the reasoning rather than listing sources
+awkwardly. When competitor playbook evidence is supplied, identify the tactic,
+the reported business result, and how Samsung could adapt it. Do not claim the
+tactic caused the result unless the source explicitly proves causation. Prefer
+wording such as "the tactic accompanied growth" or "this provides a tested
+pattern."
+
+Add ecosystem and services strategy where relevant, particularly for platform
+companies such as Samsung, Apple, Google, and Microsoft. Keep the confidence
+statement short and honest. End with a decisive recommendation.
+Use plain ASCII punctuation. Stay under 420 words.
+Use no more than three bullets in each section.
 """
 
     user_prompt = f"""
@@ -290,6 +455,12 @@ Conversation history:
 
 Strategy question:
 {query}
+
+Product lifecycle classification:
+{json.dumps(product_lifecycle, ensure_ascii=False, indent=2)}
+
+Automatically inferred research objectives:
+{json.dumps(research_focus or [], ensure_ascii=False, indent=2)}
 
 Customer Strategist Agent output based on internal YouTube evidence:
 {internal_answer}
@@ -300,28 +471,154 @@ Internal YouTube strategy evidence:
 External web evidence:
 {json.dumps(external_evidence, ensure_ascii=False, indent=2)}
 
-Write exactly these Markdown headings without numbering:
-**Internal YouTube Evidence**
-**External Web Evidence**
-**Final Validated Recommendation**
-**Risks/Trade-offs**
-**Confidence Level**
+Illustrative pricing scenario model:
+{json.dumps(pricing_scenario, ensure_ascii=False, indent=2)}
 
-In External Web Evidence, include source titles and URLs. Explain whether the
-external evidence validates, challenges, or adds context to the internal evidence.
-Use [Web N] citations for every external claim.
-Do not add a separate source register after the five requested sections.
+If an illustrative pricing scenario is supplied AND the research objectives
+contain uae_pricing_offers or uae_retail_events, write exactly:
+**Strategic Recommendation**
+**Revenue Growth**
+**Margin Protection**
+**Customer Retention and Ecosystem**
+**Risk and Confidence**
+**Final Recommendation**
+
+If an illustrative pricing scenario is supplied WITHOUT UAE research objectives,
+write exactly:
+**Strategic Recommendation**
+**Revenue Growth**
+**Margin Protection**
+**Customer Retention and Ecosystem**
+**Risk and Confidence**
+**Final Recommendation**
+
+Under Strategic Recommendation, give the complete recommendation in no more
+than two polished sentences. A reader should understand the decision without
+reading further.
+
+Otherwise, write exactly:
+**Strategic Recommendation**
+**Revenue Growth**
+**Margin Protection**
+**Customer Retention and Ecosystem**
+**Risk and Confidence**
+**Final Recommendation**
+
+Use compact [Web N] citations only where an external fact materially supports
+the reasoning. Never print raw URLs, a source register, a bibliography, or a
+list of source titles in the main answer. The interface displays clickable
+sources in the External web evidence panel. Mention evidence limitations
+briefly in Risk and Confidence.
+For each event in the promotion calendar, include it only if supported by a
+[Web N] source; otherwise label it as a proposed test window rather than a
+verified event. Recommend an explicit effective-discount test range for each
+window using the supplied scenario thresholds. Label those ranges as proposed
+tests, not observed best practices. Prefer 0-5% equivalent value through
+bundles, trade-ins, financing, or storage upgrades for lighter windows. Use
+5-10% only for major retail windows and only when forecast incremental volume
+clears the modeled threshold. Do not recommend more than 10% without supplied
+commercial evidence. In Illustrative Profit Scenarios, label all percentages
+as assumptions, break-even calculations, or targets - never observed outcomes.
+Explain the profit calculation in one simple example only. For example: "If
+Samsung gives a 5% discount, it must sell about 17% more phones just to make the
+same total gross profit under the assumed margin." Do not show more than two
+scenario percentages in the main answer; the full table is already visible in
+the research panel.
+Briefly compare the selected strategy with the obvious alternative and explain
+why the alternative is weaker. Do not create a long options section.
+Name the actual product areas involved. Do not say "hero upgrades", "visible
+value", or "meaningful improvements" without identifying concrete features such
+as camera, battery, charging, S Pen, storage, durability, or practical AI.
+Keep citations to the minimum needed. Put only uncertainty, not source links,
+in the Risk and Confidence section.
+
+Under Revenue Growth, cover the target audience, campaign promise, concrete
+product demonstrations, channel plan, premium phone revenue, higher-storage
+mix, and at least two competitor tactics where evidence is available.
+
+Under Margin Protection, cover cost control, discount limits, trade-ins,
+financing, bundles, partner co-funding, and the rejection of broad price cuts.
+
+Under Customer Retention and Ecosystem, cover upgrade paths, loyalty, Galaxy
+Watch, Buds, Tab, SmartThings, software, services, or subscriptions where
+relevant.
+
+Under Risk and Confidence, state the principal strategic risk and give one
+brief, honest confidence sentence. Integrate citations into the reasoning and
+do not append a long source register.
+
+End with one decisive, submission-ready recommendation.
+Do not add an internal-evidence summary or a separate source register.
 """
 
-    return sanitize_text(generate_chat_response(
+    return clean_web_strategy_answer(generate_chat_response(
         client=client,
         messages=[
             {"role": "system", "content": system_prompt.strip()},
             {"role": "user", "content": sanitize_text(user_prompt.strip())},
         ],
         temperature=0.15,
-        max_completion_tokens=650,
+        max_completion_tokens=1000,
     ))
+
+
+def build_pricing_scenario(query):
+    query_lower = query.lower()
+    pricing_terms = [
+        "price",
+        "pricing",
+        "discount",
+        "offer",
+        "promotion",
+        "profit",
+        "margin",
+        "trade-in",
+        "trade in",
+    ]
+
+    if not any(term in query_lower for term in pricing_terms):
+        return None
+
+    assumed_margin = 0.35
+    target_profit_growth = 0.05
+    scenarios = []
+
+    for discount in [0.05, 0.10, 0.15]:
+        discounted_margin = assumed_margin - discount
+        break_even_volume_uplift = assumed_margin / discounted_margin - 1
+        target_volume_uplift = (
+            (1 + target_profit_growth) * assumed_margin / discounted_margin - 1
+        )
+        scenarios.append(
+            {
+                "effective_discount": f"{discount:.0%}",
+                "assumed_baseline_gross_margin": f"{assumed_margin:.0%}",
+                "unit_volume_uplift_to_preserve_gross_profit": (
+                    f"{break_even_volume_uplift:.1%}"
+                ),
+                "unit_volume_uplift_for_5_percent_gross_profit_growth": (
+                    f"{target_volume_uplift:.1%}"
+                ),
+            }
+        )
+
+    return {
+        "status": "Illustrative decision model - not a forecast",
+        "baseline": (
+            "Price index 100, unit volume index 100, and assumed gross margin 35%. "
+            "Replace these assumptions with Samsung finance data before execution."
+        ),
+        "formula": (
+            "Required volume ratio = target gross profit ratio x baseline margin "
+            "/ (baseline margin - effective discount)."
+        ),
+        "scenarios": scenarios,
+        "interpretation": (
+            "A promotion should proceed only when expected incremental unit volume "
+            "exceeds the calculated threshold after accounting for channel and "
+            "promotion costs."
+        ),
+    }
 
 
 def feedback_evidence_rows(results):
@@ -345,8 +642,25 @@ def feedback_evidence_rows(results):
 
 def strategy_evidence_rows(results):
     rows = []
+    selected_indices = []
+    seen_categories = set()
 
-    for _, row in results.head(5).iterrows():
+    for index, row in results.iterrows():
+        category = clean_value(row.get("issue_category")) or "General"
+        if category not in seen_categories:
+            selected_indices.append(index)
+            seen_categories.add(category)
+        if len(selected_indices) >= 5:
+            break
+
+    if len(selected_indices) < 5:
+        for index in results.index:
+            if index not in selected_indices:
+                selected_indices.append(index)
+            if len(selected_indices) >= 5:
+                break
+
+    for _, row in results.loc[selected_indices].iterrows():
         rows.append(
             {
                 "comment": clean_value(row.get("clean_comment")),
@@ -510,7 +824,13 @@ def run_feedback_rag(query, retrieval_query, history_text):
     process_inputs=sanitize_trace_inputs,
     process_outputs=sanitize_trace_outputs,
 )
-def run_strategy_rag_live(query, retrieval_query, history_text, generate_answer=True):
+def run_strategy_rag_live(
+    query,
+    retrieval_query,
+    history_text,
+    product_lifecycle,
+    generate_answer=True,
+):
     with contextlib.redirect_stdout(sys.stderr):
         from strategy_rag import (
             INPUT_PATH,
@@ -537,12 +857,62 @@ def run_strategy_rag_live(query, retrieval_query, history_text, generate_answer=
             vector_collection=vector_collection,
             candidate_count=900,
         )
+        if (
+            product_lifecycle.get("lifecycle") == "future_product"
+            and goal == "profit"
+        ):
+            feature_query = (
+                f"What concrete product features should Samsung prioritize in "
+                f"{product_lifecycle.get('requested_model') or 'the next Galaxy Ultra'} "
+                "to create clear customer value, differentiation, and upgrade demand?"
+            )
+            feature_results = retrieve_strategy_evidence(
+                query=feature_query,
+                goal="balanced",
+                df=df,
+                embeddings=embeddings,
+                top_k=12,
+                vector_collection=vector_collection,
+                candidate_count=900,
+            )
+            candidate_pool = (
+                pd.concat([results, feature_results], ignore_index=True)
+                .drop_duplicates(subset=["clean_comment"], keep="first")
+                .sort_values("strategy_retrieval_score", ascending=False)
+            )
+            coverage_rows = []
+            for category in [
+                "Camera",
+                "Battery / Charging",
+                "S-Pen / Features",
+                "AI / Gemini",
+                "Price / Value",
+            ]:
+                candidates = candidate_pool[
+                    candidate_pool["issue_category"] == category
+                ]
+                if candidates.empty:
+                    continue
+                coverage_rows.append(candidates.iloc[[0]])
+
+            results = (
+                pd.concat([*coverage_rows, candidate_pool], ignore_index=True)
+                .drop_duplicates(subset=["clean_comment"], keep="first")
+                .head(15)
+            )
         evidence_text = format_strategy_evidence(results)
 
     evidence = strategy_evidence_rows(results)
 
     if generate_answer:
-        answer = generate_strategy_answer_with_memory(query, retrieval_query, goal, evidence_text, history_text)
+        answer = generate_strategy_answer_with_memory(
+            query,
+            retrieval_query,
+            goal,
+            evidence_text,
+            history_text,
+            product_lifecycle,
+        )
         llm_metadata = get_generation_metadata()
     else:
         answer = build_customer_strategy_brief(goal, evidence)
@@ -554,6 +924,7 @@ def run_strategy_rag_live(query, retrieval_query, history_text, generate_answer=
         "answer": answer,
         "llm": llm_metadata,
         "strategyGoal": goal,
+        "productLifecycle": product_lifecycle,
         "contextualQuery": retrieval_query,
         "memoryUsed": history_text != "No prior conversation.",
         "sources": ["strategy_evidence.csv", "ChromaDB: strategy_evidence"],
@@ -577,8 +948,14 @@ def run_strategy_rag_live(query, retrieval_query, history_text, generate_answer=
     process_inputs=sanitize_trace_inputs,
     process_outputs=sanitize_trace_outputs,
 )
-def run_customer_strategist_agent(query, retrieval_query, history_text):
-    return run_strategy_rag_live(query, retrieval_query, history_text, generate_answer=False)
+def run_customer_strategist_agent(query, retrieval_query, history_text, product_lifecycle):
+    return run_strategy_rag_live(
+        query,
+        retrieval_query,
+        history_text,
+        product_lifecycle,
+        generate_answer=False,
+    )
 
 
 @mlflow_span("Web-Augmented Strategy RAG", "CHAIN")
@@ -589,12 +966,32 @@ def run_customer_strategist_agent(query, retrieval_query, history_text):
     process_inputs=sanitize_trace_inputs,
     process_outputs=sanitize_trace_outputs,
 )
-def run_web_augmented_strategy_rag(query, retrieval_query, history_text, research_focus):
+def run_web_augmented_strategy_rag(
+    query,
+    retrieval_query,
+    history_text,
+    research_focus,
+    product_lifecycle,
+):
     with contextlib.redirect_stdout(sys.stderr):
         from web_research import search_market_evidence
 
-    internal_result = run_customer_strategist_agent(query, retrieval_query, history_text)
-    web_research = search_market_evidence(retrieval_query, research_focus, max_results=3)
+    internal_result = run_customer_strategist_agent(
+        query,
+        retrieval_query,
+        history_text,
+        product_lifecycle,
+    )
+    pricing_scenario = build_pricing_scenario(query)
+    web_research = search_market_evidence(
+        retrieval_query,
+        research_focus,
+        max_results=8 if pricing_scenario else 5,
+    )
+    product_lifecycle = web_research.get(
+        "product_lifecycle",
+        product_lifecycle,
+    )
     external_evidence = [
         {"evidence_id": f"Web {index}", **item}
         for index, item in enumerate(web_research["evidence"], start=1)
@@ -605,6 +1002,9 @@ def run_web_augmented_strategy_rag(query, retrieval_query, history_text, researc
         internal_evidence=internal_result["evidence"][:3],
         external_evidence=external_evidence,
         history_text=history_text,
+        pricing_scenario=pricing_scenario,
+        product_lifecycle=product_lifecycle,
+        research_focus=research_focus,
     )
     llm_metadata = get_generation_metadata()
 
@@ -617,6 +1017,8 @@ def run_web_augmented_strategy_rag(query, retrieval_query, history_text, researc
 
     if llm_metadata.get("fallback_used") and confidence == "High":
         confidence = "Medium"
+    if pricing_scenario and confidence == "High":
+        confidence = "Medium"
 
     return {
         "mode": "web_augmented_strategy_rag",
@@ -625,20 +1027,25 @@ def run_web_augmented_strategy_rag(query, retrieval_query, history_text, researc
         "llm": llm_metadata,
         "confidence": confidence,
         "strategyGoal": internal_result.get("strategyGoal"),
+        "productLifecycle": product_lifecycle,
         "contextualQuery": retrieval_query,
         "memoryUsed": history_text != "No prior conversation.",
         "sources": internal_result["sources"] + [
-            item["url"] for item in external_evidence
+            f"DDGS external evidence ({len(external_evidence)} sources)"
         ],
         "evidence": internal_result["evidence"],
         "internalStrategyAnswer": internal_result["answer"],
         "externalEvidence": external_evidence,
         "webResearch": {
             "provider": web_research["provider"],
+            "queries": web_research.get("queries", []),
             "result_count": web_research["result_count"],
             "retrieved_at": web_research["retrieved_at"],
             "errors": web_research["errors"],
             "focus": research_focus,
+            "pricing_scenario": pricing_scenario,
+            "product_lifecycle": product_lifecycle,
+            "product_verification": web_research.get("product_verification"),
         },
         "retrieval": internal_result["retrieval"],
         "toolTrace": [
@@ -706,7 +1113,7 @@ def run_advisor(payload):
 
     retrieval_query = build_memory_query(query, messages)
     with contextlib.redirect_stdout(sys.stderr):
-        from web_strategy_policy import is_feedback_request
+        from web_strategy_policy import classify_product_lifecycle, is_feedback_request
 
     routing_query = (
         retrieval_query
@@ -728,6 +1135,7 @@ def run_advisor(payload):
         or routing.get("normalized_query")
         or retrieval_query
     )
+    product_lifecycle = classify_product_lifecycle(routed_query)
 
     if selected_agent == "web_augmented_strategy_rag":
         result = run_web_augmented_strategy_rag(
@@ -735,9 +1143,15 @@ def run_advisor(payload):
             routed_query,
             history_text,
             routing.get("external_research_focus", []),
+            product_lifecycle,
         )
     elif selected_agent == "strategy_rag_agent":
-        result = run_strategy_rag_live(query, routed_query, history_text)
+        result = run_strategy_rag_live(
+            query,
+            routed_query,
+            history_text,
+            product_lifecycle,
+        )
     elif selected_agent == "feedback_rag_agent":
         result = run_feedback_rag(query, routed_query, history_text)
     elif selected_agent == "samsung_document_rag":
@@ -775,6 +1189,7 @@ def run_advisor(payload):
     )
     result["availableTools"] = AVAILABLE_AGENTS
     result["query"] = query
+    result["productLifecycle"] = result.get("productLifecycle", product_lifecycle)
     result["uploadedDocumentCount"] = len(document_names)
     result["langsmithTracing"] = tracing_status()
     result["mlflowTracing"] = mlflow_status()

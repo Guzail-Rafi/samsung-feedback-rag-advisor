@@ -12,6 +12,17 @@ type ChatMessage = {
   mode?: string;
   confidence?: string;
   strategyGoal?: string;
+  productLifecycle?: {
+    requested_model?: string;
+    current_model?: string;
+    lifecycle?: string;
+    instruction?: string;
+    verification?: {
+      status?: string;
+      official_source_found?: boolean;
+      explanation?: string;
+    };
+  };
   contextualQuery?: string;
   memoryUsed?: boolean;
   routingReason?: string;
@@ -41,10 +52,33 @@ type ChatMessage = {
   }>;
   webResearch?: {
     provider?: string;
+    queries?: string[];
     result_count?: number;
     retrieved_at?: string;
     errors?: string[];
     focus?: string[];
+    pricing_scenario?: {
+      status?: string;
+      baseline?: string;
+      formula?: string;
+      scenarios?: Array<{
+        effective_discount?: string;
+        assumed_baseline_gross_margin?: string;
+        unit_volume_uplift_to_preserve_gross_profit?: string;
+        unit_volume_uplift_for_5_percent_gross_profit_growth?: string;
+      }>;
+    };
+    product_lifecycle?: {
+      requested_model?: string;
+      current_model?: string;
+      lifecycle?: string;
+    };
+    product_verification?: {
+      status?: string;
+      official_source_found?: boolean;
+      explanation?: string;
+      official_sources?: string[];
+    };
   };
   retrieval?: {
     vector_store?: string;
@@ -320,6 +354,7 @@ export function AdvisorChat() {
           mode: data.mode,
           confidence: data.confidence,
           strategyGoal: data.strategyGoal,
+          productLifecycle: data.productLifecycle,
           contextualQuery: data.contextualQuery,
           memoryUsed: data.memoryUsed,
           routingReason: data.routingReason,
@@ -499,6 +534,9 @@ export function AdvisorChat() {
                         message.model ? `Model: ${message.model}` : undefined,
                         message.confidence,
                         message.strategyGoal,
+                        message.productLifecycle?.lifecycle
+                          ? `Product: ${message.productLifecycle.lifecycle.replaceAll("_", " ")}`
+                          : undefined,
                         message.memoryUsed ? "memory:on" : undefined,
                       ]
                         .filter(Boolean)
@@ -540,6 +578,11 @@ export function AdvisorChat() {
                           Normalized query: {message.normalizedQuery}
                         </div>
                       )}
+                      {message.productLifecycle?.instruction && (
+                        <div className="mt-2 rounded-md bg-slate-50 px-2 py-1 text-slate-500 ring-1 ring-slate-200">
+                          Product lifecycle: {message.productLifecycle.instruction}
+                        </div>
+                      )}
                       {message.externalResearchFocus && message.externalResearchFocus.length > 0 && (
                         <div className="mt-2">
                           Research focus: {message.externalResearchFocus.join(", ")}
@@ -560,6 +603,69 @@ export function AdvisorChat() {
                       {message.contextualQuery && (
                         <div className="mt-2 rounded-md bg-slate-50 px-2 py-1 text-slate-500 ring-1 ring-slate-200">
                           Memory query: {message.contextualQuery}
+                        </div>
+                      )}
+                    </details>
+                  )}
+                  {assistant && message.webResearch && (
+                    <details className="mt-3 rounded-lg bg-white p-3 text-xs text-slate-600 ring-1 ring-slate-200">
+                      <summary className="cursor-pointer font-semibold text-slate-900">DDGS web research process</summary>
+                      <div className="mt-2 flex flex-wrap gap-2">
+                        <span>Provider: {message.webResearch.provider || "DDGS"}</span>
+                        <span>Results used: {message.webResearch.result_count ?? 0}</span>
+                        {message.webResearch.retrieved_at && <span>Retrieved: {message.webResearch.retrieved_at}</span>}
+                      </div>
+                      {message.webResearch.focus && message.webResearch.focus.length > 0 && (
+                        <div className="mt-2">Focus: {message.webResearch.focus.join(", ")}</div>
+                      )}
+                      {message.webResearch.product_verification && (
+                        <div className="mt-3 rounded-md bg-slate-50 p-2 ring-1 ring-slate-200">
+                          <div className="font-semibold text-slate-800">
+                            Product verification: {message.webResearch.product_verification.status?.replaceAll("_", " ")}
+                          </div>
+                          {message.webResearch.product_verification.explanation && (
+                            <p className="mt-1">{message.webResearch.product_verification.explanation}</p>
+                          )}
+                        </div>
+                      )}
+                      {message.webResearch.queries && message.webResearch.queries.length > 0 && (
+                        <div className="mt-3 space-y-2">
+                          <div className="font-semibold text-slate-800">Search queries</div>
+                          {message.webResearch.queries.map((searchQuery) => (
+                            <div key={searchQuery} className="rounded-md bg-slate-50 px-2 py-1 font-mono text-[11px] text-[#1428A0] ring-1 ring-slate-200">
+                              {searchQuery}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                      {message.webResearch.pricing_scenario?.scenarios && (
+                        <div className="mt-3 space-y-2">
+                          <div className="font-semibold text-slate-800">
+                            {message.webResearch.pricing_scenario.status || "Illustrative pricing model"}
+                          </div>
+                          {message.webResearch.pricing_scenario.baseline && (
+                            <p>{message.webResearch.pricing_scenario.baseline}</p>
+                          )}
+                          <div className="overflow-x-auto">
+                            <table className="w-full border-collapse text-left text-[11px]">
+                              <thead>
+                                <tr className="border-b border-slate-200 text-slate-500">
+                                  <th className="px-2 py-1">Discount</th>
+                                  <th className="px-2 py-1">Break-even volume</th>
+                                  <th className="px-2 py-1">Volume for +5% GP</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {message.webResearch.pricing_scenario.scenarios.map((scenario) => (
+                                  <tr key={scenario.effective_discount} className="border-b border-slate-100">
+                                    <td className="px-2 py-1">{scenario.effective_discount}</td>
+                                    <td className="px-2 py-1">{scenario.unit_volume_uplift_to_preserve_gross_profit}</td>
+                                    <td className="px-2 py-1">{scenario.unit_volume_uplift_for_5_percent_gross_profit_growth}</td>
+                                  </tr>
+                                ))}
+                              </tbody>
+                            </table>
+                          </div>
                         </div>
                       )}
                     </details>

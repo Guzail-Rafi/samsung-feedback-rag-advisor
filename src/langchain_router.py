@@ -32,8 +32,14 @@ AgentName = Literal[
 ]
 
 ExternalResearchFocus = Literal[
+    "product_lifecycle_verification",
+    "competitor_apple_playbook",
+    "competitor_pixel_playbook",
+    "competitor_apple_sales_result",
+    "competitor_pixel_sales_result",
     "latest_samsung_news",
     "uae_pricing_offers",
+    "uae_retail_events",
     "competitor_iphone_offers",
     "current_market_trends",
     "regional_market_context",
@@ -107,7 +113,9 @@ Available specialist agents:
       positioning.
    B. The requested strategy explicitly needs current external context, such as
       latest news, UAE pricing, current offers, competitor offers, current
-      market trends, regional conditions, or recent events.
+      market trends, UAE retail events, regional conditions, or recent events.
+      A strategy request naming a specific Galaxy S generation may also use
+      this route to verify whether the model is current, previous, or future.
 
 9. samsung_document_rag
    Use when the request explicitly asks about an uploaded document, uploaded

@@ -15,6 +15,7 @@ from vector_store import (
     query_collection,
 )
 from tracing_utils import sanitize_trace_inputs, sanitize_trace_outputs
+from web_strategy_policy import classify_product_lifecycle
 
 
 # =========================
@@ -232,19 +233,48 @@ def format_strategy_evidence(results):
 
 
 def generate_strategy_answer(query, goal, evidence_text):
+    product_lifecycle = classify_product_lifecycle(query)
     system_prompt = """
-You are a product strategy advisor for a university NLP/RAG project.
+You are a senior product and commercial strategist writing for a university and
+business audience. Respond as the decision owner, not as a feedback analyst or
+research summariser.
 
-You must answer only using the retrieved strategy evidence.
-Do not invent unsupported claims.
-Give practical product recommendations.
-Clearly separate customer satisfaction logic from profit logic when needed.
-Use professional business language.
-Your answer should be useful for Samsung product planning.
-You may create a phased implementation roadmap, 
-but do not present it as Samsung's actual internal timeline. 
-Use phases such as Phase 1, Phase 2, Phase 3, and Phase 4 
-instead of exact calendar quarters unless timing evidence is provided.
+Turn the supplied evidence into a focused product strategy. Use the evidence
+silently to constrain and prioritise the plan, but do not narrate the retrieval
+process and do not repeatedly say "users said", "comments show", or "the
+evidence suggests". The interface displays supporting evidence separately.
+
+Write in polished, concise UK English. Prefer precise phrases such as
+"battery-led, creator-focused premium flagship" over repetitive constructions
+such as "battery-first, camera-first, creator-first".
+
+Organise strategy around five profit levers: revenue growth, margin protection,
+customer retention, ecosystem and services monetisation, and risk.
+
+For a future Galaxy Ultra profit question, normally recommend premium
+positioning; visible improvements in battery, camera, practical AI, and S Pen
+utility; targeted trade-ins and bundles rather than broad price cuts; cost
+control; and Galaxy ecosystem monetisation, when supported by the evidence.
+
+Make clear choices. State what Samsung should do, what it should deprioritise,
+how the plan should be executed, how success should be measured, and which
+trade-offs must be managed.
+
+Ground every recommendation in the supplied evidence. Do not invent product
+facts, market facts, numerical targets, budgets, dates, or Samsung commitments.
+When exact targets are unavailable, name the KPI to measure rather than making
+up a number.
+
+Integrate evidence naturally into the reasoning rather than listing it
+separately. Add ecosystem and services strategy where relevant. Keep the answer
+sharp, strategic, and suitable for university or business submission.
+
+Respect the supplied product lifecycle classification. For a future product,
+create a hypothetical strategy and use current products only as benchmarks; do
+not invent confirmed future specifications, prices, dates, offers, or Samsung
+commitments. For a current product, diagnose the existing product and recommend
+enhancements to its experience, positioning, pricing, or promotion.
+End with a decisive recommendation. Stay under 350 words.
 """
 
     user_prompt = f"""
@@ -254,16 +284,22 @@ User Strategy Question:
 Detected Strategy Goal:
 {goal}
 
+Product Lifecycle Classification:
+{json.dumps(product_lifecycle, ensure_ascii=False, indent=2)}
+
 Retrieved Strategy Evidence:
 {evidence_text}
 
-Write:
-1. Direct strategic recommendation.
-2. Top 5 feature/product priorities.
-3. Reasoning from customer feedback evidence.
-4. Expected impact on customer satisfaction or profit.
-5. Risks or trade-offs.
-6. Final S27 Ultra phased product roadmap recommendation using Phase 1, Phase 2, Phase 3, and Phase 4.
+Write exactly these sections:
+1. Strategic recommendation.
+2. Revenue growth.
+3. Margin protection.
+4. Customer retention and ecosystem.
+5. Risk and confidence.
+6. Final recommendation.
+
+Do not include a section named customer feedback, retrieved evidence, evidence
+reasoning, or research findings. Keep confidence to one honest sentence.
 """
 
     return generate_chat_response(
@@ -305,8 +341,10 @@ def run_strategy_rag(query, df, embeddings, vector_collection=None):
 
 
 def refine_strategy_answer(original_query, goal, evidence_text, previous_answer, user_feedback):
+    product_lifecycle = classify_product_lifecycle(original_query)
     system_prompt = """
-You are a product strategy advisor for a university NLP/RAG project.
+You are a senior product and commercial strategist writing in polished,
+concise UK English. Respond as the decision owner, not as a feedback analyst.
 
 You must revise the product roadmap using:
 1. The original user strategy question
@@ -320,13 +358,14 @@ If the user's request is supported by evidence, incorporate it.
 If the user's request is weakly supported, include it as a trade-off or optional consideration.
 If the user's request conflicts with the evidence, explain the conflict politely and recommend a balanced alternative.
 
-Use a phased roadmap format:
-Phase 1: Immediate Priority
-Phase 2: Feature Enhancement
-Phase 3: Premium Positioning
-Phase 4: Launch & Feedback Monitoring
+Use the evidence silently as a decision constraint. Do not narrate retrieved
+comments or repeatedly refer to what users said. State the product decision,
+the roadmap change, its expected outcome, the KPI to monitor, and the trade-off.
+Do not invent facts, numerical targets, dates, budgets, or commitments.
 
-Keep the answer professional and business-oriented.
+Organise the revision around revenue growth, margin protection, customer
+retention, ecosystem and services monetisation, and risk. Integrate evidence
+naturally, keep confidence brief, and end with a decisive recommendation.
 """
 
     user_prompt = f"""
@@ -345,14 +384,20 @@ Previous Strategy Answer:
 User Feedback / Negotiation Request:
 {user_feedback}
 
+Product Lifecycle Classification:
+{json.dumps(product_lifecycle, ensure_ascii=False, indent=2)}
+
 Revise the strategy roadmap.
 
 Write:
-1. What changed based on the user's feedback.
-2. Updated phased roadmap.
-3. Evidence-based justification.
-4. Trade-offs or risks.
-5. Final recommendation.
+1. Strategic recommendation.
+2. Revenue growth.
+3. Margin protection.
+4. Customer retention and ecosystem.
+5. Risk and confidence.
+6. Final recommendation.
+
+Do not include a customer-feedback summary or retrieved-evidence section.
 """
 
     return generate_chat_response(

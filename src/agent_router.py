@@ -65,7 +65,7 @@ STRATEGY_TERMS = [
     "customer satisfaction", "product plan", "prioritize",
     "next flagship", "next ultra", "reduce complaints",
     "what should samsung do", "how should samsung",
-]
+    ]
 
 SUMMARY_TERMS = [
     "summarize", "summary", "overview", "overall feedback",

@@ -1,7 +1,16 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { CheckCircle2, GitPullRequestArrow, Lightbulb, RotateCcw, Send, XCircle } from "lucide-react";
+import {
+  AlertCircle,
+  CheckCircle2,
+  GitPullRequestArrow,
+  Lightbulb,
+  LoaderCircle,
+  RotateCcw,
+  Send,
+  XCircle,
+} from "lucide-react";
 import { refinementDecisions } from "../lib/mock";
 
 type Phase = {
@@ -15,6 +24,12 @@ type Decision = {
   verdict: "Accepted" | "Rejected" | "Alternative suggested";
   rationale: string;
   update: string;
+};
+
+type RefinementResponse = {
+  roadmap?: Phase[];
+  decision?: Decision;
+  error?: string;
 };
 
 const baseRoadmap: Phase[] = [
@@ -42,91 +57,6 @@ const promptChips = [
   "Remove S-Pen work to save cost.",
 ];
 
-function addUnique(items: string[], item: string) {
-  return items.includes(item) ? items : [...items, item];
-}
-
-function evaluateRequest(request: string, roadmap: Phase[]) {
-  const text = request.toLowerCase();
-  let updated = roadmap.map((phase) => ({ ...phase, items: [...phase.items] }));
-
-  if (text.includes("remove") && (text.includes("s-pen") || text.includes("spen") || text.includes("pen"))) {
-    return {
-      roadmap: updated,
-      decision: {
-        request,
-        verdict: "Rejected" as const,
-        rationale: "The S-Pen is strongly tied to Ultra identity, so removing it conflicts with the strategy evidence.",
-        update: "No roadmap change applied.",
-      },
-    };
-  }
-
-  if (text.includes("camera") || text.includes("creator")) {
-    updated = updated.map((phase) =>
-      phase.id === "phase-1"
-        ? { ...phase, items: addUnique(phase.items, "Creator-grade camera improvements") }
-        : phase,
-    );
-
-    return {
-      roadmap: updated,
-      decision: {
-        request,
-        verdict: "Accepted" as const,
-        rationale: "Camera quality is a high-value satisfaction signal and appears in strategy refinement evidence.",
-        update: "Creator-grade camera improvements added to Phase 1.",
-      },
-    };
-  }
-
-  if (text.includes("display") || text.includes("green") || text.includes("durability")) {
-    updated = updated.map((phase) =>
-      phase.id === "phase-1"
-        ? { ...phase, items: addUnique(phase.items, "Display durability and green-line prevention") }
-        : phase,
-    );
-
-    return {
-      roadmap: updated,
-      decision: {
-        request,
-        verdict: "Accepted" as const,
-        rationale: "Display trust is a complaint and risk signal, so it belongs in the first reliability phase.",
-        update: "Display durability moved into Phase 1.",
-      },
-    };
-  }
-
-  if (text.includes("profit") || text.includes("premium ai") || text.includes("ai")) {
-    updated = updated.map((phase) =>
-      phase.id === "phase-2"
-        ? { ...phase, items: addUnique(phase.items, "Premium AI workflows after hardware trust") }
-        : phase,
-    );
-
-    return {
-      roadmap: updated,
-      decision: {
-        request,
-        verdict: "Alternative suggested" as const,
-        rationale: "AI can support profit, but the evidence says visible hardware value should come before AI-led monetization.",
-        update: "Premium AI workflows added to Phase 2 instead of Phase 1.",
-      },
-    };
-  }
-
-  return {
-    roadmap: updated,
-    decision: {
-      request,
-      verdict: "Alternative suggested" as const,
-      rationale: "The request needs clearer evidence. The system keeps the current roadmap and recommends checking RAG evidence first.",
-      update: "No roadmap change applied.",
-    },
-  };
-}
-
 function VerdictIcon({ verdict }: { verdict: Decision["verdict"] }) {
   if (verdict === "Accepted") return <CheckCircle2 className="h-4 w-4 text-emerald-600" />;
   if (verdict === "Rejected") return <XCircle className="h-4 w-4 text-red-600" />;
@@ -136,6 +66,8 @@ function VerdictIcon({ verdict }: { verdict: Decision["verdict"] }) {
 export function RoadmapRefinement() {
   const [roadmap, setRoadmap] = useState(baseRoadmap);
   const [request, setRequest] = useState(promptChips[0]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
   const [decisions, setDecisions] = useState<Decision[]>([
     {
       request: refinementDecisions[0].feedback,
@@ -145,21 +77,45 @@ export function RoadmapRefinement() {
     },
   ]);
 
-  function submitRequest(event: FormEvent) {
+  async function submitRequest(event: FormEvent) {
     event.preventDefault();
     const trimmed = request.trim();
-    if (!trimmed) return;
+    if (!trimmed || isSubmitting) return;
 
-    const result = evaluateRequest(trimmed, roadmap);
-    setRoadmap(result.roadmap);
-    setDecisions((current) => [result.decision, ...current].slice(0, 5));
-    setRequest("");
+    setIsSubmitting(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/refinement", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ request: trimmed, roadmap }),
+      });
+      const result = (await response.json()) as RefinementResponse;
+
+      if (!response.ok || !result.roadmap || !result.decision) {
+        throw new Error(result.error || "The roadmap refinement service returned an incomplete response.");
+      }
+
+      setRoadmap(result.roadmap);
+      setDecisions((current) => [result.decision as Decision, ...current].slice(0, 5));
+      setRequest("");
+    } catch (submissionError) {
+      setError(
+        submissionError instanceof Error
+          ? submissionError.message
+          : "The roadmap could not be refined. Please try again.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   function resetRoadmap() {
     setRoadmap(baseRoadmap);
     setDecisions([]);
     setRequest(promptChips[0]);
+    setError("");
   }
 
   return (
@@ -207,6 +163,7 @@ export function RoadmapRefinement() {
             value={request}
             onChange={(event) => setRequest(event.target.value)}
             rows={4}
+            disabled={isSubmitting}
             className="mt-3 w-full resize-none rounded-lg border border-slate-200 px-3 py-3 text-sm outline-none transition focus:border-[#1428A0] focus:ring-4 focus:ring-[#1428A0]/10"
           />
           <div className="mt-3 flex flex-wrap gap-2">
@@ -215,18 +172,30 @@ export function RoadmapRefinement() {
                 key={prompt}
                 type="button"
                 onClick={() => setRequest(prompt)}
+                disabled={isSubmitting}
                 className="rounded-md bg-slate-100 px-2 py-1 text-xs text-slate-600 transition hover:bg-[#EAF0FF] hover:text-[#1428A0]"
               >
                 {prompt}
               </button>
             ))}
           </div>
+          {error && (
+            <div className="mt-3 flex items-start gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700 ring-1 ring-red-200">
+              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
           <button
             type="submit"
-            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[#1428A0] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#0F1F78]"
+            disabled={isSubmitting || !request.trim()}
+            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-[#1428A0] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#0F1F78] disabled:cursor-not-allowed disabled:opacity-60"
           >
-            <Send className="h-4 w-4" />
-            Submit negotiation
+            {isSubmitting ? (
+              <LoaderCircle className="h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="h-4 w-4" />
+            )}
+            {isSubmitting ? "Interpreting request..." : "Submit negotiation"}
           </button>
         </form>
       </section>
