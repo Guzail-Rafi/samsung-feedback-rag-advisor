@@ -3,9 +3,9 @@
 :root {
   --brand: #1428A0;
   --brand-light: #5B8DEF;
-  --ink: #111827;
-  --muted: #6B7280;
-  --surface: #F8FAFC;
+  --ink: #181818;
+  --muted: #6F6F68;
+  --surface: #F4F4F0;
 }
 
 html, body {
@@ -13,4 +13,13 @@ html, body {
   color: var(--ink);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   -webkit-font-smoothing: antialiased;
+}
+
+* {
+  scrollbar-color: #C8C7BF transparent;
+}
+
+::selection {
+  background: #DDE6FF;
+  color: #1428A0;
 }

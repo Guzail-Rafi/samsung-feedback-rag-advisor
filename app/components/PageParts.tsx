@@ -21,7 +21,7 @@ export function PageHeader({
 }
 
 export function PageFrame({ children }: { children: React.ReactNode }) {
-  return <div className="mx-auto w-full max-w-7xl px-4 py-6 md:px-8 md:py-8">{children}</div>;
+  return <div className="mx-auto w-full max-w-[1480px] px-4 py-6 md:px-6 md:py-8">{children}</div>;
 }
 
 export function Panel({
@@ -36,7 +36,7 @@ export function Panel({
   className?: string;
 }) {
   return (
-    <section className={`rounded-lg border border-slate-200 bg-white p-5 shadow-sm ${className}`}>
+    <section className={`rounded-xl border border-[#DDDCD5] bg-white p-5 shadow-sm ${className}`}>
       {(title || description) && (
         <div className="mb-4">
           {title && <h2 className="text-base font-semibold text-slate-950">{title}</h2>}
@@ -60,7 +60,7 @@ export function MetricCard({
   icon: LucideIcon;
 }) {
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-xl border border-[#DDDCD5] bg-white p-5 shadow-sm">
       <div className="flex items-center justify-between gap-4">
         <span className="text-sm font-medium text-slate-500">{label}</span>
         <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#EAF0FF] text-[#1428A0]">

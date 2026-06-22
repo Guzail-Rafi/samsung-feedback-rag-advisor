@@ -12,7 +12,6 @@ import {
   MessageSquare,
   Route,
   ShieldCheck,
-  Sparkles,
   Target,
 } from "lucide-react";
 
@@ -24,10 +23,10 @@ const heroKpis = [
 ];
 
 const signalRows = [
-  "Battery / Charging -> high-priority complaint",
-  "S-Pen / Features -> Ultra identity risk",
-  "Camera Quality -> creator satisfaction signal",
-  "Display Durability -> trust and reliability concern",
+  { label: "Battery / Charging", signal: "high-priority complaint", color: "#2488D8" },
+  { label: "S-Pen / Features", signal: "Ultra identity risk", color: "#68A52E" },
+  { label: "Camera Quality", signal: "creator satisfaction signal", color: "#C57B15" },
+  { label: "Display Durability", signal: "trust and reliability concern", color: "#D85B32" },
 ];
 
 const architectureSteps = [
@@ -53,27 +52,24 @@ const architectureSteps = [
 
 export function LandingHero() {
   return (
-    <section className="relative overflow-hidden rounded-xl border border-slate-800 bg-[#07111F] text-white shadow-2xl">
-      <div className="absolute inset-0 opacity-80 [background:radial-gradient(circle_at_18%_18%,rgba(20,40,160,0.42),transparent_32%),radial-gradient(circle_at_82%_18%,rgba(15,118,110,0.34),transparent_30%),linear-gradient(135deg,#07111F_0%,#0D1728_48%,#111827_100%)]" />
-      <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.08)_1px,transparent_1px)] [background-size:42px_42px]" />
-
-      <div className="relative grid min-h-[680px] gap-8 px-5 py-8 md:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:px-10 lg:py-12">
-        <div className="flex flex-col justify-center">
+    <section>
+      <div className="grid items-center gap-8 py-5 lg:grid-cols-[1.08fr_0.92fr] lg:py-8">
+        <div>
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.55 }}
-            className="inline-flex w-fit items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3 py-1.5 text-xs font-semibold uppercase text-blue-100 backdrop-blur"
+            transition={{ duration: 0.4 }}
+            className="inline-flex w-fit items-center gap-2 rounded-full border border-[#C9D7FA] bg-[#EAF1FF] px-3 py-1.5 text-xs font-semibold text-[#245C9E]"
           >
-            <Sparkles className="h-3.5 w-3.5" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[#2E87DC]" />
             Samsung Feedback Intelligence
           </motion.div>
 
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.08 }}
-            className="mt-6 max-w-4xl text-5xl font-semibold leading-[1.02] md:text-7xl"
+            transition={{ duration: 0.45, delay: 0.06 }}
+            className="mt-5 max-w-3xl text-4xl font-semibold leading-[1.04] tracking-[-0.04em] text-[#181818] sm:text-5xl lg:text-6xl"
           >
             Galaxy Insight RAG
           </motion.h1>
@@ -81,99 +77,94 @@ export function LandingHero() {
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.16 }}
-            className="mt-5 max-w-2xl text-xl leading-8 text-slate-200 md:text-2xl"
+            transition={{ duration: 0.45, delay: 0.12 }}
+            className="mt-5 max-w-2xl text-lg font-medium leading-8 text-[#4F4F49]"
           >
-            AI-powered Samsung feedback and product strategy intelligence.
-          </motion.p>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.24 }}
-            className="mt-5 max-w-2xl text-sm leading-7 text-slate-300 md:text-base"
-          >
-            The system transforms YouTube comments into sentiment, issue categories, topics,
-            grounded RAG answers, strategy recommendations, and an interactive roadmap refinement loop.
+            AI-powered feedback analysis and product strategy intelligence. Turn YouTube comments into grounded answers and actionable roadmap signals.
           </motion.p>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.32 }}
-            className="mt-8 flex flex-wrap gap-3"
+            transition={{ duration: 0.45, delay: 0.18 }}
+            className="mt-7 flex flex-wrap gap-3"
           >
             <Link
               href="/advisor"
-              className="inline-flex items-center gap-2 rounded-lg bg-white px-5 py-3 text-sm font-semibold text-[#1428A0] shadow-lg shadow-blue-950/30 transition hover:bg-blue-50"
+              className="inline-flex items-center gap-2 rounded-lg bg-[#181818] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#30302D]"
             >
-              Open Strategy Chat
+              <Bot className="h-4 w-4" />
+              Samsung Chat
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
               href="/refinement"
-              className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15"
+              className="inline-flex items-center gap-2 rounded-lg border border-[#CFCFC8] bg-white px-5 py-3 text-sm font-semibold text-[#343430] shadow-sm transition hover:border-[#A8A79F] hover:bg-[#FAFAF7]"
             >
-              Negotiate Roadmap
+              <Route className="h-4 w-4 text-[#1428A0]" />
+              Roadmap Refinement
             </Link>
           </motion.div>
         </div>
 
-        <div className="flex flex-col justify-center gap-4">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="rounded-xl border border-white/15 bg-white/10 p-4 backdrop-blur-md"
-          >
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.48, delay: 0.12 }}
+          className="rounded-xl border border-[#D5D4CD] bg-white p-5 shadow-[0_18px_50px_rgba(35,35,30,0.08)] md:p-6"
+        >
+          <div className="flex items-center justify-between gap-3">
             <div className="flex items-center justify-between gap-3">
-              <div>
-                <div className="text-sm font-semibold text-white">Live feedback signals</div>
-                <div className="mt-1 text-xs text-slate-300">pipeline output preview</div>
-              </div>
-              <span className="rounded-md bg-emerald-400/15 px-2 py-1 text-xs font-semibold text-emerald-200 ring-1 ring-emerald-300/20">
-                Ready
-              </span>
+              <div className="text-sm font-semibold text-[#343430]">Live feedback signals</div>
             </div>
-
-            <div className="mt-4 space-y-2">
-              {signalRows.map((signal, index) => (
-                <motion.div
-                  key={signal}
-                  initial={{ opacity: 0, x: 18 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.42, delay: 0.32 + index * 0.08 }}
-                  className="flex items-center gap-3 rounded-lg border border-white/10 bg-slate-950/35 px-3 py-2 text-sm text-slate-200"
-                >
-                  <span className="h-2 w-2 rounded-full bg-emerald-300" />
-                  {signal}
-                </motion.div>
-              ))}
-            </div>
-          </motion.div>
-
-          <div className="grid gap-3 sm:grid-cols-2">
-            {heroKpis.map((kpi, index) => {
-              const Icon = kpi.icon;
-              return (
-                <motion.div
-                  key={kpi.label}
-                  initial={{ opacity: 0, y: 18 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.48, delay: 0.42 + index * 0.08 }}
-                  className="rounded-xl border border-white/15 bg-white/10 p-4 backdrop-blur-md"
-                >
-                  <div className="flex items-center justify-between gap-3">
-                    <span className="text-xs font-medium uppercase text-slate-300">{kpi.label}</span>
-                    <Icon className="h-4 w-4 text-blue-200" />
-                  </div>
-                  <div className="mt-3 text-3xl font-semibold text-white">{kpi.value}</div>
-                  <div className="mt-1 text-xs text-slate-300">{kpi.sub}</div>
-                </motion.div>
-              );
-            })}
+            <span className="rounded-full bg-[#ECF7E4] px-2.5 py-1 text-[11px] font-semibold text-[#568A2D]">
+              Ready
+            </span>
           </div>
-        </div>
+
+          <div className="mt-4 divide-y divide-[#E1E0DA]">
+            {signalRows.map((row, index) => (
+              <motion.div
+                key={row.label}
+                initial={{ opacity: 0, x: 10 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.35, delay: 0.22 + index * 0.06 }}
+                className="grid grid-cols-[minmax(0,1fr)_16px_minmax(0,1fr)] items-center gap-3 py-3 text-sm"
+              >
+                <div className="flex min-w-0 items-center gap-3 font-medium text-[#343430]">
+                  <span className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: row.color }} />
+                  <span>{row.label}</span>
+                </div>
+                <ArrowRight className="h-3.5 w-3.5 text-[#92928B]" />
+                <span className="text-[#5F5F59]">{row.signal}</span>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+      </div>
+
+      <div className="grid gap-3 border-y border-[#DDDCD5] py-5 sm:grid-cols-2 xl:grid-cols-4">
+        {heroKpis.map((kpi, index) => {
+          const Icon = kpi.icon;
+          return (
+            <motion.div
+              key={kpi.label}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.38, delay: 0.24 + index * 0.05 }}
+              className="rounded-xl border border-[#DDDCD5] bg-white p-5 shadow-sm"
+            >
+              <div className="flex items-center gap-2 text-sm text-[#66665F]">
+                <Icon className="h-4 w-4 text-[#1428A0]" />
+                {kpi.label}
+              </div>
+              <div className={`mt-2 text-3xl font-medium tracking-tight ${kpi.value === "93%" ? "text-[#5E942F]" : "text-[#242421]"}`}>
+                {kpi.value}
+              </div>
+              <div className="mt-1 text-xs text-[#777770]">{kpi.sub}</div>
+            </motion.div>
+          );
+        })}
       </div>
     </section>
   );
