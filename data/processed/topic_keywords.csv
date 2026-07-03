@@ -1,9 +1,9 @@
-﻿topic_id,top_words,topic_name
-0,"apple, like, samsung, just, phones, phone, video, know, don, people, looks, did",General Samsung / Apple Discussion
-1,"ultra, s25, s24, s25 ultra, s24 ultra, samsung, galaxy, s22, s23, watching, s22 ultra, s23 ultra","AI, Battery, Camera and Feature Discussion"
-2,"samsung, phone, new, phones, google, ai, fake, buy, galaxy, love, real, make",Galaxy Models / S23-S24-S25 Series
-3,"pen, bluetooth, use, just, samsung, don, feature, used, spen, people, bro, note",Buying Decision / Value Discussion
-4,"phone, screen, best, year, buy, im, new, really, 25, privacy, great, going",Fake Products / Screen / Camera Concerns
-5,"iphone, better, pro, samsung, phone, max, oneplus, android, 16, pro max, way, 15",S-Pen / Bluetooth Removal
-6,"fake, phone, 70, ultra, need, just, s23, real, good, worth, price, got",Upgrade Cycle / Yearly Phone Changes
-7,"ai, battery, features, charging, upgrade, camera, ai features, use, jack, line, better, software",S25 vs S24 / iPhone Pro Max Comparison
+﻿topic_id,topic_name,top_words
+0,General Samsung / Apple Discussion,"phone, new, like, need, really, don, just, dont, use, phones, software, years"
+1,"AI, Battery, Camera and Feature Discussion","ai, battery, google, good, samsung, camera, phone, just, life, gemini, pixel, 70"
+2,Galaxy Models / S23-S24-S25 Series,"pen, use, bluetooth, feature, samsung, spen, used, people, features, bluetooth pen, screen, phone"
+3,Buying Decision / Value Discussion,"samsung, apple, phone, year, like, best, phones, video, iphone, love, design, innovation"
+4,Fake Products / Screen / Camera Concerns,"ultra, s25, s24, s25 ultra, s24 ultra, galaxy, samsung, note, s22, s22 ultra, watching, upgrade"
+5,S-Pen / Bluetooth Removal,"samsung, iphone, better, pro, display, phone, max, series, privacy, just, 16, android"
+6,Upgrade Cycle / Yearly Phone Changes,"ultra, upgrade, s23, just, s23 ultra, phone, wait, got, s26, features, year, ai"
+7,S25 vs S24 / iPhone Pro Max Comparison,"phone, fake, buy, real, just, samsung, don, bro, price, know, phones, want"

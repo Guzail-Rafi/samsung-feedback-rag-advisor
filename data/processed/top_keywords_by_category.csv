@@ -1,124 +1,124 @@
 ﻿keyword,tfidf_score,issue_category,category_comment_count
-battery,58.35961982877898,Battery / Charging,846
+battery,58.34482131971295,Battery / Charging,846
 charger,38.811029873923395,Battery / Charging,846
-charging,28.317649338278613,Battery / Charging,846
-pen,25.139118880761046,Battery / Charging,846
-ai,20.44953862672671,Battery / Charging,846
-charge,20.209571790348107,Battery / Charging,846
-better,18.07574617311796,Battery / Charging,846
-life,16.176583690923135,Battery / Charging,846
-power,15.825537457894852,Battery / Charging,846
-good,15.010450458479742,Battery / Charging,846
-features,14.987083216925708,Battery / Charging,846
-camera,14.784662100216805,Battery / Charging,846
-bluetooth,14.26809655094806,Battery / Charging,846
-need,14.216941723455463,Battery / Charging,846
-battery life,14.164118763829315,Battery / Charging,846
+charging,28.31445363706745,Battery / Charging,846
+pen,25.081015527910772,Battery / Charging,846
+ai,20.445644096386555,Battery / Charging,846
+charge,20.222813571179454,Battery / Charging,846
+better,18.07177535650236,Battery / Charging,846
+life,16.174345057821288,Battery / Charging,846
+power,15.822174012071347,Battery / Charging,846
+good,15.006856326484122,Battery / Charging,846
+features,14.98077034101653,Battery / Charging,846
+camera,14.779699456575042,Battery / Charging,846
+bluetooth,14.261176302904726,Battery / Charging,846
+need,14.21411625031524,Battery / Charging,846
+battery life,14.162811648776565,Battery / Charging,846
 box,13.864297258229758,Battery / Charging,846
-year,13.512437868248313,Battery / Charging,846
+year,13.526393957527807,Battery / Charging,846
 powerful,12.836591765986903,Battery / Charging,846
-years,12.780548050233747,Battery / Charging,846
-buy,12.026922391243499,Battery / Charging,846
-buy,33.37502402697527,Price / Value,1005
-worth,31.074744976933342,Price / Value,1005
-price,30.119646381572622,Price / Value,1005
-70,29.001824013068862,Price / Value,1005
-better,26.19589319306626,Price / Value,1005
-fake,25.150234380231836,Price / Value,1005
-money,24.923412060171884,Price / Value,1005
-cheap,20.82949160332049,Price / Value,1005
-cost,17.95601834360237,Price / Value,1005
-year,16.977170963415812,Price / Value,1005
-expensive,15.22550660635306,Price / Value,1005
-cheaper,14.740288874245518,Price / Value,1005
-upgrade,14.091649171563603,Price / Value,1005
-value,13.661588114472822,Price / Value,1005
-time,12.171126089911048,Price / Value,1005
-buying,11.876215172872124,Price / Value,1005
-real,11.769592661497807,Price / Value,1005
-dollar,11.615193193851553,Price / Value,1005
-need,10.709603369804043,Price / Value,1005
-years,10.665189302001378,Price / Value,1005
-pen,87.1633353366639,S-Pen / Features,1251
-bluetooth,51.059403901797864,S-Pen / Features,1251
-bluetooth pen,29.322835196666443,S-Pen / Features,1251
-spen,26.137505205450065,S-Pen / Features,1251
-feature,24.392375711979813,S-Pen / Features,1251
-features,23.573617907499667,S-Pen / Features,1251
-stylus,22.658795589039393,S-Pen / Features,1251
-buy,21.154703821855794,S-Pen / Features,1251
-note,18.500962186595842,S-Pen / Features,1251
-year,17.377398667162797,S-Pen / Features,1251
-upgrade,16.07623249371215,S-Pen / Features,1251
-better,15.656370499143833,S-Pen / Features,1251
-used,15.22950474031656,S-Pen / Features,1251
-removed,14.910449123924684,S-Pen / Features,1251
-bring,14.285663782387827,S-Pen / Features,1251
-jack,13.420845508940833,S-Pen / Features,1251
-remove,13.263680476729771,S-Pen / Features,1251
-s22,12.84046415329706,S-Pen / Features,1251
-headphone,12.813654455345656,S-Pen / Features,1251
-need,12.652693230137231,S-Pen / Features,1251
-video,83.06318306254968,Camera,1191
-camera,68.09924507995356,Camera,1191
-pen,28.830178197716744,Camera,1191
-videos,28.200773714553875,Camera,1191
-fake,25.788567347801912,Camera,1191
-watching,25.717507833808632,Camera,1191
-better,23.696382001711033,Camera,1191
-ai,22.85625911495743,Camera,1191
-zoom,22.731167748649565,Camera,1191
-cameras,22.337881890164432,Camera,1191
-good,20.41430306573473,Camera,1191
-photos,19.877906975978632,Camera,1191
-quality,18.358170129168172,Camera,1191
-buy,16.707259247192262,Camera,1191
-photo,15.99064040724938,Camera,1191
-best,15.733762850538875,Camera,1191
-year,15.40452277195305,Camera,1191
-need,14.915651626326017,Camera,1191
-screen,14.20387036648911,Camera,1191
-features,13.301857826993905,Camera,1191
-think,49.59004622113256,Design / Build,1311
-design,40.869100841481334,Design / Build,1311
-fake,36.09994136958685,Design / Build,1311
-year,27.675125076098464,Design / Build,1311
-better,27.387785186897673,Design / Build,1311
-real,18.212017626394474,Design / Build,1311
-buy,17.53140093238387,Design / Build,1311
-looks,15.966080450217481,Design / Build,1311
-years,15.763926769492981,Design / Build,1311
-thinking,14.470950922078558,Design / Build,1311
-know,14.295668763689708,Design / Build,1311
-fake phone,14.248940153916001,Design / Build,1311
-need,14.242309365472366,Design / Build,1311
-upgrade,12.836244719797639,Design / Build,1311
-did,12.436155458560469,Design / Build,1311
-best,12.413594634228199,Design / Build,1311
-good,12.173505132220793,Design / Build,1311
-time,11.989133146679821,Design / Build,1311
-box,11.583107107066137,Design / Build,1311
-awt88k,11.344180174459941,Design / Build,1311
-ai,127.89816713967281,AI / Gemini,1798
-wait,62.67121989405274,AI / Gemini,1798
-waiting,42.345168681495466,AI / Gemini,1798
-features,42.29963347246131,AI / Gemini,1798
-gemini,37.04826401902454,AI / Gemini,1798
-year,32.831137312277356,AI / Gemini,1798
-pen,30.360302661054874,AI / Gemini,1798
-ai features,27.374450724284724,AI / Gemini,1798
-said,26.26852426339343,AI / Gemini,1798
-upgrade,25.027495062238316,AI / Gemini,1798
-google,24.15502341986353,AI / Gemini,1798
-better,24.082662325241476,AI / Gemini,1798
-years,23.444103211445437,AI / Gemini,1798
-buy,22.986569293694075,AI / Gemini,1798
-feature,20.599952475254497,AI / Gemini,1798
-available,20.525898551940667,AI / Gemini,1798
-time,18.779345758518037,AI / Gemini,1798
-going,18.651543929828193,AI / Gemini,1798
-need,18.398822379335655,AI / Gemini,1798
-think,16.775139224393516,AI / Gemini,1798
+years,12.778866810873561,Battery / Charging,846
+buy,12.025422836508294,Battery / Charging,846
+buy,33.584531477933496,Price / Value,1005
+worth,31.28550243690586,Price / Value,1005
+price,30.212734929832934,Price / Value,1005
+70,29.051884493518383,Price / Value,1005
+better,26.283596648113353,Price / Value,1005
+fake,25.25967523274292,Price / Value,1005
+money,24.924672916100555,Price / Value,1005
+cheap,20.888544742184905,Price / Value,1005
+cost,17.921686371119556,Price / Value,1005
+year,17.385886046010814,Price / Value,1005
+expensive,15.101847616779578,Price / Value,1005
+cheaper,14.58251793397661,Price / Value,1005
+upgrade,14.110541472869834,Price / Value,1005
+value,13.669782669211836,Price / Value,1005
+time,12.404915107607774,Price / Value,1005
+buying,11.88440787377912,Price / Value,1005
+real,11.741230163253693,Price / Value,1005
+dollar,11.696425040974706,Price / Value,1005
+years,10.498274920781789,Price / Value,1005
+afford,10.43447857657661,Price / Value,1005
+pen,87.16230753340308,S-Pen / Features,1251
+bluetooth,50.55772425140377,S-Pen / Features,1251
+bluetooth pen,29.465539148271777,S-Pen / Features,1251
+spen,26.03180638275372,S-Pen / Features,1251
+feature,24.45765821789669,S-Pen / Features,1251
+features,23.47069419703935,S-Pen / Features,1251
+stylus,22.49327310629088,S-Pen / Features,1251
+buy,21.220185986854528,S-Pen / Features,1251
+note,18.310089636516214,S-Pen / Features,1251
+year,17.03005687596458,S-Pen / Features,1251
+upgrade,15.906246295800456,S-Pen / Features,1251
+better,15.744360227113834,S-Pen / Features,1251
+used,15.575760116824895,S-Pen / Features,1251
+removed,14.969426160615088,S-Pen / Features,1251
+bring,14.058123119882906,S-Pen / Features,1251
+jack,13.397068161664354,S-Pen / Features,1251
+remove,13.330325297108521,S-Pen / Features,1251
+need,13.08980247851507,S-Pen / Features,1251
+headphone,12.81131776027628,S-Pen / Features,1251
+s22,12.744749647203651,S-Pen / Features,1251
+video,83.95756441168739,Camera,1191
+camera,67.85503082340877,Camera,1191
+pen,28.891589939321914,Camera,1191
+videos,27.95070184650271,Camera,1191
+fake,26.11656284341738,Camera,1191
+watching,24.97399137520049,Camera,1191
+better,23.910625133683286,Camera,1191
+ai,22.933776219920027,Camera,1191
+zoom,22.544288434451587,Camera,1191
+cameras,22.236933912794974,Camera,1191
+good,20.50612768059699,Camera,1191
+photos,20.04438838606881,Camera,1191
+quality,19.15469557238132,Camera,1191
+buy,16.692501028718592,Camera,1191
+photo,16.04327980106349,Camera,1191
+best,15.69992867522871,Camera,1191
+year,15.590720116333273,Camera,1191
+need,14.91824571422255,Camera,1191
+screen,14.215137639873811,Camera,1191
+real,13.250477126694628,Camera,1191
+think,49.0918455500225,Design / Build,1311
+design,40.64940613024101,Design / Build,1311
+fake,35.53934964846655,Design / Build,1311
+year,27.630522978003384,Design / Build,1311
+better,27.377265219307922,Design / Build,1311
+real,17.983635200359473,Design / Build,1311
+buy,17.451565025392632,Design / Build,1311
+looks,16.007855882308256,Design / Build,1311
+years,15.710064331785778,Design / Build,1311
+thinking,14.484120857395538,Design / Build,1311
+need,14.345948046811879,Design / Build,1311
+know,14.123136693130219,Design / Build,1311
+fake phone,14.065042239380132,Design / Build,1311
+upgrade,12.904426787345212,Design / Build,1311
+did,12.472294210867163,Design / Build,1311
+best,12.33738328023176,Design / Build,1311
+good,12.117672668249083,Design / Build,1311
+time,12.041647547484372,Design / Build,1311
+box,11.613215806736674,Design / Build,1311
+does,11.339106667321236,Design / Build,1311
+ai,130.25935967014675,AI / Gemini,1798
+wait,62.42350787360128,AI / Gemini,1798
+features,42.228468496118644,AI / Gemini,1798
+waiting,41.90596872337155,AI / Gemini,1798
+gemini,37.24496345347568,AI / Gemini,1798
+year,32.91480617500505,AI / Gemini,1798
+pen,30.326088727780014,AI / Gemini,1798
+ai features,27.233590336432577,AI / Gemini,1798
+said,26.004403200691442,AI / Gemini,1798
+upgrade,24.788371515128258,AI / Gemini,1798
+google,24.39337624384039,AI / Gemini,1798
+better,23.771783065926602,AI / Gemini,1798
+years,23.13043349494885,AI / Gemini,1798
+buy,23.042087593369292,AI / Gemini,1798
+feature,20.63064254576064,AI / Gemini,1798
+available,20.479912589802776,AI / Gemini,1798
+going,18.722504198919907,AI / Gemini,1798
+time,18.64605737389915,AI / Gemini,1798
+need,18.4549876718667,AI / Gemini,1798
+think,16.854170984105945,AI / Gemini,1798
 android,26.627585387407446,Software / One UI,446
 ui,15.889148573060671,Software / One UI,446
 software,15.291920945682524,Software / One UI,446
@@ -139,66 +139,66 @@ quite,4.910727393568736,Software / One UI,446
 good,4.770709117729702,Software / One UI,446
 hardware,4.610887367255224,Software / One UI,446
 series,4.496506396508249,Software / One UI,446
-best,63.360923551858136,Positive Feedback,1102
-good,50.38704611997151,Positive Feedback,1102
-love,44.71396773850155,Positive Feedback,1102
-great,29.12869642183267,Positive Feedback,1102
-nice,28.440528505192077,Positive Feedback,1102
-amazing,21.646143749158547,Positive Feedback,1102
-best phone,18.288224374164795,Positive Feedback,1102
-samsung best,16.38759699721225,Positive Feedback,1102
-awesome,16.18034016654132,Positive Feedback,1102
-better,14.716650129431752,Positive Feedback,1102
-note,14.45080031804909,Positive Feedback,1102
-love samsung,13.372214240842073,Positive Feedback,1102
-review,13.20224991577446,Positive Feedback,1102
-time,13.171845653350292,Positive Feedback,1102
-buy,13.114911273466697,Positive Feedback,1102
-year,13.10945092201951,Positive Feedback,1102
-watching,12.729039115462012,Positive Feedback,1102
-fake,12.105321851696491,Positive Feedback,1102
-70,11.638833958449165,Positive Feedback,1102
-perfect,10.908070520533483,Positive Feedback,1102
-screen,35.189876514568034,Display / Screen,494
-display,27.625473241108704,Display / Screen,494
-privacy,18.843918636742274,Display / Screen,494
-fold,15.12276271432424,Display / Screen,494
-green,14.009949923546072,Display / Screen,494
-line,12.268721507393412,Display / Screen,494
-green line,11.625301415808961,Display / Screen,494
-curved,11.247220789200608,Display / Screen,494
-privacy display,9.957878285016434,Display / Screen,494
-privacy screen,8.169740184574884,Display / Screen,494
-protector,7.915385911211486,Display / Screen,494
-flat,7.838870802154943,Display / Screen,494
-screen protector,7.713364327823537,Display / Screen,494
-feature,7.211997926173737,Display / Screen,494
-curved screen,6.082968993378177,Display / Screen,494
-years,5.89404469863065,Display / Screen,494
-buy,5.877333789348277,Display / Screen,494
-colors,5.421743613652236,Display / Screen,494
-edge,5.360297493834768,Display / Screen,494
-lines,5.279162884231949,Display / Screen,494
-support,9.742007562750812,Customer Support / Warranty,210
-upgrade,6.9490218818467975,Customer Support / Warranty,210
-buy,6.7404975686676725,Customer Support / Warranty,210
-years,5.7831818736539065,Customer Support / Warranty,210
-time,5.244251632121074,Customer Support / Warranty,210
-going,4.8977771511235035,Customer Support / Warranty,210
-year,4.774167780887169,Customer Support / Warranty,210
-better,3.8149217587109625,Customer Support / Warranty,210
-s22,3.747612461403147,Customer Support / Warranty,210
-im,3.6690383070028556,Customer Support / Warranty,210
-upgrading,3.569342215304641,Customer Support / Warranty,210
-company,3.3681672337886246,Customer Support / Warranty,210
-note,3.34727599905609,Customer Support / Warranty,210
-series,3.001336044388311,Customer Support / Warranty,210
-s22 ultra,2.705547110459302,Customer Support / Warranty,210
-bought,2.554151488645633,Customer Support / Warranty,210
-service,2.5527543928619183,Customer Support / Warranty,210
-buying,2.546391318813674,Customer Support / Warranty,210
-bring,2.4943070370991016,Customer Support / Warranty,210
-customers,2.469260631376438,Customer Support / Warranty,210
+best,63.64578814142433,Positive Feedback,1102
+good,51.29199567542494,Positive Feedback,1102
+love,43.52878167505086,Positive Feedback,1102
+great,29.017409847917545,Positive Feedback,1102
+nice,28.21566060565768,Positive Feedback,1102
+amazing,21.014985786270195,Positive Feedback,1102
+best phone,18.393516942572518,Positive Feedback,1102
+samsung best,16.56624065310574,Positive Feedback,1102
+awesome,16.343533325629533,Positive Feedback,1102
+better,14.759147048811249,Positive Feedback,1102
+note,14.177968206333812,Positive Feedback,1102
+buy,13.55455959092943,Positive Feedback,1102
+time,13.346069399575024,Positive Feedback,1102
+love samsung,13.318633247473805,Positive Feedback,1102
+year,13.077199610703657,Positive Feedback,1102
+watching,12.76824626832989,Positive Feedback,1102
+review,12.630138144688898,Positive Feedback,1102
+fake,12.31748031062417,Positive Feedback,1102
+70,12.263184434139571,Positive Feedback,1102
+perfect,10.450593045806752,Positive Feedback,1102
+screen,36.55414662001544,Display / Screen,494
+display,27.544191446882117,Display / Screen,494
+privacy,19.01852045770947,Display / Screen,494
+fold,15.068181738414816,Display / Screen,494
+green,13.64971474762973,Display / Screen,494
+line,11.872883374114455,Display / Screen,494
+green line,11.180887392270138,Display / Screen,494
+curved,10.911813160734601,Display / Screen,494
+privacy display,10.068626682860288,Display / Screen,494
+privacy screen,8.784584117083162,Display / Screen,494
+protector,7.973671840937371,Display / Screen,494
+flat,7.887284574408555,Display / Screen,494
+screen protector,7.827230339614448,Display / Screen,494
+feature,6.985994558491089,Display / Screen,494
+buy,6.464731267220198,Display / Screen,494
+curved screen,5.9071918063198225,Display / Screen,494
+years,5.594370905548869,Display / Screen,494
+colors,5.5587789653122295,Display / Screen,494
+lines,5.423631888431793,Display / Screen,494
+issue,5.3438372608631814,Display / Screen,494
+support,9.747160250397396,Customer Support / Warranty,211
+upgrade,6.953321154791117,Customer Support / Warranty,211
+buy,6.745040361672995,Customer Support / Warranty,211
+years,5.7866183068587,Customer Support / Warranty,211
+time,5.245810835426277,Customer Support / Warranty,211
+going,4.900454816318794,Customer Support / Warranty,211
+year,4.776556283539675,Customer Support / Warranty,211
+better,3.815314488703776,Customer Support / Warranty,211
+s22,3.7479959152758218,Customer Support / Warranty,211
+im,3.670428908740251,Customer Support / Warranty,211
+upgrading,3.5695064559744156,Customer Support / Warranty,211
+company,3.368866753698029,Customer Support / Warranty,211
+note,3.3478299004255563,Customer Support / Warranty,211
+series,3.001181705738087,Customer Support / Warranty,211
+s22 ultra,2.705720458975673,Customer Support / Warranty,211
+bought,2.556452455706683,Customer Support / Warranty,211
+service,2.5529667041213955,Customer Support / Warranty,211
+buying,2.5465771120339684,Customer Support / Warranty,211
+bring,2.494529343026886,Customer Support / Warranty,211
+customers,2.4695210204902684,Customer Support / Warranty,211
 flagship,11.865780761228102,Performance / Processor,331
 better,10.903198985929206,Performance / Processor,331
 snapdragon,10.407140181825804,Performance / Processor,331
